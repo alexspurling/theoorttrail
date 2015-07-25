@@ -5,42 +5,18 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import StartApp
 import Signal exposing (Address)
-import BingoUtils as Utils
+
+import Character.Player exposing (Player)
+
 -- MODEL
 
 type alias Model =
-  { person : Person
-  }
-
-type alias Person =
-  { name : String,
-    stats : Stats,
-    health : Int
-  }
-
-type alias Stats =
-  { attack : Int,
-    intelligence : Int,
-    defence : Int
-  }
-
-initialStats : Stats
-initialStats =
-  { attack = 10,
-    intelligence = 5,
-    defence = 6
-  }
-
-initialPerson : Person
-initialPerson =
-  { name = "Bob Monkfish",
-    stats = initialStats,
-    health = 100
+  { player : Player
   }
 
 initialModel : Model
 initialModel =
-  { person = initialPerson
+  { player = Character.Player.daveHardbrain
   }
 
 -- UPDATE
@@ -60,7 +36,7 @@ listElement theText =
   p [ ]
     [ text theText ]
 
-personName name =
+playerName name =
   h2 [ ] [ text name ]
 
 stats s =
@@ -74,14 +50,14 @@ health h =
   p [ ]
     [ text ("Health: " ++ (toString h)) ]
 
-person : Model -> Html
-person model =
+player : Model -> Html
+player model =
   div [ class "panel" ]
     [
       img [ src "assets/hardbrain.png", class "avatar" ] [ ],
-      personName model.person.name,
-      stats model.person.stats,
-      health model.person.health
+      playerName model.player.name,
+      stats model.player.stats,
+      health model.player.health
     ]
 
 eventsBox : Model -> Html
@@ -91,7 +67,7 @@ eventsBox model =
 view : Address Action -> Model -> Html
 view address model =
   div [ id "container" ]
-    [ person model,
+    [ player model,
       eventsBox model ]
 
 -- WIRE IT ALL TOGETHER

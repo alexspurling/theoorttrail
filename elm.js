@@ -270,51 +270,6 @@ Elm.Basics.make = function (_elm) {
                         ,GT: GT};
    return _elm.Basics.values;
 };
-Elm.BingoUtils = Elm.BingoUtils || {};
-Elm.BingoUtils.make = function (_elm) {
-   "use strict";
-   _elm.BingoUtils = _elm.BingoUtils || {};
-   if (_elm.BingoUtils.values)
-   return _elm.BingoUtils.values;
-   var _op = {},
-   _N = Elm.Native,
-   _U = _N.Utils.make(_elm),
-   _L = _N.List.make(_elm),
-   $moduleName = "BingoUtils",
-   $Basics = Elm.Basics.make(_elm),
-   $Html = Elm.Html.make(_elm),
-   $Html$Events = Elm.Html.Events.make(_elm),
-   $List = Elm.List.make(_elm),
-   $Maybe = Elm.Maybe.make(_elm),
-   $Result = Elm.Result.make(_elm),
-   $Signal = Elm.Signal.make(_elm),
-   $String = Elm.String.make(_elm);
-   var parseInt = function (string) {
-      return function () {
-         var _v0 = $String.toInt(string);
-         switch (_v0.ctor)
-         {case "Err": return 0;
-            case "Ok": return _v0._0;}
-         _U.badCase($moduleName,
-         "between lines 24 and 28");
-      }();
-   };
-   var onInput = F2(function (address,
-   f) {
-      return A3($Html$Events.on,
-      "input",
-      $Html$Events.targetValue,
-      function (v) {
-         return A2($Signal.message,
-         address,
-         f(v));
-      });
-   });
-   _elm.BingoUtils.values = {_op: _op
-                            ,onInput: onInput
-                            ,parseInt: parseInt};
-   return _elm.BingoUtils.values;
-};
 Elm.Char = Elm.Char || {};
 Elm.Char.make = function (_elm) {
    "use strict";
@@ -378,6 +333,55 @@ Elm.Char.make = function (_elm) {
                       ,toCode: toCode
                       ,fromCode: fromCode};
    return _elm.Char.values;
+};
+Elm.Character = Elm.Character || {};
+Elm.Character.Player = Elm.Character.Player || {};
+Elm.Character.Player.make = function (_elm) {
+   "use strict";
+   _elm.Character = _elm.Character || {};
+   _elm.Character.Player = _elm.Character.Player || {};
+   if (_elm.Character.Player.values)
+   return _elm.Character.Player.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Character.Player",
+   $Basics = Elm.Basics.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var daveHardbrainStats = {_: {}
+                            ,attack: 15
+                            ,defence: 6
+                            ,intelligence: 5};
+   var daveHardbrain = {_: {}
+                       ,health: 150
+                       ,name: "Dave Hardbrain"
+                       ,stats: daveHardbrainStats};
+   var PlayerStats = F3(function (a,
+   b,
+   c) {
+      return {_: {}
+             ,attack: a
+             ,defence: c
+             ,intelligence: b};
+   });
+   var Player = F3(function (a,
+   b,
+   c) {
+      return {_: {}
+             ,health: c
+             ,name: a
+             ,stats: b};
+   });
+   _elm.Character.Player.values = {_op: _op
+                                  ,Player: Player
+                                  ,PlayerStats: PlayerStats
+                                  ,daveHardbrainStats: daveHardbrainStats
+                                  ,daveHardbrain: daveHardbrain};
+   return _elm.Character.Player.values;
 };
 Elm.Color = Elm.Color || {};
 Elm.Color.make = function (_elm) {
@@ -1857,6 +1861,7 @@ Elm.Game.make = function (_elm) {
    _L = _N.List.make(_elm),
    $moduleName = "Game",
    $Basics = Elm.Basics.make(_elm),
+   $Character$Player = Elm.Character.Player.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
@@ -1898,27 +1903,27 @@ Elm.Game.make = function (_elm) {
                    _L.fromArray([]),
                    _L.fromArray([]))]));
    };
-   var personName = function (name) {
+   var playerName = function (name) {
       return A2($Html.h2,
       _L.fromArray([]),
       _L.fromArray([$Html.text(name)]));
    };
-   var person = function (model) {
+   var player = function (model) {
       return A2($Html.div,
       _L.fromArray([$Html$Attributes.$class("panel")]),
       _L.fromArray([A2($Html.img,
                    _L.fromArray([$Html$Attributes.src("assets/hardbrain.png")
                                 ,$Html$Attributes.$class("avatar")]),
                    _L.fromArray([]))
-                   ,personName(model.person.name)
-                   ,stats(model.person.stats)
-                   ,health(model.person.health)]));
+                   ,playerName(model.player.name)
+                   ,stats(model.player.stats)
+                   ,health(model.player.health)]));
    };
    var view = F2(function (address,
    model) {
       return A2($Html.div,
       _L.fromArray([$Html$Attributes.id("container")]),
-      _L.fromArray([person(model)
+      _L.fromArray([player(model)
                    ,eventsBox(model)]));
    });
    var listElement = function (theText) {
@@ -1932,57 +1937,29 @@ Elm.Game.make = function (_elm) {
          switch (action.ctor)
          {case "NoOp": return model;}
          _U.badCase($moduleName,
-         "between lines 53 and 55");
+         "between lines 29 and 31");
       }();
    });
    var NoOp = {ctor: "NoOp"};
-   var initialStats = {_: {}
-                      ,attack: 10
-                      ,defence: 6
-                      ,intelligence: 5};
-   var initialPerson = {_: {}
-                       ,health: 100
-                       ,name: "Bob Monkfish"
-                       ,stats: initialStats};
    var initialModel = {_: {}
-                      ,person: initialPerson};
+                      ,player: $Character$Player.daveHardbrain};
    var main = $StartApp.start({_: {}
                               ,model: initialModel
                               ,update: update
                               ,view: view});
-   var Stats = F3(function (a,
-   b,
-   c) {
-      return {_: {}
-             ,attack: a
-             ,defence: c
-             ,intelligence: b};
-   });
-   var Person = F3(function (a,
-   b,
-   c) {
-      return {_: {}
-             ,health: c
-             ,name: a
-             ,stats: b};
-   });
    var Model = function (a) {
-      return {_: {},person: a};
+      return {_: {},player: a};
    };
    _elm.Game.values = {_op: _op
                       ,Model: Model
-                      ,Person: Person
-                      ,Stats: Stats
-                      ,initialStats: initialStats
-                      ,initialPerson: initialPerson
                       ,initialModel: initialModel
                       ,NoOp: NoOp
                       ,update: update
                       ,listElement: listElement
-                      ,personName: personName
+                      ,playerName: playerName
                       ,stats: stats
                       ,health: health
-                      ,person: person
+                      ,player: player
                       ,eventsBox: eventsBox
                       ,view: view
                       ,main: main};
