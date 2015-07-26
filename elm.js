@@ -347,26 +347,93 @@ Elm.Character.Player.make = function (_elm) {
    _U = _N.Utils.make(_elm),
    _L = _N.List.make(_elm),
    $moduleName = "Character.Player",
+   $Array = Elm.Array.make(_elm),
    $Basics = Elm.Basics.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
+   $Random = Elm.Random.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm);
+   var health = function (h) {
+      return A2($Html.p,
+      _L.fromArray([]),
+      _L.fromArray([$Html.text(A2($Basics._op["++"],
+      "Health: ",
+      $Basics.toString(h)))]));
+   };
+   var stats = function (s) {
+      return A2($Html.p,
+      _L.fromArray([]),
+      _L.fromArray([$Html.text(A2($Basics._op["++"],
+                   "Atk: ",
+                   $Basics.toString(s.attack)))
+                   ,A2($Html.br,
+                   _L.fromArray([]),
+                   _L.fromArray([]))
+                   ,$Html.text(A2($Basics._op["++"],
+                   "Int: ",
+                   $Basics.toString(s.intelligence)))
+                   ,A2($Html.br,
+                   _L.fromArray([]),
+                   _L.fromArray([]))
+                   ,$Html.text(A2($Basics._op["++"],
+                   "Def: ",
+                   $Basics.toString(s.defence)))
+                   ,A2($Html.br,
+                   _L.fromArray([]),
+                   _L.fromArray([]))
+                   ,$Html.text(A2($Basics._op["++"],
+                   "Lvl: ",
+                   $Basics.toString(s.level)))
+                   ,A2($Html.br,
+                   _L.fromArray([]),
+                   _L.fromArray([]))
+                   ,$Html.text(A2($Basics._op["++"],
+                   "Exp: ",
+                   $Basics.toString(s.exp)))
+                   ,A2($Html.br,
+                   _L.fromArray([]),
+                   _L.fromArray([]))]));
+   };
+   var playerName = function (name) {
+      return A2($Html.h2,
+      _L.fromArray([]),
+      _L.fromArray([$Html.text(name)]));
+   };
+   var view = function (player) {
+      return A2($Html.div,
+      _L.fromArray([$Html$Attributes.$class("panel")]),
+      _L.fromArray([A2($Html.img,
+                   _L.fromArray([$Html$Attributes.src("assets/hardbrain.png")
+                                ,$Html$Attributes.$class("avatar")]),
+                   _L.fromArray([]))
+                   ,playerName(player.name)
+                   ,stats(player.stats)
+                   ,health(player.health)]));
+   };
    var daveHardbrainStats = {_: {}
                             ,attack: 15
                             ,defence: 6
-                            ,intelligence: 5};
+                            ,exp: 0
+                            ,intelligence: 5
+                            ,level: 1};
    var daveHardbrain = {_: {}
                        ,health: 150
                        ,name: "Dave Hardbrain"
                        ,stats: daveHardbrainStats};
-   var PlayerStats = F3(function (a,
+   var PlayerStats = F5(function (a,
    b,
-   c) {
+   c,
+   d,
+   e) {
       return {_: {}
              ,attack: a
              ,defence: c
-             ,intelligence: b};
+             ,exp: e
+             ,intelligence: b
+             ,level: d};
    });
    var Player = F3(function (a,
    b,
@@ -376,11 +443,75 @@ Elm.Character.Player.make = function (_elm) {
              ,name: a
              ,stats: b};
    });
+   var lastNames = $Array.fromList(_L.fromArray(["Ableton"
+                                                ,"Adamsen"
+                                                ,"Bauer"
+                                                ,"Christianson"
+                                                ,"Dragen"
+                                                ,"Forsley"
+                                                ,"Hagebak"
+                                                ,"Hordor"
+                                                ,"Hoyer"
+                                                ,"Kessler"
+                                                ,"Land"
+                                                ,"Llewellyn"
+                                                ,"McCoughphlem"
+                                                ,"Snow"
+                                                ,"Stöhr"
+                                                ,"Sterling"
+                                                ,"Tornquist"
+                                                ,"Winter"]));
+   var maleFirstNames = $Array.fromList(_L.fromArray(["Aaron"
+                                                     ,"Aden"
+                                                     ,"Arnold"
+                                                     ,"Benedict"
+                                                     ,"Brandon"
+                                                     ,"Chad"
+                                                     ,"Dave"
+                                                     ,"Ethan"
+                                                     ,"Felix"
+                                                     ,"Howard"
+                                                     ,"Jim"
+                                                     ,"Luke"
+                                                     ,"Mike"
+                                                     ,"Roger"
+                                                     ,"Tim"
+                                                     ,"Tyrell"
+                                                     ,"Waldo"]));
+   var randomPlayer = function (seed) {
+      return function () {
+         var $ = A2($Random.generate,
+         A2($Random.$int,
+         0,
+         $Array.length(maleFirstNames) - 1),
+         seed),
+         firstNameR = $._0,
+         seed$ = $._1;
+         var firstName = A2($Array.get,
+         firstNameR,
+         maleFirstNames);
+         return {_: {}
+                ,health: 150
+                ,name: A2($Basics._op["++"],
+                A2($Maybe.withDefault,
+                "Firstname",
+                firstName),
+                " Surname")
+                ,stats: daveHardbrainStats};
+      }();
+   };
    _elm.Character.Player.values = {_op: _op
+                                  ,maleFirstNames: maleFirstNames
+                                  ,lastNames: lastNames
                                   ,Player: Player
                                   ,PlayerStats: PlayerStats
                                   ,daveHardbrainStats: daveHardbrainStats
-                                  ,daveHardbrain: daveHardbrain};
+                                  ,daveHardbrain: daveHardbrain
+                                  ,randomPlayer: randomPlayer
+                                  ,playerName: playerName
+                                  ,stats: stats
+                                  ,health: health
+                                  ,view: view};
    return _elm.Character.Player.values;
 };
 Elm.Color = Elm.Color || {};
@@ -1866,6 +1997,7 @@ Elm.Game.make = function (_elm) {
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
+   $Random = Elm.Random.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $StartApp = Elm.StartApp.make(_elm);
@@ -1874,75 +2006,25 @@ Elm.Game.make = function (_elm) {
       _L.fromArray([]),
       _L.fromArray([]));
    };
-   var health = function (h) {
-      return A2($Html.p,
-      _L.fromArray([]),
-      _L.fromArray([$Html.text(A2($Basics._op["++"],
-      "Health: ",
-      $Basics.toString(h)))]));
-   };
-   var stats = function (s) {
-      return A2($Html.p,
-      _L.fromArray([]),
-      _L.fromArray([$Html.text(A2($Basics._op["++"],
-                   "Atk: ",
-                   $Basics.toString(s.attack)))
-                   ,A2($Html.br,
-                   _L.fromArray([]),
-                   _L.fromArray([]))
-                   ,$Html.text(A2($Basics._op["++"],
-                   "Int: ",
-                   $Basics.toString(s.intelligence)))
-                   ,A2($Html.br,
-                   _L.fromArray([]),
-                   _L.fromArray([]))
-                   ,$Html.text(A2($Basics._op["++"],
-                   "Def: ",
-                   $Basics.toString(s.defence)))
-                   ,A2($Html.br,
-                   _L.fromArray([]),
-                   _L.fromArray([]))]));
-   };
-   var playerName = function (name) {
-      return A2($Html.h2,
-      _L.fromArray([]),
-      _L.fromArray([$Html.text(name)]));
-   };
-   var player = function (model) {
-      return A2($Html.div,
-      _L.fromArray([$Html$Attributes.$class("panel")]),
-      _L.fromArray([A2($Html.img,
-                   _L.fromArray([$Html$Attributes.src("assets/hardbrain.png")
-                                ,$Html$Attributes.$class("avatar")]),
-                   _L.fromArray([]))
-                   ,playerName(model.player.name)
-                   ,stats(model.player.stats)
-                   ,health(model.player.health)]));
-   };
    var view = F2(function (address,
    model) {
       return A2($Html.div,
       _L.fromArray([$Html$Attributes.id("container")]),
-      _L.fromArray([player(model)
+      _L.fromArray([$Character$Player.view(model.player)
                    ,eventsBox(model)]));
    });
-   var listElement = function (theText) {
-      return A2($Html.p,
-      _L.fromArray([]),
-      _L.fromArray([$Html.text(theText)]));
-   };
    var update = F2(function (action,
    model) {
       return function () {
          switch (action.ctor)
          {case "NoOp": return model;}
          _U.badCase($moduleName,
-         "between lines 29 and 31");
+         "between lines 31 and 33");
       }();
    });
    var NoOp = {ctor: "NoOp"};
    var initialModel = {_: {}
-                      ,player: $Character$Player.daveHardbrain};
+                      ,player: $Character$Player.randomPlayer($Random.initialSeed(123))};
    var main = $StartApp.start({_: {}
                               ,model: initialModel
                               ,update: update
@@ -1955,11 +2037,6 @@ Elm.Game.make = function (_elm) {
                       ,initialModel: initialModel
                       ,NoOp: NoOp
                       ,update: update
-                      ,listElement: listElement
-                      ,playerName: playerName
-                      ,stats: stats
-                      ,health: health
-                      ,player: player
                       ,eventsBox: eventsBox
                       ,view: view
                       ,main: main};
@@ -12474,6 +12551,291 @@ Elm.Native.VirtualDom.make = function(elm)
 
 },{}]},{},[39]);
 
+Elm.Random = Elm.Random || {};
+Elm.Random.make = function (_elm) {
+   "use strict";
+   _elm.Random = _elm.Random || {};
+   if (_elm.Random.values)
+   return _elm.Random.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Random",
+   $Basics = Elm.Basics.make(_elm),
+   $List = Elm.List.make(_elm);
+   var magicNum8 = 2147483562;
+   var range = function (_v0) {
+      return function () {
+         return {ctor: "_Tuple2"
+                ,_0: 0
+                ,_1: magicNum8};
+      }();
+   };
+   var magicNum7 = 2137383399;
+   var magicNum6 = 2147483563;
+   var magicNum5 = 3791;
+   var magicNum4 = 40692;
+   var magicNum3 = 52774;
+   var magicNum2 = 12211;
+   var magicNum1 = 53668;
+   var magicNum0 = 40014;
+   var generate = F2(function (_v2,
+   seed) {
+      return function () {
+         switch (_v2.ctor)
+         {case "Generator":
+            return _v2._0(seed);}
+         _U.badCase($moduleName,
+         "on line 246, column 5 to 19");
+      }();
+   });
+   var Seed = F4(function (a,
+   b,
+   c,
+   d) {
+      return {_: {}
+             ,next: b
+             ,range: d
+             ,split: c
+             ,state: a};
+   });
+   var State = F2(function (a,b) {
+      return {ctor: "State"
+             ,_0: a
+             ,_1: b};
+   });
+   var initState = function (s$) {
+      return function () {
+         var s = A2($Basics.max,
+         s$,
+         0 - s$);
+         var q = s / (magicNum6 - 1) | 0;
+         var s2 = A2($Basics._op["%"],
+         q,
+         magicNum7 - 1);
+         var s1 = A2($Basics._op["%"],
+         s,
+         magicNum6 - 1);
+         return A2(State,s1 + 1,s2 + 1);
+      }();
+   };
+   var next = function (_v5) {
+      return function () {
+         switch (_v5.ctor)
+         {case "State":
+            return function () {
+                 var k$ = _v5._1 / magicNum3 | 0;
+                 var s2$ = magicNum4 * (_v5._1 - k$ * magicNum3) - k$ * magicNum5;
+                 var s2$$ = _U.cmp(s2$,
+                 0) < 0 ? s2$ + magicNum7 : s2$;
+                 var k = _v5._0 / magicNum1 | 0;
+                 var s1$ = magicNum0 * (_v5._0 - k * magicNum1) - k * magicNum2;
+                 var s1$$ = _U.cmp(s1$,
+                 0) < 0 ? s1$ + magicNum6 : s1$;
+                 var z = s1$$ - s2$$;
+                 var z$ = _U.cmp(z,
+                 1) < 0 ? z + magicNum8 : z;
+                 return {ctor: "_Tuple2"
+                        ,_0: z$
+                        ,_1: A2(State,s1$$,s2$$)};
+              }();}
+         _U.badCase($moduleName,
+         "between lines 290 and 299");
+      }();
+   };
+   var split = function (_v9) {
+      return function () {
+         switch (_v9.ctor)
+         {case "State":
+            return function () {
+                 var _raw = $Basics.snd(next(_v9)),
+                 $ = _raw.ctor === "State" ? _raw : _U.badCase($moduleName,
+                 "on line 306, column 25 to 38"),
+                 t1 = $._0,
+                 t2 = $._1;
+                 var new_s2 = _U.eq(_v9._1,
+                 1) ? magicNum7 - 1 : _v9._1 - 1;
+                 var new_s1 = _U.eq(_v9._0,
+                 magicNum6 - 1) ? 1 : _v9._0 + 1;
+                 return {ctor: "_Tuple2"
+                        ,_0: A2(State,new_s1,t2)
+                        ,_1: A2(State,t1,new_s2)};
+              }();}
+         _U.badCase($moduleName,
+         "between lines 304 and 308");
+      }();
+   };
+   var initialSeed = function (n) {
+      return A4(Seed,
+      initState(n),
+      next,
+      split,
+      range);
+   };
+   var Generator = function (a) {
+      return {ctor: "Generator"
+             ,_0: a};
+   };
+   var customGenerator = function (generate) {
+      return Generator(generate);
+   };
+   var listHelp = F4(function (list,
+   n,
+   generate,
+   seed) {
+      return _U.cmp(n,
+      1) < 0 ? {ctor: "_Tuple2"
+               ,_0: $List.reverse(list)
+               ,_1: seed} : function () {
+         var $ = generate(seed),
+         value = $._0,
+         seed$ = $._1;
+         return A4(listHelp,
+         A2($List._op["::"],value,list),
+         n - 1,
+         generate,
+         seed$);
+      }();
+   });
+   var list = F2(function (n,
+   _v13) {
+      return function () {
+         switch (_v13.ctor)
+         {case "Generator":
+            return Generator(function (seed) {
+                 return A4(listHelp,
+                 _L.fromArray([]),
+                 n,
+                 _v13._0,
+                 seed);
+              });}
+         _U.badCase($moduleName,
+         "between lines 182 and 183");
+      }();
+   });
+   var pair = F2(function (_v16,
+   _v17) {
+      return function () {
+         switch (_v17.ctor)
+         {case "Generator":
+            return function () {
+                 switch (_v16.ctor)
+                 {case "Generator":
+                    return Generator(function (seed) {
+                         return function () {
+                            var $ = _v16._0(seed),
+                            left = $._0,
+                            seed$ = $._1;
+                            var $ = _v17._0(seed$),
+                            right = $._0,
+                            seed$$ = $._1;
+                            return {ctor: "_Tuple2"
+                                   ,_0: {ctor: "_Tuple2"
+                                        ,_0: left
+                                        ,_1: right}
+                                   ,_1: seed$$};
+                         }();
+                      });}
+                 _U.badCase($moduleName,
+                 "between lines 159 and 163");
+              }();}
+         _U.badCase($moduleName,
+         "between lines 159 and 163");
+      }();
+   });
+   var minInt = -2147483648;
+   var maxInt = 2147483647;
+   var iLogBase = F2(function (b,
+   i) {
+      return _U.cmp(i,
+      b) < 0 ? 1 : 1 + A2(iLogBase,
+      b,
+      i / b | 0);
+   });
+   var $int = F2(function (a,b) {
+      return Generator(function (seed) {
+         return function () {
+            var base = 2147483561;
+            var f = F3(function (n,
+            acc,
+            state) {
+               return function () {
+                  switch (n)
+                  {case 0: return {ctor: "_Tuple2"
+                                  ,_0: acc
+                                  ,_1: state};}
+                  return function () {
+                     var $ = seed.next(state),
+                     x = $._0,
+                     state$ = $._1;
+                     return A3(f,
+                     n - 1,
+                     x + acc * base,
+                     state$);
+                  }();
+               }();
+            });
+            var $ = _U.cmp(a,
+            b) < 0 ? {ctor: "_Tuple2"
+                     ,_0: a
+                     ,_1: b} : {ctor: "_Tuple2"
+                               ,_0: b
+                               ,_1: a},
+            lo = $._0,
+            hi = $._1;
+            var k = hi - lo + 1;
+            var n = A2(iLogBase,base,k);
+            var $ = A3(f,n,1,seed.state),
+            v = $._0,
+            state$ = $._1;
+            return {ctor: "_Tuple2"
+                   ,_0: lo + A2($Basics._op["%"],
+                   v,
+                   k)
+                   ,_1: _U.replace([["state"
+                                    ,state$]],
+                   seed)};
+         }();
+      });
+   });
+   var $float = F2(function (a,b) {
+      return Generator(function (seed) {
+         return function () {
+            var $ = A2(generate,
+            A2($int,minInt,maxInt),
+            seed),
+            number = $._0,
+            seed$ = $._1;
+            var negativeOneToOne = $Basics.toFloat(number) / $Basics.toFloat(maxInt - minInt);
+            var $ = _U.cmp(a,
+            b) < 0 ? {ctor: "_Tuple2"
+                     ,_0: a
+                     ,_1: b} : {ctor: "_Tuple2"
+                               ,_0: b
+                               ,_1: a},
+            lo = $._0,
+            hi = $._1;
+            var scaled = (lo + hi) / 2 + (hi - lo) * negativeOneToOne;
+            return {ctor: "_Tuple2"
+                   ,_0: scaled
+                   ,_1: seed$};
+         }();
+      });
+   });
+   _elm.Random.values = {_op: _op
+                        ,$int: $int
+                        ,$float: $float
+                        ,list: list
+                        ,pair: pair
+                        ,minInt: minInt
+                        ,maxInt: maxInt
+                        ,generate: generate
+                        ,initialSeed: initialSeed
+                        ,customGenerator: customGenerator
+                        ,Seed: Seed};
+   return _elm.Random.values;
+};
 Elm.Result = Elm.Result || {};
 Elm.Result.make = function (_elm) {
    "use strict";

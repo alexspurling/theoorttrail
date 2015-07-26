@@ -8,6 +8,8 @@ import Signal exposing (Address)
 
 import Character.Player exposing (Player)
 
+import Random exposing (Seed)
+
 -- MODEL
 
 type alias Model =
@@ -16,7 +18,7 @@ type alias Model =
 
 initialModel : Model
 initialModel =
-  { player = Character.Player.daveHardbrain
+  { player = Character.Player.randomPlayer (Random.initialSeed 123)
   }
 
 -- UPDATE
@@ -32,34 +34,6 @@ update action model =
 
 -- VIEw
 
-listElement theText =
-  p [ ]
-    [ text theText ]
-
-playerName name =
-  h2 [ ] [ text name ]
-
-stats s =
-  p [ ]
-    [ text ("Atk: " ++ (toString s.attack)), br [ ] [ ],
-      text ("Int: " ++ (toString s.intelligence)), br [ ] [ ],
-      text ("Def: " ++ (toString s.defence)), br [ ] [ ]
-    ]
-
-health h =
-  p [ ]
-    [ text ("Health: " ++ (toString h)) ]
-
-player : Model -> Html
-player model =
-  div [ class "panel" ]
-    [
-      img [ src "assets/hardbrain.png", class "avatar" ] [ ],
-      playerName model.player.name,
-      stats model.player.stats,
-      health model.player.health
-    ]
-
 eventsBox : Model -> Html
 eventsBox model =
   textarea [ ] [ ]
@@ -67,7 +41,7 @@ eventsBox model =
 view : Address Action -> Model -> Html
 view address model =
   div [ id "container" ]
-    [ player model,
+    [ Character.Player.view model.player,
       eventsBox model ]
 
 -- WIRE IT ALL TOGETHER
