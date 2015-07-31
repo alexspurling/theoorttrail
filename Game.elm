@@ -4,11 +4,14 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import StartApp
-import Signal exposing (Address)
+import Signal exposing (Address, (<~))
+import Random
+import Time
+import Debug
 
 import Character.Player exposing (Player)
 
-import Random exposing (Seed)
+port timestamp : Int
 
 -- MODEL
 
@@ -16,9 +19,9 @@ type alias Model =
   { player : Player
   }
 
-initialModel : Model
-initialModel =
-  { player = Character.Player.randomPlayer (Random.initialSeed 123)
+initialModel : Random.Seed -> Model
+initialModel initialSeed =
+  { player = Character.Player.randomPlayer initialSeed
   }
 
 -- UPDATE
@@ -46,10 +49,14 @@ view address model =
 
 -- WIRE IT ALL TOGETHER
 
-main : Signal Html
-main =
-  StartApp.start
-  { model = initialModel,
+
+mainApp : StartApp.App Model Action
+mainApp =
+  { model = initialModel (Random.initialSeed timestamp),
     view = view,
     update = update
   }
+
+main : Signal Html
+main = StartApp.start (mainApp)
+
