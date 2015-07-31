@@ -2016,7 +2016,7 @@ Elm.Game.make = function (_elm) {
    var view = F2(function (address,
    model) {
       return A2($Html.div,
-      _L.fromArray([$Html$Attributes.id("container")]),
+      _L.fromArray([$Html$Attributes.id("container2")]),
       _L.fromArray([$Character$Player.view(model.player)
                    ,eventsBox(model)]));
    });
