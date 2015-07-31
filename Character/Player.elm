@@ -81,11 +81,13 @@ randomPlayer : Seed -> Player
 randomPlayer seed =
   let
     (firstNameR, seed') = generate (int 0 (Array.length maleFirstNames-1)) seed
+    (lastNameR, seed'') = generate (int 0 (Array.length lastNames-1)) seed'
   in
     let
       firstName = Array.get firstNameR maleFirstNames
+      lastName = Array.get lastNameR lastNames
     in
-      { name = (Maybe.withDefault "Firstname" firstName) ++ " Surname",
+      { name = (Maybe.withDefault "Emily" firstName) ++ " " ++ (Maybe.withDefault "Surname" lastName),
         stats = daveHardbrainStats,
         health = 150
       }
