@@ -6,6 +6,8 @@ import Random exposing (..)
 
 import Array
 
+import Util.ArrayUtil
+
 maleFirstNames = Array.fromList [
   "Aaron",
   "Aden",
@@ -80,17 +82,13 @@ daveHardbrain =
 randomPlayer : Seed -> Player
 randomPlayer seed =
   let
-    (firstNameR, seed') = generate (int 0 (Array.length maleFirstNames-1)) seed
-    (lastNameR, seed'') = generate (int 0 (Array.length lastNames-1)) seed'
+    (firstName, seed') = Util.ArrayUtil.randomArrayElement seed maleFirstNames "Emily"
+    (lastName, seed'') = Util.ArrayUtil.randomArrayElement seed' lastNames "Surname"
   in
-    let
-      firstName = Array.get firstNameR maleFirstNames
-      lastName = Array.get lastNameR lastNames
-    in
-      { name = (Maybe.withDefault "Emily" firstName) ++ " " ++ (Maybe.withDefault "Surname" lastName),
-        stats = daveHardbrainStats,
-        health = 150
-      }
+    { name = firstName ++ " " ++ lastName,
+      stats = daveHardbrainStats,
+      health = 150
+    }
 
 
 
