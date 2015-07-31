@@ -7,8 +7,11 @@ import StartApp
 import Signal exposing (Address, (<~))
 import Random
 import Time
+import Debug
 
 import Character.Player exposing (Player)
+
+port timestamp : Int
 
 -- MODEL
 
@@ -46,16 +49,14 @@ view address model =
 
 -- WIRE IT ALL TOGETHER
 
-seedSignal : Signal Random.Seed
-seedSignal = (\ (t, _) -> Random.initialSeed <| round t) <~ Time.timestamp (Signal.constant ())
 
-mainApp : Random.Seed -> StartApp.App Model Action
-mainApp initialSeed =
-  { model = initialModel initialSeed,
+mainApp : StartApp.App Model Action
+mainApp =
+  { model = initialModel (Random.initialSeed timestamp),
     view = view,
     update = update
   }
 
 main : Signal Html
-main =
-  Signal.map (\seed -> StartApp.start (mainApp seed)) seedSignal
+main = StartApp.start (mainApp)
+
