@@ -96,10 +96,11 @@ randomPlanet seed =
     (planetName, seed') = Util.ArrayUtil.randomArrayElement planetSeed planetNames "Earth"
     (planetImage, seed'') = Util.ArrayUtil.randomArrayElement seed' planetImages "Earth"
     (planetPopulation, seed''') = (randomInt seed'' 10000)
+    (planetPopulationMultiplier, seed'''') = (randomInt seed''' 8)
   in
     { name = planetName,
       image = planetImage,
-      population = planetPopulation * 10000
+      population = planetPopulation * (10 ^ planetPopulationMultiplier)
     }
 
 --VIEW

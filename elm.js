@@ -4559,10 +4559,14 @@ Elm.Location.Planet.make = function (_elm) {
          10000),
          planetPopulation = $._0,
          seed$$$ = $._1;
+         var $ = A2(randomInt,seed$$$,8),
+         planetPopulationMultiplier = $._0,
+         seed$$$$ = $._1;
          return {_: {}
                 ,image: planetImage
                 ,name: planetName
-                ,population: planetPopulation * 10000};
+                ,population: planetPopulation * Math.pow(10,
+                planetPopulationMultiplier)};
       }();
    };
    _elm.Location.Planet.values = {_op: _op
