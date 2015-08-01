@@ -1999,6 +1999,7 @@ Elm.Game.make = function (_elm) {
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
+   $Location$Planet = Elm.Location.Planet.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Random = Elm.Random.make(_elm),
    $Result = Elm.Result.make(_elm),
@@ -2013,7 +2014,8 @@ Elm.Game.make = function (_elm) {
    model) {
       return A2($Html.div,
       _L.fromArray([$Html$Attributes.id("container")]),
-      _L.fromArray([$Character$Player.view(model.player)
+      _L.fromArray([$Location$Planet.view(model.location)
+                   ,$Character$Player.view(model.player)
                    ,eventsBox(model)]));
    });
    var update = F2(function (action,
@@ -2022,17 +2024,20 @@ Elm.Game.make = function (_elm) {
          switch (action.ctor)
          {case "NoOp": return model;}
          _U.badCase($moduleName,
-         "between lines 34 and 36");
+         "between lines 37 and 39");
       }();
    });
    var NoOp = {ctor: "NoOp"};
    var initialModel = function (initialSeed) {
       return {_: {}
+             ,location: $Location$Planet.randomPlanet(initialSeed)
              ,player: $Character$Player.randomPlayer(initialSeed)};
    };
-   var Model = function (a) {
-      return {_: {},player: a};
-   };
+   var Model = F2(function (a,b) {
+      return {_: {}
+             ,location: b
+             ,player: a};
+   });
    var timestamp = Elm.Native.Port.make(_elm).inbound("timestamp",
    "Int",
    function (v) {
@@ -4399,6 +4404,177 @@ Elm.List.make = function (_elm) {
                       ,sortBy: sortBy
                       ,sortWith: sortWith};
    return _elm.List.values;
+};
+Elm.Location = Elm.Location || {};
+Elm.Location.Planet = Elm.Location.Planet || {};
+Elm.Location.Planet.make = function (_elm) {
+   "use strict";
+   _elm.Location = _elm.Location || {};
+   _elm.Location.Planet = _elm.Location.Planet || {};
+   if (_elm.Location.Planet.values)
+   return _elm.Location.Planet.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Location.Planet",
+   $Array = Elm.Array.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Random = Elm.Random.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $Util$ArrayUtil = Elm.Util.ArrayUtil.make(_elm);
+   var stats = function (planet) {
+      return A2($Html.p,
+      _L.fromArray([]),
+      _L.fromArray([$Html.text(A2($Basics._op["++"],
+                   "Population: ",
+                   $Basics.toString(planet.population)))
+                   ,A2($Html.br,
+                   _L.fromArray([]),
+                   _L.fromArray([]))]));
+   };
+   var planetName = function (name) {
+      return A2($Html.h2,
+      _L.fromArray([]),
+      _L.fromArray([$Html.text(name)]));
+   };
+   var view = function (planet) {
+      return A2($Html.div,
+      _L.fromArray([$Html$Attributes.$class("panel")]),
+      _L.fromArray([A2($Html.img,
+                   _L.fromArray([$Html$Attributes.src(planet.image)
+                                ,$Html$Attributes.$class("avatar")]),
+                   _L.fromArray([]))
+                   ,planetName(planet.name)
+                   ,stats(planet)]));
+   };
+   var randomInt = F2(function (seed,
+   maxInt) {
+      return A2($Random.generate,
+      A2($Random.$int,0,maxInt),
+      seed);
+   });
+   var Planet = F3(function (a,
+   b,
+   c) {
+      return {_: {}
+             ,image: b
+             ,name: a
+             ,population: c};
+   });
+   var planetImages = $Array.fromList(_L.fromArray(["assets/planets/earth.png"
+                                                   ,"assets/planets/desert.png"
+                                                   ,"assets/planets/ice.png"
+                                                   ,"assets/planets/p1shaded.png"
+                                                   ,"assets/planets/p2shaded.png"
+                                                   ,"assets/planets/p3shaded.png"
+                                                   ,"assets/planets/p4shaded.png"
+                                                   ,"assets/planets/p5shaded.png"
+                                                   ,"assets/planets/p6shaded.png"
+                                                   ,"assets/planets/p7shaded.png"
+                                                   ,"assets/planets/p8shaded.png"
+                                                   ,"assets/planets/p9shaded.png"
+                                                   ,"assets/planets/p10shaded.png"]));
+   var planetNames = $Array.fromList(_L.fromArray(["Di-Yu"
+                                                  ,"New Titan"
+                                                  ,"Balha II"
+                                                  ,"Lurma III"
+                                                  ,"New Triton"
+                                                  ,"Mara R\'Vani"
+                                                  ,"Hura VII"
+                                                  ,"New Rhea"
+                                                  ,"9100 Magha Prime"
+                                                  ,"Sycia II"
+                                                  ,"Minbe"
+                                                  ,"Tane T\'Agan"
+                                                  ,"New Gaia"
+                                                  ,"Cybele Prime"
+                                                  ,"2713 Antliae VII"
+                                                  ,"Shu VII"
+                                                  ,"Emhan Betu"
+                                                  ,"Dr\'Mado"
+                                                  ,"2780 Pushya VII"
+                                                  ,"Tando"
+                                                  ,"4410 Scuti V"
+                                                  ,"Keniea VI"
+                                                  ,"8112 Gui Xiu VI"
+                                                  ,"3887 Sagittae Prime"
+                                                  ,"New Rhea"
+                                                  ,"1249 Scuti III"
+                                                  ,"8886 Kui Xiu Prime"
+                                                  ,"Sietynas IV"
+                                                  ,"Zakar VII"
+                                                  ,"Metra"
+                                                  ,"Dari II"
+                                                  ,"Tipa"
+                                                  ,"Skadi II"
+                                                  ,"Vogi IV"
+                                                  ,"New Britain"
+                                                  ,"New Thyoph"
+                                                  ,"Anu"
+                                                  ,"D\'Endan"
+                                                  ,"Enlil"
+                                                  ,"New Terra"
+                                                  ,"6385 Lyncis VII"
+                                                  ,"Tholy Prime"
+                                                  ,"Asherah"
+                                                  ,"3876 Liu Xiu VII"
+                                                  ,"Ganiea"
+                                                  ,"Niano"
+                                                  ,"New Xena"
+                                                  ,"Iahamu III"
+                                                  ,"Almaren"
+                                                  ,"Natha"]));
+   var randomPlanet = function (seed) {
+      return function () {
+         var _ = A2(randomInt,
+         seed,
+         $Array.length(planetNames) - 1);
+         var planetIndex = function () {
+            switch (_.ctor)
+            {case "_Tuple2": return _._0;}
+            _U.badCase($moduleName,
+            "on line 94, column 24 to 66");
+         }();
+         var planetSeed = $Random.initialSeed(planetIndex);
+         var $ = A3($Util$ArrayUtil.randomArrayElement,
+         planetSeed,
+         planetNames,
+         "Earth"),
+         planetName = $._0,
+         seed$ = $._1;
+         var $ = A3($Util$ArrayUtil.randomArrayElement,
+         seed$,
+         planetImages,
+         "Earth"),
+         planetImage = $._0,
+         seed$$ = $._1;
+         var $ = A2(randomInt,
+         seed$$,
+         10000),
+         planetPopulation = $._0,
+         seed$$$ = $._1;
+         return {_: {}
+                ,image: planetImage
+                ,name: planetName
+                ,population: planetPopulation * 10000};
+      }();
+   };
+   _elm.Location.Planet.values = {_op: _op
+                                 ,planetNames: planetNames
+                                 ,planetImages: planetImages
+                                 ,Planet: Planet
+                                 ,randomInt: randomInt
+                                 ,randomPlanet: randomPlanet
+                                 ,planetName: planetName
+                                 ,stats: stats
+                                 ,view: view};
+   return _elm.Location.Planet.values;
 };
 Elm.Maybe = Elm.Maybe || {};
 Elm.Maybe.make = function (_elm) {

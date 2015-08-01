@@ -10,18 +10,21 @@ import Time
 import Debug
 
 import Character.Player exposing (Player)
+import Location.Planet exposing (Planet)
 
 port timestamp : Int
 
 -- MODEL
 
 type alias Model =
-  { player : Player
+  { player : Player,
+    location : Planet
   }
 
 initialModel : Random.Seed -> Model
 initialModel initialSeed =
-  { player = Character.Player.randomPlayer initialSeed
+  { player = Character.Player.randomPlayer initialSeed,
+    location = Location.Planet.randomPlanet initialSeed
   }
 
 -- UPDATE
@@ -35,7 +38,7 @@ update action model =
     NoOp ->
       model
 
--- VIEw
+-- VIEW
 
 eventsBox : Model -> Html
 eventsBox model =
@@ -44,7 +47,8 @@ eventsBox model =
 view : Address Action -> Model -> Html
 view address model =
   div [ id "container" ]
-    [ Character.Player.view model.player,
+    [ Location.Planet.view model.location,
+      Character.Player.view model.player,
       eventsBox model ]
 
 -- WIRE IT ALL TOGETHER
