@@ -5,61 +5,62 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 
 import Array
+import Debug
 import Random
 
 import Util.ArrayUtil
+import Util.StringUtil
 
 planetNames = Array.fromList [
-  "Di-Yu",
-  "New Titan",
-  "Balha II",
-  "Lurma III",
-  "New Triton",
-  "Mara R'Vani",
-  "Hura VII",
-  "New Rhea",
-  "9100 Magha Prime",
-  "Sycia II",
-  "Minbe",
-  "Tane T'Agan",
-  "New Gaia",
-  "Cybele Prime",
-  "2713 Antliae VII",
-  "Shu VII",
-  "Emhan Betu",
-  "Dr'Mado",
-  "2780 Pushya VII",
-  "Tando",
-  "4410 Scuti V",
-  "Keniea VI",
-  "8112 Gui Xiu VI",
-  "3887 Sagittae Prime",
-  "New Rhea",
   "1249 Scuti III",
-  "8886 Kui Xiu Prime",
-  "Sietynas IV",
-  "Zakar VII",
-  "Metra",
-  "Dari II",
-  "Tipa",
-  "Skadi II",
-  "Vogi IV",
-  "New Britain",
-  "New Thyoph",
-  "Anu",
-  "D'Endan",
-  "Enlil",
-  "New Terra",
-  "6385 Lyncis VII",
-  "Tholy Prime",
-  "Asherah",
+  "2713 Antliae VII",
+  "2780 Pushya VII",
   "3876 Liu Xiu VII",
-  "Ganiea",
-  "Niano",
-  "New Xena",
-  "Iahamu III",
+  "3887 Sagittae Prime",
+  "4410 Scuti V",
+  "6385 Lyncis VII",
+  "8112 Gui Xiu VI",
+  "8886 Kui Xiu Prime",
+  "9100 Magha Prime",
   "Almaren",
-  "Natha" ]
+  "Anu",
+  "Asherah",
+  "Balha II",
+  "Cybele Prime",
+  "D'Endan",
+  "Dari II",
+  "Di-Yu",
+  "Dr'Mado",
+  "Emhan Betu",
+  "Enlil",
+  "Ganiea",
+  "Hura VII",
+  "Iahamu III",
+  "Keniea VI",
+  "Lurma III",
+  "Mara R'Vani",
+  "Metra",
+  "Minbe",
+  "Natha",
+  "New Britain",
+  "New Gaia",
+  "New Rhea",
+  "New Terra",
+  "New Thyoph",
+  "New Titan",
+  "New Triton",
+  "New Xena",
+  "Niano",
+  "Shu VII",
+  "Sietynas IV",
+  "Skadi II",
+  "Sycia II",
+  "Tando",
+  "Tane T'Agan",
+  "Tholy Prime",
+  "Tipa",
+  "Vogi IV",
+  "Zakar VII" ]
 
 
 planetImages = Array.fromList [
@@ -87,16 +88,16 @@ type alias Planet =
 randomInt seed maxInt =
   Random.generate (Random.int 0 maxInt) seed
 
+
 randomPlanet : Random.Seed -> Planet
 randomPlanet seed =
   let
     --get the planet index and base all random values on that
-    (planetIndex, _) = randomInt seed (Array.length planetNames-1)
-    planetSeed = Random.initialSeed planetIndex
-    (planetName, seed') = Util.ArrayUtil.randomArrayElement planetSeed planetNames "Earth"
-    (planetImage, seed'') = Util.ArrayUtil.randomArrayElement seed' planetImages "Earth"
-    (planetPopulation, seed''') = (randomInt seed'' 10000)
-    (planetPopulationMultiplier, seed'''') = (randomInt seed''' 8)
+    (planetName, _) = Util.ArrayUtil.randomArrayElement seed planetNames "Earth"
+    planetSeed = Random.initialSeed (Util.StringUtil.hashCode planetName)
+    (planetImage, seed') = Util.ArrayUtil.randomArrayElement planetSeed planetImages "Earth"
+    (planetPopulation, seed'') = (randomInt seed' 10000)
+    (planetPopulationMultiplier, seed''') = (randomInt seed'' 8)
   in
     { name = planetName,
       image = planetImage,

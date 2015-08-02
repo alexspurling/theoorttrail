@@ -270,6 +270,35 @@ Elm.Basics.make = function (_elm) {
                         ,GT: GT};
    return _elm.Basics.values;
 };
+Elm.Bitwise = Elm.Bitwise || {};
+Elm.Bitwise.make = function (_elm) {
+   "use strict";
+   _elm.Bitwise = _elm.Bitwise || {};
+   if (_elm.Bitwise.values)
+   return _elm.Bitwise.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Bitwise",
+   $Native$Bitwise = Elm.Native.Bitwise.make(_elm);
+   var shiftRightLogical = $Native$Bitwise.shiftRightLogical;
+   var shiftRight = $Native$Bitwise.shiftRightArithmatic;
+   var shiftLeft = $Native$Bitwise.shiftLeft;
+   var complement = $Native$Bitwise.complement;
+   var xor = $Native$Bitwise.xor;
+   var or = $Native$Bitwise.or;
+   var and = $Native$Bitwise.and;
+   _elm.Bitwise.values = {_op: _op
+                         ,and: and
+                         ,or: or
+                         ,xor: xor
+                         ,complement: complement
+                         ,shiftLeft: shiftLeft
+                         ,shiftRight: shiftRight
+                         ,shiftRightLogical: shiftRightLogical};
+   return _elm.Bitwise.values;
+};
 Elm.Char = Elm.Char || {};
 Elm.Char.make = function (_elm) {
    "use strict";
@@ -4420,6 +4449,7 @@ Elm.Location.Planet.make = function (_elm) {
    $moduleName = "Location.Planet",
    $Array = Elm.Array.make(_elm),
    $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
@@ -4427,7 +4457,8 @@ Elm.Location.Planet.make = function (_elm) {
    $Random = Elm.Random.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
-   $Util$ArrayUtil = Elm.Util.ArrayUtil.make(_elm);
+   $Util$ArrayUtil = Elm.Util.ArrayUtil.make(_elm),
+   $Util$StringUtil = Elm.Util.StringUtil.make(_elm);
    var stats = function (planet) {
       return A2($Html.p,
       _L.fromArray([]),
@@ -4480,88 +4511,97 @@ Elm.Location.Planet.make = function (_elm) {
                                                    ,"assets/planets/p8shaded.png"
                                                    ,"assets/planets/p9shaded.png"
                                                    ,"assets/planets/p10shaded.png"]));
-   var planetNames = $Array.fromList(_L.fromArray(["Di-Yu"
-                                                  ,"New Titan"
-                                                  ,"Balha II"
-                                                  ,"Lurma III"
-                                                  ,"New Triton"
-                                                  ,"Mara R\'Vani"
-                                                  ,"Hura VII"
-                                                  ,"New Rhea"
-                                                  ,"9100 Magha Prime"
-                                                  ,"Sycia II"
-                                                  ,"Minbe"
-                                                  ,"Tane T\'Agan"
-                                                  ,"New Gaia"
-                                                  ,"Cybele Prime"
+   var planetNames = $Array.fromList(_L.fromArray(["1249 Scuti III"
                                                   ,"2713 Antliae VII"
-                                                  ,"Shu VII"
-                                                  ,"Emhan Betu"
-                                                  ,"Dr\'Mado"
                                                   ,"2780 Pushya VII"
-                                                  ,"Tando"
-                                                  ,"4410 Scuti V"
-                                                  ,"Keniea VI"
-                                                  ,"8112 Gui Xiu VI"
-                                                  ,"3887 Sagittae Prime"
-                                                  ,"New Rhea"
-                                                  ,"1249 Scuti III"
-                                                  ,"8886 Kui Xiu Prime"
-                                                  ,"Sietynas IV"
-                                                  ,"Zakar VII"
-                                                  ,"Metra"
-                                                  ,"Dari II"
-                                                  ,"Tipa"
-                                                  ,"Skadi II"
-                                                  ,"Vogi IV"
-                                                  ,"New Britain"
-                                                  ,"New Thyoph"
-                                                  ,"Anu"
-                                                  ,"D\'Endan"
-                                                  ,"Enlil"
-                                                  ,"New Terra"
-                                                  ,"6385 Lyncis VII"
-                                                  ,"Tholy Prime"
-                                                  ,"Asherah"
                                                   ,"3876 Liu Xiu VII"
-                                                  ,"Ganiea"
-                                                  ,"Niano"
-                                                  ,"New Xena"
-                                                  ,"Iahamu III"
+                                                  ,"3887 Sagittae Prime"
+                                                  ,"4410 Scuti V"
+                                                  ,"6385 Lyncis VII"
+                                                  ,"8112 Gui Xiu VI"
+                                                  ,"8886 Kui Xiu Prime"
+                                                  ,"9100 Magha Prime"
                                                   ,"Almaren"
-                                                  ,"Natha"]));
+                                                  ,"Anu"
+                                                  ,"Asherah"
+                                                  ,"Balha II"
+                                                  ,"Cybele Prime"
+                                                  ,"D\'Endan"
+                                                  ,"Dari II"
+                                                  ,"Di-Yu"
+                                                  ,"Dr\'Mado"
+                                                  ,"Emhan Betu"
+                                                  ,"Enlil"
+                                                  ,"Ganiea"
+                                                  ,"Hura VII"
+                                                  ,"Iahamu III"
+                                                  ,"Keniea VI"
+                                                  ,"Lurma III"
+                                                  ,"Mara R\'Vani"
+                                                  ,"Metra"
+                                                  ,"Minbe"
+                                                  ,"Natha"
+                                                  ,"New Britain"
+                                                  ,"New Gaia"
+                                                  ,"New Rhea"
+                                                  ,"New Terra"
+                                                  ,"New Thyoph"
+                                                  ,"New Titan"
+                                                  ,"New Triton"
+                                                  ,"New Xena"
+                                                  ,"Niano"
+                                                  ,"Shu VII"
+                                                  ,"Sietynas IV"
+                                                  ,"Skadi II"
+                                                  ,"Sycia II"
+                                                  ,"Tando"
+                                                  ,"Tane T\'Agan"
+                                                  ,"Tholy Prime"
+                                                  ,"Tipa"
+                                                  ,"Vogi IV"
+                                                  ,"Zakar VII"]));
    var randomPlanet = function (seed) {
       return function () {
-         var _ = A2(randomInt,
+         var _ = A3($Util$ArrayUtil.randomArrayElement,
          seed,
-         $Array.length(planetNames) - 1);
-         var planetIndex = function () {
+         planetNames,
+         "Earth");
+         var planetName = function () {
             switch (_.ctor)
             {case "_Tuple2": return _._0;}
             _U.badCase($moduleName,
-            "on line 94, column 24 to 66");
+            "on line 96, column 28 to 81");
          }();
-         var planetSeed = $Random.initialSeed(planetIndex);
+         var foo2 = A2($Debug.log,
+         "planetName",
+         planetName);
+         var planetSeed = $Random.initialSeed($Util$StringUtil.hashCode(planetName));
+         var foo1 = A2($Debug.log,
+         "planetSeed",
+         planetSeed);
          var $ = A3($Util$ArrayUtil.randomArrayElement,
          planetSeed,
-         planetNames,
-         "Earth"),
-         planetName = $._0,
-         seed$ = $._1;
-         var $ = A3($Util$ArrayUtil.randomArrayElement,
-         seed$,
          planetImages,
          "Earth"),
          planetImage = $._0,
-         seed$$ = $._1;
+         seed$ = $._1;
+         var foo3 = A2($Debug.log,
+         "planetImage",
+         planetImage);
          var $ = A2(randomInt,
-         seed$$,
+         seed$,
          10000),
          planetPopulation = $._0,
-         seed$$$ = $._1;
-         var $ = A2(randomInt,seed$$$,8),
+         seed$$ = $._1;
+         var foo4 = A2($Debug.log,
+         "planetPopulation",
+         planetPopulation);
+         var $ = A2(randomInt,seed$$,8),
          planetPopulationMultiplier = $._0,
-         seed$$$$ = $._1;
+         seed$$$ = $._1;
+         var foo5 = A2($Debug.log,
+         "planetPopulationMultiplier",
+         planetPopulationMultiplier);
          return {_: {}
                 ,image: planetImage
                 ,name: planetName
@@ -5771,6 +5811,35 @@ Elm.Native.Basics.make = function(localRuntime) {
 		isNaN: isNaN,
 		isInfinite: isInfinite
 	};
+};
+
+Elm.Native.Bitwise = {};
+Elm.Native.Bitwise.make = function(localRuntime) {
+	localRuntime.Native = localRuntime.Native || {};
+	localRuntime.Native.Bitwise = localRuntime.Native.Bitwise || {};
+	if (localRuntime.Native.Bitwise.values)
+	{
+		return localRuntime.Native.Bitwise.values;
+	}
+
+	function and(a,b) { return a & b; }
+	function or (a,b) { return a | b; }
+	function xor(a,b) { return a ^ b; }
+	function not(a) { return ~a; }
+	function sll(a,offset) { return a << offset; }
+	function sra(a,offset) { return a >> offset; }
+	function srl(a,offset) { return a >>> offset; }
+
+	return localRuntime.Native.Bitwise.values = {
+		and: F2(and),
+		or : F2(or ),
+		xor: F2(xor),
+		complement: not,
+		shiftLeft           : F2(sll),
+		shiftRightArithmatic: F2(sra),
+		shiftRightLogical   : F2(srl)
+	};
+
 };
 
 Elm.Native.Char = {};
@@ -14181,6 +14250,49 @@ Elm.Util.ArrayUtil.make = function (_elm) {
    _elm.Util.ArrayUtil.values = {_op: _op
                                 ,randomArrayElement: randomArrayElement};
    return _elm.Util.ArrayUtil.values;
+};
+Elm.Util = Elm.Util || {};
+Elm.Util.StringUtil = Elm.Util.StringUtil || {};
+Elm.Util.StringUtil.make = function (_elm) {
+   "use strict";
+   _elm.Util = _elm.Util || {};
+   _elm.Util.StringUtil = _elm.Util.StringUtil || {};
+   if (_elm.Util.StringUtil.values)
+   return _elm.Util.StringUtil.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Util.StringUtil",
+   $Basics = Elm.Basics.make(_elm),
+   $Bitwise = Elm.Bitwise.make(_elm),
+   $Char = Elm.Char.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $String = Elm.String.make(_elm);
+   var partialHash = F2(function ($char,
+   hash) {
+      return function () {
+         var newHash = $Char.toCode($char) + (A2($Bitwise.shiftLeft,
+         hash,
+         5) - hash);
+         return A2($Bitwise.and,
+         newHash,
+         newHash);
+      }();
+   });
+   var hashCode = function (s) {
+      return A3($String.foldl,
+      partialHash,
+      0,
+      s);
+   };
+   _elm.Util.StringUtil.values = {_op: _op
+                                 ,partialHash: partialHash
+                                 ,hashCode: hashCode};
+   return _elm.Util.StringUtil.values;
 };
 Elm.VirtualDom = Elm.VirtualDom || {};
 Elm.VirtualDom.make = function (_elm) {
