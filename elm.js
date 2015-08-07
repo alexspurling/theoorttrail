@@ -2030,6 +2030,7 @@ Elm.Game.make = function (_elm) {
    $List = Elm.List.make(_elm),
    $Location$Planet = Elm.Location.Planet.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
+   $Native$Now = Elm.Native.Now.make(_elm),
    $Random = Elm.Random.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
@@ -2062,22 +2063,16 @@ Elm.Game.make = function (_elm) {
              ,location: $Location$Planet.randomPlanet(initialSeed)
              ,player: $Character$Player.randomPlayer(initialSeed)};
    };
+   var mainApp = {_: {}
+                 ,model: initialModel($Random.initialSeed($Native$Now.loadTime))
+                 ,update: update
+                 ,view: view};
+   var main = $StartApp.start(mainApp);
    var Model = F2(function (a,b) {
       return {_: {}
              ,location: b
              ,player: a};
    });
-   var timestamp = Elm.Native.Port.make(_elm).inbound("timestamp",
-   "Int",
-   function (v) {
-      return typeof v === "number" ? v : _U.badPort("a number",
-      v);
-   });
-   var mainApp = {_: {}
-                 ,model: initialModel($Random.initialSeed(timestamp))
-                 ,update: update
-                 ,view: view};
-   var main = $StartApp.start(mainApp);
    _elm.Game.values = {_op: _op
                       ,Model: Model
                       ,initialModel: initialModel
@@ -4449,7 +4444,6 @@ Elm.Location.Planet.make = function (_elm) {
    $moduleName = "Location.Planet",
    $Array = Elm.Array.make(_elm),
    $Basics = Elm.Basics.make(_elm),
-   $Debug = Elm.Debug.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
@@ -4572,36 +4566,21 @@ Elm.Location.Planet.make = function (_elm) {
             _U.badCase($moduleName,
             "on line 96, column 28 to 81");
          }();
-         var foo2 = A2($Debug.log,
-         "planetName",
-         planetName);
          var planetSeed = $Random.initialSeed($Util$StringUtil.hashCode(planetName));
-         var foo1 = A2($Debug.log,
-         "planetSeed",
-         planetSeed);
          var $ = A3($Util$ArrayUtil.randomArrayElement,
          planetSeed,
          planetImages,
          "Earth"),
          planetImage = $._0,
          seed$ = $._1;
-         var foo3 = A2($Debug.log,
-         "planetImage",
-         planetImage);
          var $ = A2(randomInt,
          seed$,
          10000),
          planetPopulation = $._0,
          seed$$ = $._1;
-         var foo4 = A2($Debug.log,
-         "planetPopulation",
-         planetPopulation);
          var $ = A2(randomInt,seed$$,8),
          planetPopulationMultiplier = $._0,
          seed$$$ = $._1;
-         var foo5 = A2($Debug.log,
-         "planetPopulationMultiplier",
-         planetPopulationMultiplier);
          return {_: {}
                 ,image: planetImage
                 ,name: planetName
@@ -8061,6 +8040,26 @@ Elm.Native.List.make = function(localRuntime) {
 
 };
 
+Elm.Native.Now = {};
+
+Elm.Native.Now.make = function(localRuntime) {
+
+  localRuntime.Native = localRuntime.Native || {};
+
+
+  localRuntime.Native.Now = localRuntime.Native.Now || {};
+
+  if (localRuntime.Native.Now.values) {
+    return localRuntime.Native.Now.values;
+  }
+
+  var Result = Elm.Result.make(localRuntime);
+
+  return localRuntime.Native.Now.values = {
+    loadTime: (new Date()).getTime()
+  };
+
+};
 Elm.Native.Port = {};
 Elm.Native.Port.make = function(localRuntime) {
 
@@ -14290,8 +14289,8 @@ Elm.Util.StringUtil.make = function (_elm) {
       s);
    };
    _elm.Util.StringUtil.values = {_op: _op
-                                 ,partialHash: partialHash
-                                 ,hashCode: hashCode};
+                                 ,hashCode: hashCode
+                                 ,partialHash: partialHash};
    return _elm.Util.StringUtil.values;
 };
 Elm.VirtualDom = Elm.VirtualDom || {};

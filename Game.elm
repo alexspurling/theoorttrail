@@ -12,7 +12,7 @@ import Debug
 import Character.Player exposing (Player)
 import Location.Planet exposing (Planet)
 
-port timestamp : Int
+import Native.Now
 
 -- MODEL
 
@@ -56,7 +56,7 @@ view address model =
 
 mainApp : StartApp.App Model Action
 mainApp =
-  { model = initialModel (Random.initialSeed timestamp),
+  { model = initialModel (Random.initialSeed Native.Now.loadTime),
     view = view,
     update = update
   }
