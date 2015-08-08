@@ -5,6 +5,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 
 import Array
+import Basics exposing (cos, sin, pi)
 import Debug
 import Random
 
@@ -88,7 +89,6 @@ type alias Planet =
 randomInt seed maxInt =
   Random.generate (Random.int 0 maxInt) seed
 
-
 randomPlanet : Random.Seed -> Planet
 randomPlanet seed =
   let
@@ -98,11 +98,34 @@ randomPlanet seed =
     (planetImage, seed') = Util.ArrayUtil.randomArrayElement planetSeed planetImages "Earth"
     (planetPopulation, seed'') = (randomInt seed' 10000)
     (planetPopulationMultiplier, seed''') = (randomInt seed'' 8)
+    foo = Debug.log "Random positions!" (randomPlanetPositions seed''' planetNames)
   in
     { name = planetName,
       image = planetImage,
       population = planetPopulation * (10 ^ planetPopulationMultiplier)
     }
+
+type alias Pos = (Int, Int)
+
+randomPlanetPositions : Random.Seed -> Array.Array String -> Array.Array Pos
+randomPlanetPositions initialSeed planets =
+  Array.map (\(pos, seed) -> pos)
+    (Array.foldl
+      (\planet planetPositions ->
+        let
+          --Base the new position on the value of the last position
+          --If the current planetPositions array is empty, the default position and seed are returned
+          (previousPos, seed) = Util.ArrayUtil.last planetPositions ((0,0), initialSeed)
+          tau = pi * 2
+          (newAngle, seed') = Random.generate (Random.float 0 tau) seed
+          (newDistance, seed'') = Random.generate (Random.float 1 100) seed'
+          newX = floor ((cos newAngle) * newDistance) + (fst previousPos)
+          newY = floor ((sin newAngle) * newDistance) + (snd previousPos)
+          newPos = (newX, newY)
+        in
+          Array.push (newPos, seed'') planetPositions)
+      Array.empty
+      planets)
 
 --VIEW
 
