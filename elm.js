@@ -363,6 +363,189 @@ Elm.Char.make = function (_elm) {
                       ,fromCode: fromCode};
    return _elm.Char.values;
 };
+Elm.Character = Elm.Character || {};
+Elm.Character.Player = Elm.Character.Player || {};
+Elm.Character.Player.make = function (_elm) {
+   "use strict";
+   _elm.Character = _elm.Character || {};
+   _elm.Character.Player = _elm.Character.Player || {};
+   if (_elm.Character.Player.values)
+   return _elm.Character.Player.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Character.Player",
+   $Array = Elm.Array.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Random = Elm.Random.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $Util$ArrayUtil = Elm.Util.ArrayUtil.make(_elm);
+   var health = function (h) {
+      return A2($Html.p,
+      _L.fromArray([]),
+      _L.fromArray([$Html.text(A2($Basics._op["++"],
+      "Health: ",
+      $Basics.toString(h)))]));
+   };
+   var stats = function (s) {
+      return A2($Html.p,
+      _L.fromArray([]),
+      _L.fromArray([$Html.text(A2($Basics._op["++"],
+                   "Atk: ",
+                   $Basics.toString(s.attack)))
+                   ,A2($Html.br,
+                   _L.fromArray([]),
+                   _L.fromArray([]))
+                   ,$Html.text(A2($Basics._op["++"],
+                   "Int: ",
+                   $Basics.toString(s.intelligence)))
+                   ,A2($Html.br,
+                   _L.fromArray([]),
+                   _L.fromArray([]))
+                   ,$Html.text(A2($Basics._op["++"],
+                   "Def: ",
+                   $Basics.toString(s.defence)))
+                   ,A2($Html.br,
+                   _L.fromArray([]),
+                   _L.fromArray([]))
+                   ,$Html.text(A2($Basics._op["++"],
+                   "Lvl: ",
+                   $Basics.toString(s.level)))
+                   ,A2($Html.br,
+                   _L.fromArray([]),
+                   _L.fromArray([]))
+                   ,$Html.text(A2($Basics._op["++"],
+                   "Exp: ",
+                   $Basics.toString(s.exp)))
+                   ,A2($Html.br,
+                   _L.fromArray([]),
+                   _L.fromArray([]))]));
+   };
+   var playerName = function (name) {
+      return A2($Html.h2,
+      _L.fromArray([]),
+      _L.fromArray([$Html.text(name)]));
+   };
+   var view = function (player) {
+      return A2($Html.div,
+      _L.fromArray([$Html$Attributes.$class("panel")]),
+      _L.fromArray([A2($Html.img,
+                   _L.fromArray([$Html$Attributes.src("assets/hardbrain.png")
+                                ,$Html$Attributes.$class("avatar")]),
+                   _L.fromArray([]))
+                   ,playerName(player.name)
+                   ,stats(player.stats)
+                   ,health(player.health)]));
+   };
+   var daveHardbrainStats = {_: {}
+                            ,attack: 15
+                            ,defence: 6
+                            ,exp: 0
+                            ,intelligence: 5
+                            ,level: 1};
+   var daveHardbrain = {_: {}
+                       ,health: 150
+                       ,name: "Dave Hardbrain"
+                       ,stats: daveHardbrainStats};
+   var PlayerStats = F5(function (a,
+   b,
+   c,
+   d,
+   e) {
+      return {_: {}
+             ,attack: a
+             ,defence: c
+             ,exp: e
+             ,intelligence: b
+             ,level: d};
+   });
+   var Player = F3(function (a,
+   b,
+   c) {
+      return {_: {}
+             ,health: c
+             ,name: a
+             ,stats: b};
+   });
+   var lastNames = $Array.fromList(_L.fromArray(["Ableton"
+                                                ,"Adamsen"
+                                                ,"Bauer"
+                                                ,"Christianson"
+                                                ,"Dragen"
+                                                ,"Forsley"
+                                                ,"Hagebak"
+                                                ,"Hordor"
+                                                ,"Hoyer"
+                                                ,"Kessler"
+                                                ,"Land"
+                                                ,"Llewellyn"
+                                                ,"McCoughphlem"
+                                                ,"Snow"
+                                                ,"Stöhr"
+                                                ,"Sterling"
+                                                ,"Tornquist"
+                                                ,"Winter"]));
+   var maleFirstNames = $Array.fromList(_L.fromArray(["Aaron"
+                                                     ,"Aden"
+                                                     ,"Arnold"
+                                                     ,"Benedict"
+                                                     ,"Brandon"
+                                                     ,"Chad"
+                                                     ,"Dave"
+                                                     ,"Ethan"
+                                                     ,"Felix"
+                                                     ,"Howard"
+                                                     ,"Jim"
+                                                     ,"Luke"
+                                                     ,"Mike"
+                                                     ,"Roger"
+                                                     ,"Tim"
+                                                     ,"Tyrell"
+                                                     ,"Waldo"]));
+   var randomPlayer = function (seed) {
+      return function () {
+         var $ = A3($Util$ArrayUtil.randomArrayElement,
+         seed,
+         maleFirstNames,
+         "Emily"),
+         firstName = $._0,
+         seed$ = $._1;
+         var $ = A3($Util$ArrayUtil.randomArrayElement,
+         seed$,
+         lastNames,
+         "Surname"),
+         lastName = $._0,
+         seed$$ = $._1;
+         return {_: {}
+                ,health: 150
+                ,name: A2($Basics._op["++"],
+                firstName,
+                A2($Basics._op["++"],
+                " ",
+                lastName))
+                ,stats: daveHardbrainStats};
+      }();
+   };
+   _elm.Character.Player.values = {_op: _op
+                                  ,maleFirstNames: maleFirstNames
+                                  ,lastNames: lastNames
+                                  ,Player: Player
+                                  ,PlayerStats: PlayerStats
+                                  ,daveHardbrainStats: daveHardbrainStats
+                                  ,daveHardbrain: daveHardbrain
+                                  ,randomPlayer: randomPlayer
+                                  ,playerName: playerName
+                                  ,stats: stats
+                                  ,health: health
+                                  ,view: view};
+   return _elm.Character.Player.values;
+};
 Elm.Color = Elm.Color || {};
 Elm.Color.make = function (_elm) {
    "use strict";
@@ -1828,6 +2011,87 @@ Elm.Dict.make = function (_elm) {
                       ,toList: toList
                       ,fromList: fromList};
    return _elm.Dict.values;
+};
+Elm.Game = Elm.Game || {};
+Elm.Game.make = function (_elm) {
+   "use strict";
+   _elm.Game = _elm.Game || {};
+   if (_elm.Game.values)
+   return _elm.Game.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Game",
+   $Array = Elm.Array.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Character$Player = Elm.Character.Player.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Location$Planet = Elm.Location.Planet.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Native$Now = Elm.Native.Now.make(_elm),
+   $Random = Elm.Random.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $StartApp = Elm.StartApp.make(_elm);
+   var eventsBox = function (model) {
+      return A2($Html.textarea,
+      _L.fromArray([]),
+      _L.fromArray([]));
+   };
+   var view = F2(function (address,
+   model) {
+      return A2($Html.div,
+      _L.fromArray([$Html$Attributes.id("container")]),
+      _L.fromArray([$Location$Planet.view(model.location)
+                   ,$Character$Player.view(model.player)
+                   ,eventsBox(model)]));
+   });
+   var update = F2(function (action,
+   model) {
+      return function () {
+         switch (action.ctor)
+         {case "NoOp": return model;}
+         _U.badCase($moduleName,
+         "between lines 45 and 47");
+      }();
+   });
+   var NoOp = {ctor: "NoOp"};
+   var initialModel = function (initialSeed) {
+      return function () {
+         var randomGalaxy = $Location$Planet.galaxy(initialSeed);
+         var startingPlanet = $Location$Planet.startingPlanet(randomGalaxy);
+         return {_: {}
+                ,galaxy: randomGalaxy
+                ,location: startingPlanet
+                ,player: $Character$Player.randomPlayer(initialSeed)};
+      }();
+   };
+   var mainApp = {_: {}
+                 ,model: initialModel($Random.initialSeed($Native$Now.loadTime))
+                 ,update: update
+                 ,view: view};
+   var main = $StartApp.start(mainApp);
+   var Model = F3(function (a,
+   b,
+   c) {
+      return {_: {}
+             ,galaxy: b
+             ,location: c
+             ,player: a};
+   });
+   _elm.Game.values = {_op: _op
+                      ,Model: Model
+                      ,initialModel: initialModel
+                      ,NoOp: NoOp
+                      ,update: update
+                      ,eventsBox: eventsBox
+                      ,view: view
+                      ,mainApp: mainApp
+                      ,main: main};
+   return _elm.Game.values;
 };
 Elm.Graphics = Elm.Graphics || {};
 Elm.Graphics.Collage = Elm.Graphics.Collage || {};
@@ -4189,7 +4453,6 @@ Elm.Location.Planet.make = function (_elm) {
    $moduleName = "Location.Planet",
    $Array = Elm.Array.make(_elm),
    $Basics = Elm.Basics.make(_elm),
-   $Debug = Elm.Debug.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
@@ -4198,6 +4461,7 @@ Elm.Location.Planet.make = function (_elm) {
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $Util$ArrayUtil = Elm.Util.ArrayUtil.make(_elm),
+   $Util$RandomUtil = Elm.Util.RandomUtil.make(_elm),
    $Util$StringUtil = Elm.Util.StringUtil.make(_elm);
    var stats = function (planet) {
       return A2($Html.p,
@@ -4205,6 +4469,12 @@ Elm.Location.Planet.make = function (_elm) {
       _L.fromArray([$Html.text(A2($Basics._op["++"],
                    "Population: ",
                    $Basics.toString(planet.population)))
+                   ,A2($Html.br,
+                   _L.fromArray([]),
+                   _L.fromArray([]))
+                   ,$Html.text(A2($Basics._op["++"],
+                   "Nearest planets: ",
+                   $Basics.toString(planet.nearestPlanets)))
                    ,A2($Html.br,
                    _L.fromArray([]),
                    _L.fromArray([]))]));
@@ -4232,7 +4502,7 @@ Elm.Location.Planet.make = function (_elm) {
             switch (_v0.ctor)
             {case "_Tuple2": return _v0._0;}
             _U.badCase($moduleName,
-            "on line 112, column 30 to 33");
+            "on line 140, column 30 to 33");
          }();
       },
       A3($Array.foldl,
@@ -4274,18 +4544,51 @@ Elm.Location.Planet.make = function (_elm) {
       $Array.empty,
       planets));
    });
-   var randomInt = F2(function (seed,
-   maxInt) {
-      return A2($Random.generate,
-      A2($Random.$int,0,maxInt),
-      seed);
+   var startingPlanet = function (galaxy) {
+      return A2($Util$ArrayUtil.first,
+      galaxy,
+      {_: {}
+      ,image: "Fail"
+      ,name: "Fail"
+      ,nearestPlanets: _L.fromArray([])
+      ,population: 0});
+   };
+   var nearestPlanets = F2(function (_v4,
+   planetPositions) {
+      return function () {
+         switch (_v4.ctor)
+         {case "_Tuple2":
+            return function () {
+                 var distances = A2($Array.map,
+                 function (_v8) {
+                    return function () {
+                       switch (_v8.ctor)
+                       {case "_Tuple2":
+                          return function () {
+                               var dy = _v8._1 - 0;
+                               var dx = _v8._0 - 0;
+                               return $Basics.sqrt(Math.pow(dx,
+                               2) + Math.pow(dy,2));
+                            }();}
+                       _U.badCase($moduleName,
+                       "between lines 98 and 102");
+                    }();
+                 },
+                 planetPositions);
+                 return $List.take(3)($List.sort($Array.toList(distances)));
+              }();}
+         _U.badCase($moduleName,
+         "between lines 94 and 108");
+      }();
    });
-   var Planet = F3(function (a,
+   var Planet = F4(function (a,
    b,
-   c) {
+   c,
+   d) {
       return {_: {}
              ,image: b
              ,name: a
+             ,nearestPlanets: d
              ,population: c};
    });
    var planetImages = $Array.fromList(_L.fromArray(["assets/planets/earth.png"
@@ -4360,7 +4663,7 @@ Elm.Location.Planet.make = function (_elm) {
             switch (_.ctor)
             {case "_Tuple2": return _._0;}
             _U.badCase($moduleName,
-            "on line 96, column 28 to 81");
+            "on line 118, column 23 to 76");
          }();
          var planetSeed = $Random.initialSeed($Util$StringUtil.hashCode(planetName));
          var $ = A3($Util$ArrayUtil.randomArrayElement,
@@ -4369,140 +4672,44 @@ Elm.Location.Planet.make = function (_elm) {
          "Earth"),
          planetImage = $._0,
          seed$ = $._1;
-         var $ = A2(randomInt,
+         var $ = A2($Util$RandomUtil.randomInt,
          seed$,
          10000),
          planetPopulation = $._0,
          seed$$ = $._1;
-         var $ = A2(randomInt,seed$$,8),
+         var $ = A2($Util$RandomUtil.randomInt,
+         seed$$,
+         8),
          planetPopulationMultiplier = $._0,
          seed$$$ = $._1;
-         var foo = A2($Debug.log,
-         "Random positions!",
-         A2(randomPlanetPositions,
-         seed$$$,
-         planetNames));
          return {_: {}
                 ,image: planetImage
                 ,name: planetName
+                ,nearestPlanets: _L.fromArray([])
                 ,population: planetPopulation * Math.pow(10,
                 planetPopulationMultiplier)};
       }();
+   };
+   var galaxy = function (seed) {
+      return A2($Array.map,
+      randomPlanet,
+      A2($Util$RandomUtil.seedArray,
+      10,
+      seed));
    };
    _elm.Location.Planet.values = {_op: _op
                                  ,planetNames: planetNames
                                  ,planetImages: planetImages
                                  ,Planet: Planet
-                                 ,randomInt: randomInt
+                                 ,nearestPlanets: nearestPlanets
+                                 ,galaxy: galaxy
                                  ,randomPlanet: randomPlanet
+                                 ,startingPlanet: startingPlanet
                                  ,randomPlanetPositions: randomPlanetPositions
                                  ,planetName: planetName
                                  ,stats: stats
                                  ,view: view};
    return _elm.Location.Planet.values;
-};
-Elm.Main = Elm.Main || {};
-Elm.Main.make = function (_elm) {
-   "use strict";
-   _elm.Main = _elm.Main || {};
-   if (_elm.Main.values)
-   return _elm.Main.values;
-   var _op = {},
-   _N = Elm.Native,
-   _U = _N.Utils.make(_elm),
-   _L = _N.List.make(_elm),
-   $moduleName = "Main",
-   $Array = Elm.Array.make(_elm),
-   $Basics = Elm.Basics.make(_elm),
-   $Color = Elm.Color.make(_elm),
-   $Debug = Elm.Debug.make(_elm),
-   $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
-   $Graphics$Element = Elm.Graphics.Element.make(_elm),
-   $List = Elm.List.make(_elm),
-   $Location$Planet = Elm.Location.Planet.make(_elm),
-   $Maybe = Elm.Maybe.make(_elm),
-   $Random = Elm.Random.make(_elm),
-   $Result = Elm.Result.make(_elm),
-   $Signal = Elm.Signal.make(_elm);
-   var distanceBetweenPoints = function (array) {
-      return A2($Array.indexedMap,
-      F2(function (pos,_v0) {
-         return function () {
-            switch (_v0.ctor)
-            {case "_Tuple2":
-               return function () {
-                    var $ = A2($Maybe.withDefault,
-                    {ctor: "_Tuple2",_0: 0,_1: 0},
-                    A2($Array.get,pos - 1,array)),
-                    prevX = $._0,
-                    prevY = $._1;
-                    var dx = _v0._0 - prevX;
-                    var dy = _v0._1 - prevY;
-                    return $Basics.sqrt(Math.pow(dx,
-                    2) + Math.pow(dy,2));
-                 }();}
-            _U.badCase($moduleName,
-            "between lines 34 and 39");
-         }();
-      }),
-      array);
-   };
-   var square = function () {
-      var positionArray = A2($Location$Planet.randomPlanetPositions,
-      $Random.initialSeed(12),
-      $Location$Planet.planetNames);
-      var a = A2($Debug.log,
-      "pos",
-      positionArray);
-      var distanceArray = distanceBetweenPoints(positionArray);
-      var b = A2($Debug.log,
-      "distance",
-      distanceArray);
-      return $Graphics$Collage.path(A2($List.map,
-      function (_v4) {
-         return function () {
-            switch (_v4.ctor)
-            {case "_Tuple2":
-               return {ctor: "_Tuple2"
-                      ,_0: $Basics.toFloat(_v4._0) * 0.5
-                      ,_1: $Basics.toFloat(_v4._1) * 0.5};}
-            _U.badCase($moduleName,
-            "on line 51, column 52 to 86");
-         }();
-      },
-      $Array.toList(positionArray)));
-   }();
-   var redSquare = A2($Graphics$Collage.traced,
-   $Graphics$Collage.solid($Color.red),
-   $Graphics$Collage.path(_L.fromArray([{ctor: "_Tuple2"
-                                        ,_0: 0
-                                        ,_1: 0}
-                                       ,{ctor: "_Tuple2"
-                                        ,_0: 10
-                                        ,_1: 10}])));
-   var linestyle = {_: {}
-                   ,cap: $Graphics$Collage.Flat
-                   ,color: $Color.blue
-                   ,dashOffset: 0
-                   ,dashing: _L.fromArray([])
-                   ,join: $Graphics$Collage.Smooth
-                   ,width: 1};
-   var blueSquare = A2($Graphics$Collage.traced,
-   linestyle,
-   square);
-   var main = A3($Graphics$Collage.collage,
-   700,
-   420,
-   _L.fromArray([blueSquare
-                ,redSquare]));
-   _elm.Main.values = {_op: _op
-                      ,main: main
-                      ,linestyle: linestyle
-                      ,blueSquare: blueSquare
-                      ,redSquare: redSquare
-                      ,distanceBetweenPoints: distanceBetweenPoints
-                      ,square: square};
-   return _elm.Main.values;
 };
 Elm.Maybe = Elm.Maybe || {};
 Elm.Maybe.make = function (_elm) {
@@ -7945,6 +8152,26 @@ Elm.Native.List.make = function(localRuntime) {
 
 };
 
+Elm.Native.Now = {};
+
+Elm.Native.Now.make = function(localRuntime) {
+
+  localRuntime.Native = localRuntime.Native || {};
+
+
+  localRuntime.Native.Now = localRuntime.Native.Now || {};
+
+  if (localRuntime.Native.Now.values) {
+    return localRuntime.Native.Now.values;
+  }
+
+  var Result = Elm.Result.make(localRuntime);
+
+  return localRuntime.Native.Now.values = {
+    loadTime: (new Date()).getTime()
+  };
+
+};
 Elm.Native.Port = {};
 Elm.Native.Port.make = function(localRuntime) {
 
@@ -10236,6 +10463,117 @@ Elm.Native.Text.make = function(localRuntime) {
 		toLine: toLine,
 		renderHtml: renderHtml
 	};
+};
+
+Elm.Native.Time = {};
+Elm.Native.Time.make = function(localRuntime)
+{
+
+	localRuntime.Native = localRuntime.Native || {};
+	localRuntime.Native.Time = localRuntime.Native.Time || {};
+	if (localRuntime.Native.Time.values)
+	{
+		return localRuntime.Native.Time.values;
+	}
+
+	var NS = Elm.Native.Signal.make(localRuntime);
+	var Maybe = Elm.Maybe.make(localRuntime);
+
+
+	// FRAMES PER SECOND
+
+	function fpsWhen(desiredFPS, isOn)
+	{
+		var msPerFrame = 1000 / desiredFPS;
+		var ticker = NS.input('fps-' + desiredFPS, null);
+
+		function notifyTicker()
+		{
+			localRuntime.notify(ticker.id, null);
+		}
+
+		function firstArg(x, y)
+		{
+			return x;
+		}
+
+		// input fires either when isOn changes, or when ticker fires.
+		// Its value is a tuple with the current timestamp, and the state of isOn
+		var input = NS.timestamp(A3(NS.map2, F2(firstArg), NS.dropRepeats(isOn), ticker));
+
+		var initialState = {
+			isOn: false,
+			time: localRuntime.timer.programStart,
+			delta: 0
+		};
+
+		var timeoutId;
+
+		function update(input,state)
+		{
+			var currentTime = input._0;
+			var isOn = input._1;
+			var wasOn = state.isOn;
+			var previousTime = state.time;
+
+			if (isOn)
+			{
+				timeoutId = localRuntime.setTimeout(notifyTicker, msPerFrame);
+			}
+			else if (wasOn)
+			{
+				clearTimeout(timeoutId);
+			}
+
+			return {
+				isOn: isOn,
+				time: currentTime,
+				delta: (isOn && !wasOn) ? 0 : currentTime - previousTime
+			};
+		}
+
+		return A2(
+			NS.map,
+			function(state) { return state.delta; },
+			A3(NS.foldp, F2(update), update(input.value,initialState), input)
+		);
+	}
+
+
+	// EVERY
+
+	function every(t)
+	{
+		var ticker = NS.input('every-' + t, null);
+		function tellTime()
+		{
+			localRuntime.notify(ticker.id, null);
+		}
+		var clock = A2( NS.map, fst, NS.timestamp(ticker) );
+		setInterval(tellTime, t);
+		return clock;
+	}
+
+
+	function fst(pair)
+	{
+		return pair._0;
+	}
+
+
+	function read(s)
+	{
+		var t = Date.parse(s);
+		return isNaN(t) ? Maybe.Nothing : Maybe.Just(t);
+	}
+
+	return localRuntime.Native.Time.values = {
+		fpsWhen: F2(fpsWhen),
+		every: every,
+		toDate: function(t) { return new window.Date(t); },
+		read: read
+	};
+
 };
 
 Elm.Native.Transform2D = {};
@@ -13370,6 +13708,59 @@ Elm.Signal.make = function (_elm) {
                         ,Mailbox: Mailbox};
    return _elm.Signal.values;
 };
+Elm.StartApp = Elm.StartApp || {};
+Elm.StartApp.make = function (_elm) {
+   "use strict";
+   _elm.StartApp = _elm.StartApp || {};
+   if (_elm.StartApp.values)
+   return _elm.StartApp.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "StartApp",
+   $Basics = Elm.Basics.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var start = function (app) {
+      return function () {
+         var actions = $Signal.mailbox($Maybe.Nothing);
+         var address = A2($Signal.forwardTo,
+         actions.address,
+         $Maybe.Just);
+         var model = A3($Signal.foldp,
+         F2(function (_v0,model) {
+            return function () {
+               switch (_v0.ctor)
+               {case "Just":
+                  return A2(app.update,
+                    _v0._0,
+                    model);}
+               _U.badCase($moduleName,
+               "on line 92, column 34 to 57");
+            }();
+         }),
+         app.model,
+         actions.signal);
+         return A2($Signal.map,
+         app.view(address),
+         model);
+      }();
+   };
+   var App = F3(function (a,b,c) {
+      return {_: {}
+             ,model: a
+             ,update: c
+             ,view: b};
+   });
+   _elm.StartApp.values = {_op: _op
+                          ,App: App
+                          ,start: start};
+   return _elm.StartApp.values;
+};
 Elm.String = Elm.String || {};
 Elm.String.make = function (_elm) {
    "use strict";
@@ -13782,6 +14173,85 @@ Elm.Text.make = function (_elm) {
                       ,Through: Through};
    return _elm.Text.values;
 };
+Elm.Time = Elm.Time || {};
+Elm.Time.make = function (_elm) {
+   "use strict";
+   _elm.Time = _elm.Time || {};
+   if (_elm.Time.values)
+   return _elm.Time.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Time",
+   $Basics = Elm.Basics.make(_elm),
+   $Native$Signal = Elm.Native.Signal.make(_elm),
+   $Native$Time = Elm.Native.Time.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var delay = $Native$Signal.delay;
+   var since = F2(function (time,
+   signal) {
+      return function () {
+         var stop = A2($Signal.map,
+         $Basics.always(-1),
+         A2(delay,time,signal));
+         var start = A2($Signal.map,
+         $Basics.always(1),
+         signal);
+         var delaydiff = A3($Signal.foldp,
+         F2(function (x,y) {
+            return x + y;
+         }),
+         0,
+         A2($Signal.merge,start,stop));
+         return A2($Signal.map,
+         F2(function (x,y) {
+            return !_U.eq(x,y);
+         })(0),
+         delaydiff);
+      }();
+   });
+   var timestamp = $Native$Signal.timestamp;
+   var every = $Native$Time.every;
+   var fpsWhen = $Native$Time.fpsWhen;
+   var fps = function (targetFrames) {
+      return A2(fpsWhen,
+      targetFrames,
+      $Signal.constant(true));
+   };
+   var inMilliseconds = function (t) {
+      return t;
+   };
+   var millisecond = 1;
+   var second = 1000 * millisecond;
+   var minute = 60 * second;
+   var hour = 60 * minute;
+   var inHours = function (t) {
+      return t / hour;
+   };
+   var inMinutes = function (t) {
+      return t / minute;
+   };
+   var inSeconds = function (t) {
+      return t / second;
+   };
+   _elm.Time.values = {_op: _op
+                      ,millisecond: millisecond
+                      ,second: second
+                      ,minute: minute
+                      ,hour: hour
+                      ,inMilliseconds: inMilliseconds
+                      ,inSeconds: inSeconds
+                      ,inMinutes: inMinutes
+                      ,inHours: inHours
+                      ,fps: fps
+                      ,fpsWhen: fpsWhen
+                      ,every: every
+                      ,timestamp: timestamp
+                      ,delay: delay
+                      ,since: since};
+   return _elm.Time.values;
+};
 Elm.Transform2D = Elm.Transform2D || {};
 Elm.Transform2D.make = function (_elm) {
    "use strict";
@@ -13867,6 +14337,14 @@ Elm.Util.ArrayUtil.make = function (_elm) {
    $Random = Elm.Random.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm);
+   var first = F2(function (array,
+   $default) {
+      return A2($Maybe.withDefault,
+      $default,
+      A2($Array.get,
+      $Array.length(array) - 1,
+      array));
+   });
    var last = F2(function (array,
    $default) {
       return A2($Maybe.withDefault,
@@ -13898,8 +14376,63 @@ Elm.Util.ArrayUtil.make = function (_elm) {
    });
    _elm.Util.ArrayUtil.values = {_op: _op
                                 ,randomArrayElement: randomArrayElement
-                                ,last: last};
+                                ,last: last
+                                ,first: first};
    return _elm.Util.ArrayUtil.values;
+};
+Elm.Util = Elm.Util || {};
+Elm.Util.RandomUtil = Elm.Util.RandomUtil || {};
+Elm.Util.RandomUtil.make = function (_elm) {
+   "use strict";
+   _elm.Util = _elm.Util || {};
+   _elm.Util.RandomUtil = _elm.Util.RandomUtil || {};
+   if (_elm.Util.RandomUtil.values)
+   return _elm.Util.RandomUtil.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Util.RandomUtil",
+   $Array = Elm.Array.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Random = Elm.Random.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var seedArray = F2(function (length,
+   seed) {
+      return function () {
+         var _ = A2($Random.generate,
+         A2($Random.list,
+         length,
+         A2($Random.$int,
+         $Random.minInt,
+         $Random.maxInt)),
+         seed);
+         var seedValues = function () {
+            switch (_.ctor)
+            {case "_Tuple2": return _._0;}
+            _U.badCase($moduleName,
+            "on line 12, column 23 to 70");
+         }();
+         return $Array.fromList(A2($List.map,
+         function (n) {
+            return $Random.initialSeed(n);
+         },
+         seedValues));
+      }();
+   });
+   var randomInt = F2(function (seed,
+   maxInt) {
+      return A2($Random.generate,
+      A2($Random.$int,0,maxInt),
+      seed);
+   });
+   _elm.Util.RandomUtil.values = {_op: _op
+                                 ,randomInt: randomInt
+                                 ,seedArray: seedArray};
+   return _elm.Util.RandomUtil.values;
 };
 Elm.Util = Elm.Util || {};
 Elm.Util.StringUtil = Elm.Util.StringUtil || {};

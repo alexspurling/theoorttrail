@@ -3,6 +3,8 @@ module Game where
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+
+import Array exposing (Array)
 import StartApp
 import Signal exposing (Address, (<~))
 import Random
@@ -18,13 +20,19 @@ import Native.Now
 
 type alias Model =
   { player : Player,
+    galaxy : Array.Array Location.Planet.Planet,
     location : Planet
   }
 
 initialModel : Random.Seed -> Model
 initialModel initialSeed =
+  let
+    randomGalaxy = Location.Planet.galaxy initialSeed
+    startingPlanet = Location.Planet.startingPlanet randomGalaxy
+  in
   { player = Character.Player.randomPlayer initialSeed,
-    location = Location.Planet.randomPlanet initialSeed
+    galaxy = randomGalaxy,
+    location = startingPlanet
   }
 
 -- UPDATE

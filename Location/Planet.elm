@@ -4,13 +4,14 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 
-import Array
+import Array exposing (Array)
 import Basics exposing (cos, sin, pi)
 import Debug
 import Random
 
-import Util.ArrayUtil
+import Util.ArrayUtil as ArrayUtil
 import Util.StringUtil
+import Util.RandomUtil as Rand
 
 planetNames = Array.fromList [
   "1249 Scuti III",
@@ -79,33 +80,60 @@ planetImages = Array.fromList [
   "assets/planets/p9shaded.png",
   "assets/planets/p10shaded.png" ]
 
-
 type alias Planet =
   { name : String,
     image : String,
-    population : Int
+    population : Int,
+    nearestPlanets : List Float
   }
 
-randomInt seed maxInt =
-  Random.generate (Random.int 0 maxInt) seed
+type alias Pos = (Int, Int)
+
+nearestPlanets : Pos -> Array Pos -> List Float
+nearestPlanets (planetX, planetY) planetPositions =
+  let
+    distances =
+      Array.map
+          (\(x, y) ->
+            let
+              dx = (x - 0)
+              dy = (y - 0)
+            in
+              sqrt (dx ^ 2 + dy ^ 2))
+          planetPositions
+  in
+    distances
+      |> Array.toList
+      |> List.sort
+      |> List.take 3
+
+galaxy : Random.Seed -> Array Planet
+galaxy seed =
+  Array.map randomPlanet (Rand.seedArray 10 seed)
 
 randomPlanet : Random.Seed -> Planet
 randomPlanet seed =
   let
     --get the planet index and base all random values on that
-    (planetName, _) = Util.ArrayUtil.randomArrayElement seed planetNames "Earth"
+    (planetName, _) = ArrayUtil.randomArrayElement seed planetNames "Earth"
     planetSeed = Random.initialSeed (Util.StringUtil.hashCode planetName)
-    (planetImage, seed') = Util.ArrayUtil.randomArrayElement planetSeed planetImages "Earth"
-    (planetPopulation, seed'') = (randomInt seed' 10000)
-    (planetPopulationMultiplier, seed''') = (randomInt seed'' 8)
-    foo = Debug.log "Random positions!" (randomPlanetPositions seed''' planetNames)
+    (planetImage, seed') = ArrayUtil.randomArrayElement planetSeed planetImages "Earth"
+    (planetPopulation, seed'') = (Rand.randomInt seed' 10000)
+    (planetPopulationMultiplier, seed''') = (Rand.randomInt seed'' 8)
   in
     { name = planetName,
       image = planetImage,
-      population = planetPopulation * (10 ^ planetPopulationMultiplier)
+      population = planetPopulation * (10 ^ planetPopulationMultiplier),
+      nearestPlanets = []
     }
 
-type alias Pos = (Int, Int)
+startingPlanet galaxy =
+  ArrayUtil.first galaxy
+    { name = "Fail",
+      image = "Fail",
+      population = 0,
+      nearestPlanets = []
+    }
 
 randomPlanetPositions : Random.Seed -> Array.Array String -> Array.Array Pos
 randomPlanetPositions initialSeed planets =
@@ -115,7 +143,7 @@ randomPlanetPositions initialSeed planets =
         let
           --Base the new position on the value of the last position
           --If the current planetPositions array is empty, the default position and seed are returned
-          (previousPos, seed) = Util.ArrayUtil.last planetPositions ((0,0), initialSeed)
+          (previousPos, seed) = ArrayUtil.last planetPositions ((0,0), initialSeed)
           tau = pi * 2
           (newAngle, seed') = Random.generate (Random.float 0 tau) seed
           (newDistance, seed'') = Random.generate (Random.float 1 100) seed'
@@ -127,6 +155,8 @@ randomPlanetPositions initialSeed planets =
       Array.empty
       planets)
 
+
+
 --VIEW
 
 planetName name =
@@ -135,7 +165,8 @@ planetName name =
 stats : Planet -> Html
 stats planet =
   p [ ]
-    [ text ("Population: " ++ (toString planet.population)), br [ ] [ ]
+    [ text ("Population: " ++ (toString planet.population)), br [ ] [ ],
+      text ("Nearest planets: " ++ (toString planet.nearestPlanets)), br [ ] [ ]
     ]
 
 view : Planet -> Html
