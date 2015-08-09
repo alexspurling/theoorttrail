@@ -1,6 +1,7 @@
 module Location.Galaxy where
 
 import Array exposing (Array)
+import Basics exposing (floor)
 import Random
 
 import Util.ArrayUtil as ArrayUtil
@@ -34,9 +35,23 @@ dummyPlanet =
     nearestPlanets = []
   }
 
+getPlanet index planets =
+  Maybe.withDefault dummyPlanet (Array.get index planets)
+
 startingPlanet : Galaxy -> Planet
 startingPlanet galaxy =
-  ArrayUtil.first galaxy.planets dummyPlanet
+  let
+    planet = getPlanet 0 galaxy.planets
+    nearestPlanetDistances = nearestPlanets (0,0) galaxy.planetPositions
+    nps = List.map
+      (\(index, distance) ->
+        let
+          nearbyPlanet = getPlanet index galaxy.planets
+        in
+          (nearbyPlanet.name, floor distance))
+      nearestPlanetDistances
+  in
+    {planet | nearestPlanets <- nps}
 
 
 type alias Pos = (Int, Int)
@@ -66,20 +81,20 @@ randomPlanetPositions initialSeed planets =
       Array.empty
       planets)
 
-nearestPlanets : Pos -> Array Pos -> List Float
+nearestPlanets : Pos -> Array Pos -> List (Int, Float)
 nearestPlanets (planetX, planetY) planetPositions =
   let
     distances =
-      Array.map
-          (\(x, y) ->
+      Array.indexedMap
+          (\index (x, y) ->
             let
               dx = (x - 0)
               dy = (y - 0)
             in
-              sqrt (dx ^ 2 + dy ^ 2))
+              (index, sqrt (dx ^ 2 + dy ^ 2)))
           planetPositions
   in
     distances
       |> Array.toList
-      |> List.sort
+      |> List.sortBy (\(index, distance) -> distance)
       |> List.take 3

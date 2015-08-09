@@ -4467,37 +4467,47 @@ Elm.Location.Galaxy.make = function (_elm) {
          switch (_v0.ctor)
          {case "_Tuple2":
             return function () {
-                 var distances = A2($Array.map,
-                 function (_v4) {
+                 var distances = A2($Array.indexedMap,
+                 F2(function (index,_v4) {
                     return function () {
                        switch (_v4.ctor)
                        {case "_Tuple2":
                           return function () {
                                var dy = _v4._1 - 0;
                                var dx = _v4._0 - 0;
-                               return $Basics.sqrt(Math.pow(dx,
-                               2) + Math.pow(dy,2));
+                               return {ctor: "_Tuple2"
+                                      ,_0: index
+                                      ,_1: $Basics.sqrt(Math.pow(dx,
+                                      2) + Math.pow(dy,2))};
                             }();}
                        _U.badCase($moduleName,
-                       "between lines 75 and 79");
+                       "between lines 90 and 94");
                     }();
-                 },
+                 }),
                  planetPositions);
-                 return $List.take(3)($List.sort($Array.toList(distances)));
+                 return $List.take(3)($List.sortBy(function (_v8) {
+                    return function () {
+                       switch (_v8.ctor)
+                       {case "_Tuple2": return _v8._1;}
+                       _U.badCase($moduleName,
+                       "on line 99, column 45 to 53");
+                    }();
+                 })($Array.toList(distances)));
               }();}
          _U.badCase($moduleName,
-         "between lines 71 and 85");
+         "between lines 86 and 100");
       }();
    });
    var randomPlanetPositions = F2(function (initialSeed,
    planets) {
       return A2($Array.map,
-      function (_v8) {
+      function (_v12) {
          return function () {
-            switch (_v8.ctor)
-            {case "_Tuple2": return _v8._0;}
+            switch (_v12.ctor)
+            {case "_Tuple2":
+               return _v12._0;}
             _U.badCase($moduleName,
-            "on line 51, column 30 to 33");
+            "on line 66, column 30 to 33");
          }();
       },
       A3($Array.foldl,
@@ -4544,10 +4554,42 @@ Elm.Location.Galaxy.make = function (_elm) {
                      ,name: "Fail"
                      ,nearestPlanets: _L.fromArray([])
                      ,population: 0};
+   var getPlanet = F2(function (index,
+   planets) {
+      return A2($Maybe.withDefault,
+      dummyPlanet,
+      A2($Array.get,index,planets));
+   });
    var startingPlanet = function (galaxy) {
-      return A2($Util$ArrayUtil.first,
-      galaxy.planets,
-      dummyPlanet);
+      return function () {
+         var nearestPlanetDistances = A2(nearestPlanets,
+         {ctor: "_Tuple2",_0: 0,_1: 0},
+         galaxy.planetPositions);
+         var nps = A2($List.map,
+         function (_v16) {
+            return function () {
+               switch (_v16.ctor)
+               {case "_Tuple2":
+                  return function () {
+                       var nearbyPlanet = A2(getPlanet,
+                       _v16._0,
+                       galaxy.planets);
+                       return {ctor: "_Tuple2"
+                              ,_0: nearbyPlanet.name
+                              ,_1: $Basics.floor(_v16._1)};
+                    }();}
+               _U.badCase($moduleName,
+               "between lines 48 and 51");
+            }();
+         },
+         nearestPlanetDistances);
+         var planet = A2(getPlanet,
+         0,
+         galaxy.planets);
+         return _U.replace([["nearestPlanets"
+                            ,nps]],
+         planet);
+      }();
    };
    var newGalaxy = function (seed) {
       return function () {
@@ -4573,6 +4615,7 @@ Elm.Location.Galaxy.make = function (_elm) {
                                  ,Galaxy: Galaxy
                                  ,newGalaxy: newGalaxy
                                  ,dummyPlanet: dummyPlanet
+                                 ,getPlanet: getPlanet
                                  ,startingPlanet: startingPlanet
                                  ,randomPlanetPositions: randomPlanetPositions
                                  ,nearestPlanets: nearestPlanets};
@@ -14383,9 +14426,7 @@ Elm.Util.ArrayUtil.make = function (_elm) {
    $default) {
       return A2($Maybe.withDefault,
       $default,
-      A2($Array.get,
-      $Array.length(array) - 1,
-      array));
+      A2($Array.get,0,array));
    });
    var last = F2(function (array,
    $default) {

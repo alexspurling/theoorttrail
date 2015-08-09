@@ -84,7 +84,7 @@ type alias Planet =
   { name : String,
     image : String,
     population : Int,
-    nearestPlanets : List Float
+    nearestPlanets : List (String, Int)
   }
 
 randomPlanet : Random.Seed -> Planet

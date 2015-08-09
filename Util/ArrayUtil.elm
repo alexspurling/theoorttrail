@@ -18,4 +18,4 @@ last array default =
 
 first : Array a -> a -> a
 first array default =
-  Maybe.withDefault default (Array.get (Array.length array - 1) array)
+  Maybe.withDefault default (Array.get 0 array)
