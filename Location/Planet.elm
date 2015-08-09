@@ -107,10 +107,6 @@ nearestPlanets (planetX, planetY) planetPositions =
       |> List.sort
       |> List.take 3
 
-galaxy : Random.Seed -> Array Planet
-galaxy seed =
-  Array.map randomPlanet (Rand.seedArray 10 seed)
-
 randomPlanet : Random.Seed -> Planet
 randomPlanet seed =
   let
@@ -124,14 +120,6 @@ randomPlanet seed =
     { name = planetName,
       image = planetImage,
       population = planetPopulation * (10 ^ planetPopulationMultiplier),
-      nearestPlanets = []
-    }
-
-startingPlanet galaxy =
-  ArrayUtil.first galaxy
-    { name = "Fail",
-      image = "Fail",
-      population = 0,
       nearestPlanets = []
     }
 

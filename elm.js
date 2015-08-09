@@ -2023,12 +2023,12 @@ Elm.Game.make = function (_elm) {
    _U = _N.Utils.make(_elm),
    _L = _N.List.make(_elm),
    $moduleName = "Game",
-   $Array = Elm.Array.make(_elm),
    $Basics = Elm.Basics.make(_elm),
    $Character$Player = Elm.Character.Player.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
+   $Location$Galaxy = Elm.Location.Galaxy.make(_elm),
    $Location$Planet = Elm.Location.Planet.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Native$Now = Elm.Native.Now.make(_elm),
@@ -2055,16 +2055,16 @@ Elm.Game.make = function (_elm) {
          switch (action.ctor)
          {case "NoOp": return model;}
          _U.badCase($moduleName,
-         "between lines 45 and 47");
+         "between lines 46 and 48");
       }();
    });
    var NoOp = {ctor: "NoOp"};
    var initialModel = function (initialSeed) {
       return function () {
-         var randomGalaxy = $Location$Planet.galaxy(initialSeed);
-         var startingPlanet = $Location$Planet.startingPlanet(randomGalaxy);
+         var newGalaxy = $Location$Galaxy.newGalaxy(initialSeed);
+         var startingPlanet = $Location$Galaxy.startingPlanet(newGalaxy);
          return {_: {}
-                ,galaxy: randomGalaxy
+                ,galaxy: newGalaxy
                 ,location: startingPlanet
                 ,player: $Character$Player.randomPlayer(initialSeed)};
       }();
@@ -4439,6 +4439,57 @@ Elm.List.make = function (_elm) {
    return _elm.List.values;
 };
 Elm.Location = Elm.Location || {};
+Elm.Location.Galaxy = Elm.Location.Galaxy || {};
+Elm.Location.Galaxy.make = function (_elm) {
+   "use strict";
+   _elm.Location = _elm.Location || {};
+   _elm.Location.Galaxy = _elm.Location.Galaxy || {};
+   if (_elm.Location.Galaxy.values)
+   return _elm.Location.Galaxy.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Location.Galaxy",
+   $Array = Elm.Array.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Location$Planet = Elm.Location.Planet.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Random = Elm.Random.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $Util$ArrayUtil = Elm.Util.ArrayUtil.make(_elm),
+   $Util$RandomUtil = Elm.Util.RandomUtil.make(_elm);
+   var dummyPlanet = {_: {}
+                     ,image: "Fail"
+                     ,name: "Fail"
+                     ,nearestPlanets: _L.fromArray([])
+                     ,population: 0};
+   var startingPlanet = function (galaxy) {
+      return A2($Util$ArrayUtil.first,
+      galaxy.planets,
+      dummyPlanet);
+   };
+   var newGalaxy = function (seed) {
+      return {_: {}
+             ,planets: A2($Array.map,
+             $Location$Planet.randomPlanet,
+             A2($Util$RandomUtil.seedArray,
+             10,
+             seed))};
+   };
+   var Galaxy = function (a) {
+      return {_: {},planets: a};
+   };
+   _elm.Location.Galaxy.values = {_op: _op
+                                 ,Galaxy: Galaxy
+                                 ,newGalaxy: newGalaxy
+                                 ,dummyPlanet: dummyPlanet
+                                 ,startingPlanet: startingPlanet};
+   return _elm.Location.Galaxy.values;
+};
+Elm.Location = Elm.Location || {};
 Elm.Location.Planet = Elm.Location.Planet || {};
 Elm.Location.Planet.make = function (_elm) {
    "use strict";
@@ -4502,7 +4553,7 @@ Elm.Location.Planet.make = function (_elm) {
             switch (_v0.ctor)
             {case "_Tuple2": return _v0._0;}
             _U.badCase($moduleName,
-            "on line 140, column 30 to 33");
+            "on line 128, column 30 to 33");
          }();
       },
       A3($Array.foldl,
@@ -4544,15 +4595,6 @@ Elm.Location.Planet.make = function (_elm) {
       $Array.empty,
       planets));
    });
-   var startingPlanet = function (galaxy) {
-      return A2($Util$ArrayUtil.first,
-      galaxy,
-      {_: {}
-      ,image: "Fail"
-      ,name: "Fail"
-      ,nearestPlanets: _L.fromArray([])
-      ,population: 0});
-   };
    var nearestPlanets = F2(function (_v4,
    planetPositions) {
       return function () {
@@ -4663,7 +4705,7 @@ Elm.Location.Planet.make = function (_elm) {
             switch (_.ctor)
             {case "_Tuple2": return _._0;}
             _U.badCase($moduleName,
-            "on line 118, column 23 to 76");
+            "on line 114, column 23 to 76");
          }();
          var planetSeed = $Random.initialSeed($Util$StringUtil.hashCode(planetName));
          var $ = A3($Util$ArrayUtil.randomArrayElement,
@@ -4690,21 +4732,12 @@ Elm.Location.Planet.make = function (_elm) {
                 planetPopulationMultiplier)};
       }();
    };
-   var galaxy = function (seed) {
-      return A2($Array.map,
-      randomPlanet,
-      A2($Util$RandomUtil.seedArray,
-      10,
-      seed));
-   };
    _elm.Location.Planet.values = {_op: _op
                                  ,planetNames: planetNames
                                  ,planetImages: planetImages
                                  ,Planet: Planet
                                  ,nearestPlanets: nearestPlanets
-                                 ,galaxy: galaxy
                                  ,randomPlanet: randomPlanet
-                                 ,startingPlanet: startingPlanet
                                  ,randomPlanetPositions: randomPlanetPositions
                                  ,planetName: planetName
                                  ,stats: stats

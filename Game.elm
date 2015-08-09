@@ -13,6 +13,7 @@ import Debug
 
 import Character.Player exposing (Player)
 import Location.Planet exposing (Planet)
+import Location.Galaxy exposing (Galaxy)
 
 import Native.Now
 
@@ -20,18 +21,18 @@ import Native.Now
 
 type alias Model =
   { player : Player,
-    galaxy : Array.Array Location.Planet.Planet,
+    galaxy : Galaxy,
     location : Planet
   }
 
 initialModel : Random.Seed -> Model
 initialModel initialSeed =
   let
-    randomGalaxy = Location.Planet.galaxy initialSeed
-    startingPlanet = Location.Planet.startingPlanet randomGalaxy
+    newGalaxy = Location.Galaxy.newGalaxy initialSeed
+    startingPlanet = Location.Galaxy.startingPlanet newGalaxy
   in
   { player = Character.Player.randomPlayer initialSeed,
-    galaxy = randomGalaxy,
+    galaxy = newGalaxy,
     location = startingPlanet
   }
 
