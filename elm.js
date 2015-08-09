@@ -4461,6 +4461,84 @@ Elm.Location.Galaxy.make = function (_elm) {
    $Signal = Elm.Signal.make(_elm),
    $Util$ArrayUtil = Elm.Util.ArrayUtil.make(_elm),
    $Util$RandomUtil = Elm.Util.RandomUtil.make(_elm);
+   var nearestPlanets = F2(function (_v0,
+   planetPositions) {
+      return function () {
+         switch (_v0.ctor)
+         {case "_Tuple2":
+            return function () {
+                 var distances = A2($Array.map,
+                 function (_v4) {
+                    return function () {
+                       switch (_v4.ctor)
+                       {case "_Tuple2":
+                          return function () {
+                               var dy = _v4._1 - 0;
+                               var dx = _v4._0 - 0;
+                               return $Basics.sqrt(Math.pow(dx,
+                               2) + Math.pow(dy,2));
+                            }();}
+                       _U.badCase($moduleName,
+                       "between lines 75 and 79");
+                    }();
+                 },
+                 planetPositions);
+                 return $List.take(3)($List.sort($Array.toList(distances)));
+              }();}
+         _U.badCase($moduleName,
+         "between lines 71 and 85");
+      }();
+   });
+   var randomPlanetPositions = F2(function (initialSeed,
+   planets) {
+      return A2($Array.map,
+      function (_v8) {
+         return function () {
+            switch (_v8.ctor)
+            {case "_Tuple2": return _v8._0;}
+            _U.badCase($moduleName,
+            "on line 51, column 30 to 33");
+         }();
+      },
+      A3($Array.foldl,
+      F2(function (planet,
+      planetPositions) {
+         return function () {
+            var tau = $Basics.pi * 2;
+            var $ = A2($Util$ArrayUtil.last,
+            planetPositions,
+            {ctor: "_Tuple2"
+            ,_0: {ctor: "_Tuple2"
+                 ,_0: 0
+                 ,_1: 0}
+            ,_1: initialSeed}),
+            previousPos = $._0,
+            seed = $._1;
+            var $ = A2($Random.generate,
+            A2($Random.$float,0,tau),
+            seed),
+            newAngle = $._0,
+            seed$ = $._1;
+            var $ = A2($Random.generate,
+            A2($Random.$float,1,100),
+            seed$),
+            newDistance = $._0,
+            seed$$ = $._1;
+            var newX = $Basics.floor($Basics.cos(newAngle) * newDistance) + $Basics.fst(previousPos);
+            var newY = $Basics.floor($Basics.sin(newAngle) * newDistance) + $Basics.snd(previousPos);
+            var newPos = {ctor: "_Tuple2"
+                         ,_0: newX
+                         ,_1: newY};
+            return A2($Array.push,
+            {ctor: "_Tuple2"
+            ,_0: newPos
+            ,_1: seed$$},
+            planetPositions);
+         }();
+      }),
+      $Array.empty,
+      planets));
+   });
    var dummyPlanet = {_: {}
                      ,image: "Fail"
                      ,name: "Fail"
@@ -4472,21 +4550,32 @@ Elm.Location.Galaxy.make = function (_elm) {
       dummyPlanet);
    };
    var newGalaxy = function (seed) {
+      return function () {
+         var newPlanets = A2($Array.map,
+         $Location$Planet.randomPlanet,
+         A2($Util$RandomUtil.seedArray,
+         10,
+         seed));
+         var newPlanetPositions = A2(randomPlanetPositions,
+         seed,
+         newPlanets);
+         return {_: {}
+                ,planetPositions: newPlanetPositions
+                ,planets: newPlanets};
+      }();
+   };
+   var Galaxy = F2(function (a,b) {
       return {_: {}
-             ,planets: A2($Array.map,
-             $Location$Planet.randomPlanet,
-             A2($Util$RandomUtil.seedArray,
-             10,
-             seed))};
-   };
-   var Galaxy = function (a) {
-      return {_: {},planets: a};
-   };
+             ,planetPositions: b
+             ,planets: a};
+   });
    _elm.Location.Galaxy.values = {_op: _op
                                  ,Galaxy: Galaxy
                                  ,newGalaxy: newGalaxy
                                  ,dummyPlanet: dummyPlanet
-                                 ,startingPlanet: startingPlanet};
+                                 ,startingPlanet: startingPlanet
+                                 ,randomPlanetPositions: randomPlanetPositions
+                                 ,nearestPlanets: nearestPlanets};
    return _elm.Location.Galaxy.values;
 };
 Elm.Location = Elm.Location || {};
@@ -4545,84 +4634,6 @@ Elm.Location.Planet.make = function (_elm) {
                    ,planetName(planet.name)
                    ,stats(planet)]));
    };
-   var randomPlanetPositions = F2(function (initialSeed,
-   planets) {
-      return A2($Array.map,
-      function (_v0) {
-         return function () {
-            switch (_v0.ctor)
-            {case "_Tuple2": return _v0._0;}
-            _U.badCase($moduleName,
-            "on line 128, column 30 to 33");
-         }();
-      },
-      A3($Array.foldl,
-      F2(function (planet,
-      planetPositions) {
-         return function () {
-            var tau = $Basics.pi * 2;
-            var $ = A2($Util$ArrayUtil.last,
-            planetPositions,
-            {ctor: "_Tuple2"
-            ,_0: {ctor: "_Tuple2"
-                 ,_0: 0
-                 ,_1: 0}
-            ,_1: initialSeed}),
-            previousPos = $._0,
-            seed = $._1;
-            var $ = A2($Random.generate,
-            A2($Random.$float,0,tau),
-            seed),
-            newAngle = $._0,
-            seed$ = $._1;
-            var $ = A2($Random.generate,
-            A2($Random.$float,1,100),
-            seed$),
-            newDistance = $._0,
-            seed$$ = $._1;
-            var newX = $Basics.floor($Basics.cos(newAngle) * newDistance) + $Basics.fst(previousPos);
-            var newY = $Basics.floor($Basics.sin(newAngle) * newDistance) + $Basics.snd(previousPos);
-            var newPos = {ctor: "_Tuple2"
-                         ,_0: newX
-                         ,_1: newY};
-            return A2($Array.push,
-            {ctor: "_Tuple2"
-            ,_0: newPos
-            ,_1: seed$$},
-            planetPositions);
-         }();
-      }),
-      $Array.empty,
-      planets));
-   });
-   var nearestPlanets = F2(function (_v4,
-   planetPositions) {
-      return function () {
-         switch (_v4.ctor)
-         {case "_Tuple2":
-            return function () {
-                 var distances = A2($Array.map,
-                 function (_v8) {
-                    return function () {
-                       switch (_v8.ctor)
-                       {case "_Tuple2":
-                          return function () {
-                               var dy = _v8._1 - 0;
-                               var dx = _v8._0 - 0;
-                               return $Basics.sqrt(Math.pow(dx,
-                               2) + Math.pow(dy,2));
-                            }();}
-                       _U.badCase($moduleName,
-                       "between lines 98 and 102");
-                    }();
-                 },
-                 planetPositions);
-                 return $List.take(3)($List.sort($Array.toList(distances)));
-              }();}
-         _U.badCase($moduleName,
-         "between lines 94 and 108");
-      }();
-   });
    var Planet = F4(function (a,
    b,
    c,
@@ -4705,7 +4716,7 @@ Elm.Location.Planet.make = function (_elm) {
             switch (_.ctor)
             {case "_Tuple2": return _._0;}
             _U.badCase($moduleName,
-            "on line 114, column 23 to 76");
+            "on line 94, column 23 to 76");
          }();
          var planetSeed = $Random.initialSeed($Util$StringUtil.hashCode(planetName));
          var $ = A3($Util$ArrayUtil.randomArrayElement,
@@ -4736,9 +4747,7 @@ Elm.Location.Planet.make = function (_elm) {
                                  ,planetNames: planetNames
                                  ,planetImages: planetImages
                                  ,Planet: Planet
-                                 ,nearestPlanets: nearestPlanets
                                  ,randomPlanet: randomPlanet
-                                 ,randomPlanetPositions: randomPlanetPositions
                                  ,planetName: planetName
                                  ,stats: stats
                                  ,view: view};

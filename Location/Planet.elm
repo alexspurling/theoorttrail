@@ -87,26 +87,6 @@ type alias Planet =
     nearestPlanets : List Float
   }
 
-type alias Pos = (Int, Int)
-
-nearestPlanets : Pos -> Array Pos -> List Float
-nearestPlanets (planetX, planetY) planetPositions =
-  let
-    distances =
-      Array.map
-          (\(x, y) ->
-            let
-              dx = (x - 0)
-              dy = (y - 0)
-            in
-              sqrt (dx ^ 2 + dy ^ 2))
-          planetPositions
-  in
-    distances
-      |> Array.toList
-      |> List.sort
-      |> List.take 3
-
 randomPlanet : Random.Seed -> Planet
 randomPlanet seed =
   let
@@ -122,28 +102,6 @@ randomPlanet seed =
       population = planetPopulation * (10 ^ planetPopulationMultiplier),
       nearestPlanets = []
     }
-
-randomPlanetPositions : Random.Seed -> Array.Array String -> Array.Array Pos
-randomPlanetPositions initialSeed planets =
-  Array.map (\(pos, seed) -> pos)
-    (Array.foldl
-      (\planet planetPositions ->
-        let
-          --Base the new position on the value of the last position
-          --If the current planetPositions array is empty, the default position and seed are returned
-          (previousPos, seed) = ArrayUtil.last planetPositions ((0,0), initialSeed)
-          tau = pi * 2
-          (newAngle, seed') = Random.generate (Random.float 0 tau) seed
-          (newDistance, seed'') = Random.generate (Random.float 1 100) seed'
-          newX = floor ((cos newAngle) * newDistance) + (fst previousPos)
-          newY = floor ((sin newAngle) * newDistance) + (snd previousPos)
-          newPos = (newX, newY)
-        in
-          Array.push (newPos, seed'') planetPositions)
-      Array.empty
-      planets)
-
-
 
 --VIEW
 
