@@ -112,7 +112,11 @@ stats : Planet -> Html
 stats planet =
   p [ ]
     [ text ("Population: " ++ (toString planet.population)), br [ ] [ ],
-      text ("Nearest planets: " ++ (toString planet.nearestPlanets)), br [ ] [ ]
+      text ("Nearest planets:"), br [ ] [ ],
+      ul [ ]
+        (List.map (\(planetName, distance) ->
+          li [ ] [ text (planetName ++ " (" ++ (toString distance) ++ "ly)") ])
+        planet.nearestPlanets)
     ]
 
 view : Planet -> Html

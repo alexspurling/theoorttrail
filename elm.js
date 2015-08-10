@@ -4655,12 +4655,31 @@ Elm.Location.Planet.make = function (_elm) {
                    ,A2($Html.br,
                    _L.fromArray([]),
                    _L.fromArray([]))
-                   ,$Html.text(A2($Basics._op["++"],
-                   "Nearest planets: ",
-                   $Basics.toString(planet.nearestPlanets)))
+                   ,$Html.text("Nearest planets:")
                    ,A2($Html.br,
                    _L.fromArray([]),
-                   _L.fromArray([]))]));
+                   _L.fromArray([]))
+                   ,A2($Html.ul,
+                   _L.fromArray([]),
+                   A2($List.map,
+                   function (_v0) {
+                      return function () {
+                         switch (_v0.ctor)
+                         {case "_Tuple2":
+                            return A2($Html.li,
+                              _L.fromArray([]),
+                              _L.fromArray([$Html.text(A2($Basics._op["++"],
+                              _v0._0,
+                              A2($Basics._op["++"],
+                              " (",
+                              A2($Basics._op["++"],
+                              $Basics.toString(_v0._1),
+                              "ly)"))))]));}
+                         _U.badCase($moduleName,
+                         "on line 118, column 11 to 79");
+                      }();
+                   },
+                   planet.nearestPlanets))]));
    };
    var planetName = function (name) {
       return A2($Html.h2,

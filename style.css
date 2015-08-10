@@ -150,7 +150,7 @@ ul {
   margin: 20px 0;
   padding: 0;
   list-style: none;
-  font-size: 1.5em;
+  font-size: 1.1em;
   font-weight: bold;
   text-align: left;
 }
@@ -159,9 +159,10 @@ li {
   background: #61a1bc;
   background: #fff;
   height: 25px;
+  width: 200px;
   position: relative;
-  padding: 15px 30px;
-  margin-bottom: 8px;
+  padding: 10px 15px;
+  margin-bottom: 0px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
@@ -170,61 +171,6 @@ li:hover {
   /* background: #61a1bc; */
   box-shadow: 0 3px 6px rgba(0,0,0,0.2);
   cursor: pointer;
-}
-
-li.total {
-  background: none;
-  box-shadow: none;
-  color: #61a1bc;
-}
-
-li .phrase {
-  position: absolute;
-  top: 18px;
-  left: 80px;
-}
-
-li .points {
-  position: absolute;
-  top: 18px;
-  right: 80px;
-}
-
-li .label {
-  position: absolute;
-  top: 18px;
-  left: 300px;
-}
-
-li.highlight {
-  background: #61a1bc;
-}
-
-li .delete {
-  display: none;
-  position: absolute;
-  top: 16px;
-  right: 20px;
-  border: none;
-  -webkit-appearance: none;
-  -ms-appearance: none;
-  -o-appearance: none;
-  appearance: none;
-}
-
-li .delete:after {
-  content: '✖';
-  color: #e35885;
-}
-
-li:hover .delete {
-  display: block;
-}
-
-li .delete:hover {
-  -webkit-transform: scale(1.4);
-  -ms-transform: scale(1.4);
-  transform: scale(1.4);
 }
 
 hr {
