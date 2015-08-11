@@ -13,7 +13,7 @@ import Util.ArrayUtil as ArrayUtil
 import Util.StringUtil
 import Util.RandomUtil as Rand
 
-planetNames = Array.fromList [
+planetNames = [
   "1249 Scuti III",
   "2713 Antliae VII",
   "2780 Pushya VII",
@@ -87,11 +87,10 @@ type alias Planet =
     nearestPlanets : List (String, Int)
   }
 
-getRandomPlanet : Int -> Random.Seed -> Planet
-getRandomPlanet planetIndex seed =
+getRandomPlanet : String -> Random.Seed -> Planet
+getRandomPlanet planetName seed =
   let
     --get the planet index and base all random values on that
-    planetName = Maybe.withDefault "Dummy Planet Name" (Array.get planetIndex planetNames)
     (planetImage, seed1) = ArrayUtil.randomArrayElement seed planetImages "Earth"
     (planetPopulation, seed2) = (Rand.randomInt seed1 10000)
     (planetPopulationMultiplier, seed3) = (Rand.randomInt seed2 8)

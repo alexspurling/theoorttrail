@@ -4470,7 +4470,7 @@ Elm.Location.Galaxy.make = function (_elm) {
             switch (_v0.ctor)
             {case "_Tuple2": return _v0._0;}
             _U.badCase($moduleName,
-            "on line 72, column 30 to 33");
+            "on line 75, column 30 to 33");
          }();
       },
       A3($Array.foldl,
@@ -4523,26 +4523,26 @@ Elm.Location.Galaxy.make = function (_elm) {
    var nearestPlanets = F2(function (currentPlanet,
    planetPositions) {
       return function () {
-         var $ = A2(getPlanetPosition,
+         var currentPos = A2(getPlanetPosition,
          currentPlanet,
-         planetPositions),
-         curX = $._0,
-         curY = $._1;
+         planetPositions);
+         var curX = $Basics.toFloat($Basics.fst(currentPos));
+         var curY = $Basics.toFloat($Basics.snd(currentPos));
          var distances = A2($Array.indexedMap,
          F2(function (index,_v4) {
             return function () {
                switch (_v4.ctor)
                {case "_Tuple2":
                   return function () {
-                       var dy = $Basics.toFloat(_v4._1) - $Basics.toFloat(curY);
-                       var dx = $Basics.toFloat(_v4._0) - $Basics.toFloat(curX);
+                       var dy = $Basics.toFloat(_v4._1) - curY;
+                       var dx = $Basics.toFloat(_v4._0) - curX;
                        return {ctor: "_Tuple2"
                               ,_0: index
                               ,_1: $Basics.sqrt(Math.pow(dx,
                               2) + Math.pow(dy,2))};
                     }();}
                _U.badCase($moduleName,
-               "between lines 97 and 101");
+               "between lines 102 and 106");
             }();
          }),
          planetPositions);
@@ -4554,7 +4554,7 @@ Elm.Location.Galaxy.make = function (_elm) {
                switch (_v8.ctor)
                {case "_Tuple2": return _v8._1;}
                _U.badCase($moduleName,
-               "on line 107, column 45 to 53");
+               "on line 112, column 45 to 53");
             }();
          })($Array.toList(distances)));
       }();
@@ -4589,7 +4589,7 @@ Elm.Location.Galaxy.make = function (_elm) {
                               ,_1: $Basics.floor(_v12._1)};
                     }();}
                _U.badCase($moduleName,
-               "between lines 54 and 57");
+               "between lines 57 and 60");
             }();
          },
          nearestPlanetDistances);
@@ -4603,11 +4603,17 @@ Elm.Location.Galaxy.make = function (_elm) {
    };
    var newGalaxy = function (seed) {
       return function () {
-         var newPlanets = A2($Array.indexedMap,
+         var seedList = A2($Util$RandomUtil.seedList,
+         100,
+         seed);
+         var shuffledPlanetNames = A2($Util$RandomUtil.shuffleList,
+         $Location$Planet.planetNames,
+         seed);
+         var planetList = A3($List.map2,
          $Location$Planet.getRandomPlanet,
-         A2($Util$RandomUtil.seedArray,
-         10,
-         seed));
+         shuffledPlanetNames,
+         seedList);
+         var newPlanets = $Array.fromList(planetList);
          var newPlanetPositions = A2(randomPlanetPositions,
          seed,
          newPlanets);
@@ -4689,7 +4695,7 @@ Elm.Location.Planet.make = function (_elm) {
                               $Basics.toString(_v0._1),
                               " ly)"))))]));}
                          _U.badCase($moduleName,
-                         "on line 117, column 11 to 80");
+                         "on line 116, column 11 to 80");
                       }();
                    },
                    planet.nearestPlanets))]));
@@ -4732,56 +4738,7 @@ Elm.Location.Planet.make = function (_elm) {
                                                    ,"assets/planets/p8shaded.png"
                                                    ,"assets/planets/p9shaded.png"
                                                    ,"assets/planets/p10shaded.png"]));
-   var planetNames = $Array.fromList(_L.fromArray(["1249 Scuti III"
-                                                  ,"2713 Antliae VII"
-                                                  ,"2780 Pushya VII"
-                                                  ,"3876 Liu Xiu VII"
-                                                  ,"3887 Sagittae Prime"
-                                                  ,"4410 Scuti V"
-                                                  ,"6385 Lyncis VII"
-                                                  ,"8112 Gui Xiu VI"
-                                                  ,"8886 Kui Xiu Prime"
-                                                  ,"9100 Magha Prime"
-                                                  ,"Almaren"
-                                                  ,"Anu"
-                                                  ,"Asherah"
-                                                  ,"Balha II"
-                                                  ,"Cybele Prime"
-                                                  ,"D\'Endan"
-                                                  ,"Dari II"
-                                                  ,"Di-Yu"
-                                                  ,"Dr\'Mado"
-                                                  ,"Emhan Betu"
-                                                  ,"Enlil"
-                                                  ,"Ganiea"
-                                                  ,"Hura VII"
-                                                  ,"Iahamu III"
-                                                  ,"Keniea VI"
-                                                  ,"Lurma III"
-                                                  ,"Mara R\'Vani"
-                                                  ,"Metra"
-                                                  ,"Minbe"
-                                                  ,"Natha"
-                                                  ,"New Britain"
-                                                  ,"New Gaia"
-                                                  ,"New Rhea"
-                                                  ,"New Terra"
-                                                  ,"New Thyoph"
-                                                  ,"New Titan"
-                                                  ,"New Triton"
-                                                  ,"New Xena"
-                                                  ,"Niano"
-                                                  ,"Shu VII"
-                                                  ,"Sietynas IV"
-                                                  ,"Skadi II"
-                                                  ,"Sycia II"
-                                                  ,"Tando"
-                                                  ,"Tane T\'Agan"
-                                                  ,"Tholy Prime"
-                                                  ,"Tipa"
-                                                  ,"Vogi IV"
-                                                  ,"Zakar VII"]));
-   var getRandomPlanet = F2(function (planetIndex,
+   var getRandomPlanet = F2(function (planetName,
    seed) {
       return function () {
          var $ = A3($Util$ArrayUtil.randomArrayElement,
@@ -4800,11 +4757,6 @@ Elm.Location.Planet.make = function (_elm) {
          8),
          planetPopulationMultiplier = $._0,
          seed3 = $._1;
-         var planetName = A2($Maybe.withDefault,
-         "Dummy Planet Name",
-         A2($Array.get,
-         planetIndex,
-         planetNames));
          return {_: {}
                 ,image: planetImage
                 ,name: planetName
@@ -4813,6 +4765,55 @@ Elm.Location.Planet.make = function (_elm) {
                 planetPopulationMultiplier)};
       }();
    });
+   var planetNames = _L.fromArray(["1249 Scuti III"
+                                  ,"2713 Antliae VII"
+                                  ,"2780 Pushya VII"
+                                  ,"3876 Liu Xiu VII"
+                                  ,"3887 Sagittae Prime"
+                                  ,"4410 Scuti V"
+                                  ,"6385 Lyncis VII"
+                                  ,"8112 Gui Xiu VI"
+                                  ,"8886 Kui Xiu Prime"
+                                  ,"9100 Magha Prime"
+                                  ,"Almaren"
+                                  ,"Anu"
+                                  ,"Asherah"
+                                  ,"Balha II"
+                                  ,"Cybele Prime"
+                                  ,"D\'Endan"
+                                  ,"Dari II"
+                                  ,"Di-Yu"
+                                  ,"Dr\'Mado"
+                                  ,"Emhan Betu"
+                                  ,"Enlil"
+                                  ,"Ganiea"
+                                  ,"Hura VII"
+                                  ,"Iahamu III"
+                                  ,"Keniea VI"
+                                  ,"Lurma III"
+                                  ,"Mara R\'Vani"
+                                  ,"Metra"
+                                  ,"Minbe"
+                                  ,"Natha"
+                                  ,"New Britain"
+                                  ,"New Gaia"
+                                  ,"New Rhea"
+                                  ,"New Terra"
+                                  ,"New Thyoph"
+                                  ,"New Titan"
+                                  ,"New Triton"
+                                  ,"New Xena"
+                                  ,"Niano"
+                                  ,"Shu VII"
+                                  ,"Sietynas IV"
+                                  ,"Skadi II"
+                                  ,"Sycia II"
+                                  ,"Tando"
+                                  ,"Tane T\'Agan"
+                                  ,"Tholy Prime"
+                                  ,"Tipa"
+                                  ,"Vogi IV"
+                                  ,"Zakar VII"]);
    _elm.Location.Planet.values = {_op: _op
                                  ,planetNames: planetNames
                                  ,planetImages: planetImages
@@ -14510,7 +14511,40 @@ Elm.Util.RandomUtil.make = function (_elm) {
    $Random = Elm.Random.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm);
-   var seedArray = F2(function (length,
+   var zip = $List.map2(F2(function (v0,
+   v1) {
+      return {ctor: "_Tuple2"
+             ,_0: v0
+             ,_1: v1};
+   }));
+   var shuffleList = F2(function (listToShuffle,
+   seed) {
+      return function () {
+         var _ = A2($Random.generate,
+         A2($Random.list,
+         $List.length(listToShuffle),
+         A2($Random.$int,
+         $Random.minInt,
+         $Random.maxInt)),
+         seed);
+         var randomInts = function () {
+            switch (_.ctor)
+            {case "_Tuple2": return _._0;}
+            _U.badCase($moduleName,
+            "on line 25, column 23 to 91");
+         }();
+         var zippedLists = A2(zip,
+         listToShuffle,
+         randomInts);
+         var shuffledList = A2($List.sortBy,
+         $Basics.snd,
+         zippedLists);
+         return A2($List.map,
+         $Basics.fst,
+         shuffledList);
+      }();
+   });
+   var seedList = F2(function (length,
    seed) {
       return function () {
          var _ = A2($Random.generate,
@@ -14524,14 +14558,20 @@ Elm.Util.RandomUtil.make = function (_elm) {
             switch (_.ctor)
             {case "_Tuple2": return _._0;}
             _U.badCase($moduleName,
-            "on line 12, column 23 to 70");
+            "on line 16, column 23 to 70");
          }();
-         return $Array.fromList(A2($List.map,
+         return A2($List.map,
          function (n) {
             return $Random.initialSeed(n);
          },
-         seedValues));
+         seedValues);
       }();
+   });
+   var seedArray = F2(function (length,
+   seed) {
+      return $Array.fromList(A2(seedList,
+      length,
+      seed));
    });
    var randomInt = F2(function (seed,
    maxInt) {
@@ -14541,7 +14581,10 @@ Elm.Util.RandomUtil.make = function (_elm) {
    });
    _elm.Util.RandomUtil.values = {_op: _op
                                  ,randomInt: randomInt
-                                 ,seedArray: seedArray};
+                                 ,seedArray: seedArray
+                                 ,seedList: seedList
+                                 ,zip: zip
+                                 ,shuffleList: shuffleList};
    return _elm.Util.RandomUtil.values;
 };
 Elm.Util = Elm.Util || {};

@@ -6,7 +6,7 @@ import Debug
 import Random
 
 import Util.ArrayUtil as ArrayUtil
-import Location.Planet exposing (Planet, getRandomPlanet)
+import Location.Planet exposing (Planet, planetNames, getRandomPlanet)
 import Util.RandomUtil as Rand
 
 type alias Galaxy =
@@ -20,7 +20,10 @@ newGalaxy seed =
   let
     --Get a new galaxy of planets by generating an array of seeds
     --and mapping that array to the randomPlanet function
-    newPlanets = Array.indexedMap getRandomPlanet (Rand.seedArray 10 seed)
+    shuffledPlanetNames = Rand.shuffleList planetNames seed
+    seedList = (Rand.seedList 100 seed)
+    planetList = List.map2 getRandomPlanet shuffledPlanetNames seedList
+    newPlanets = Array.fromList planetList
     newPlanetPositions = randomPlanetPositions seed newPlanets
     foo = Debug.log "positions" newPlanetPositions
   in
