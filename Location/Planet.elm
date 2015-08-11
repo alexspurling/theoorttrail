@@ -87,15 +87,14 @@ type alias Planet =
     nearestPlanets : List (String, Int)
   }
 
-randomPlanet : Random.Seed -> Planet
-randomPlanet seed =
+getRandomPlanet : Int -> Random.Seed -> Planet
+getRandomPlanet planetIndex seed =
   let
     --get the planet index and base all random values on that
-    (planetName, _) = ArrayUtil.randomArrayElement seed planetNames "Earth"
-    planetSeed = Random.initialSeed (Util.StringUtil.hashCode planetName)
-    (planetImage, seed') = ArrayUtil.randomArrayElement planetSeed planetImages "Earth"
-    (planetPopulation, seed'') = (Rand.randomInt seed' 10000)
-    (planetPopulationMultiplier, seed''') = (Rand.randomInt seed'' 8)
+    planetName = Maybe.withDefault "Dummy Planet Name" (Array.get planetIndex planetNames)
+    (planetImage, seed1) = ArrayUtil.randomArrayElement seed planetImages "Earth"
+    (planetPopulation, seed2) = (Rand.randomInt seed1 10000)
+    (planetPopulationMultiplier, seed3) = (Rand.randomInt seed2 8)
   in
     { name = planetName,
       image = planetImage,
@@ -115,7 +114,7 @@ stats planet =
       text ("Nearest planets:"), br [ ] [ ],
       ul [ ]
         (List.map (\(planetName, distance) ->
-          li [ ] [ text (planetName ++ " (" ++ (toString distance) ++ "ly)") ])
+          li [ ] [ text (planetName ++ " (" ++ (toString distance) ++ " ly)") ])
         planet.nearestPlanets)
     ]
 

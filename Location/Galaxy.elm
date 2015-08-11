@@ -2,10 +2,11 @@ module Location.Galaxy where
 
 import Array exposing (Array)
 import Basics exposing (floor)
+import Debug
 import Random
 
 import Util.ArrayUtil as ArrayUtil
-import Location.Planet exposing (Planet, randomPlanet)
+import Location.Planet exposing (Planet, getRandomPlanet)
 import Util.RandomUtil as Rand
 
 type alias Galaxy =
@@ -19,8 +20,9 @@ newGalaxy seed =
   let
     --Get a new galaxy of planets by generating an array of seeds
     --and mapping that array to the randomPlanet function
-    newPlanets = Array.map randomPlanet (Rand.seedArray 10 seed)
+    newPlanets = Array.indexedMap getRandomPlanet (Rand.seedArray 10 seed)
     newPlanetPositions = randomPlanetPositions seed newPlanets
+    foo = Debug.log "positions" newPlanetPositions
   in
   {
     planets = newPlanets,
@@ -38,11 +40,15 @@ dummyPlanet =
 getPlanet index planets =
   Maybe.withDefault dummyPlanet (Array.get index planets)
 
+getPlanetPosition : Int -> Array Pos -> Pos
+getPlanetPosition index planetPositions =
+  Maybe.withDefault (0,0) (Array.get index planetPositions)
+
 startingPlanet : Galaxy -> Planet
 startingPlanet galaxy =
   let
     planet = getPlanet 0 galaxy.planets
-    nearestPlanetDistances = nearestPlanets (0,0) galaxy.planetPositions
+    nearestPlanetDistances = nearestPlanets 0 galaxy.planetPositions
     nps = List.map
       (\(index, distance) ->
         let
@@ -81,18 +87,22 @@ randomPlanetPositions initialSeed planets =
       Array.empty
       planets)
 
-nearestPlanets : Pos -> Array Pos -> List (Int, Float)
-nearestPlanets (planetX, planetY) planetPositions =
+nearestPlanets : Int -> Array Pos -> List (Int, Float)
+nearestPlanets currentPlanet planetPositions =
   let
+    currentPos = getPlanetPosition currentPlanet planetPositions
+    curX = Basics.toFloat (Basics.fst currentPos)
+    curY = Basics.toFloat (Basics.snd currentPos)
     distances =
       Array.indexedMap
           (\index (x, y) ->
             let
-              dx = (x - 0)
-              dy = (y - 0)
+              dx = (Basics.toFloat x - curX)
+              dy = (Basics.toFloat y - curY)
             in
               (index, sqrt (dx ^ 2 + dy ^ 2)))
           planetPositions
+    foo = Debug.log "distances" distances
   in
     distances
       |> Array.toList
