@@ -2028,8 +2028,10 @@ Elm.Game.make = function (_elm) {
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
+   $Location$Galaxy = Elm.Location.Galaxy.make(_elm),
    $Location$Planet = Elm.Location.Planet.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
+   $Native$Now = Elm.Native.Now.make(_elm),
    $Random = Elm.Random.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
@@ -2053,31 +2055,33 @@ Elm.Game.make = function (_elm) {
          switch (action.ctor)
          {case "NoOp": return model;}
          _U.badCase($moduleName,
-         "between lines 37 and 39");
+         "between lines 46 and 48");
       }();
    });
    var NoOp = {ctor: "NoOp"};
    var initialModel = function (initialSeed) {
-      return {_: {}
-             ,location: $Location$Planet.randomPlanet(initialSeed)
-             ,player: $Character$Player.randomPlayer(initialSeed)};
+      return function () {
+         var newGalaxy = $Location$Galaxy.newGalaxy(initialSeed);
+         var startingPlanet = $Location$Galaxy.startingPlanet(newGalaxy);
+         return {_: {}
+                ,galaxy: newGalaxy
+                ,location: startingPlanet
+                ,player: $Character$Player.randomPlayer(initialSeed)};
+      }();
    };
-   var Model = F2(function (a,b) {
-      return {_: {}
-             ,location: b
-             ,player: a};
-   });
-   var timestamp = Elm.Native.Port.make(_elm).inbound("timestamp",
-   "Int",
-   function (v) {
-      return typeof v === "number" ? v : _U.badPort("a number",
-      v);
-   });
    var mainApp = {_: {}
-                 ,model: initialModel($Random.initialSeed(timestamp))
+                 ,model: initialModel($Random.initialSeed($Native$Now.loadTime))
                  ,update: update
                  ,view: view};
    var main = $StartApp.start(mainApp);
+   var Model = F3(function (a,
+   b,
+   c) {
+      return {_: {}
+             ,galaxy: b
+             ,location: c
+             ,player: a};
+   });
    _elm.Game.values = {_op: _op
                       ,Model: Model
                       ,initialModel: initialModel
@@ -4435,6 +4439,209 @@ Elm.List.make = function (_elm) {
    return _elm.List.values;
 };
 Elm.Location = Elm.Location || {};
+Elm.Location.Galaxy = Elm.Location.Galaxy || {};
+Elm.Location.Galaxy.make = function (_elm) {
+   "use strict";
+   _elm.Location = _elm.Location || {};
+   _elm.Location.Galaxy = _elm.Location.Galaxy || {};
+   if (_elm.Location.Galaxy.values)
+   return _elm.Location.Galaxy.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Location.Galaxy",
+   $Array = Elm.Array.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Location$Planet = Elm.Location.Planet.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Random = Elm.Random.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $Util$ArrayUtil = Elm.Util.ArrayUtil.make(_elm),
+   $Util$RandomUtil = Elm.Util.RandomUtil.make(_elm);
+   var randomPlanetPositions = F2(function (initialSeed,
+   planets) {
+      return A2($Array.map,
+      function (_v0) {
+         return function () {
+            switch (_v0.ctor)
+            {case "_Tuple2": return _v0._0;}
+            _U.badCase($moduleName,
+            "on line 75, column 30 to 33");
+         }();
+      },
+      A3($Array.foldl,
+      F2(function (planet,
+      planetPositions) {
+         return function () {
+            var tau = $Basics.pi * 2;
+            var $ = A2($Util$ArrayUtil.last,
+            planetPositions,
+            {ctor: "_Tuple2"
+            ,_0: {ctor: "_Tuple2"
+                 ,_0: 0
+                 ,_1: 0}
+            ,_1: initialSeed}),
+            previousPos = $._0,
+            seed = $._1;
+            var $ = A2($Random.generate,
+            A2($Random.$float,0,tau),
+            seed),
+            newAngle = $._0,
+            seed$ = $._1;
+            var $ = A2($Random.generate,
+            A2($Random.$float,1,100),
+            seed$),
+            newDistance = $._0,
+            seed$$ = $._1;
+            var newX = $Basics.floor($Basics.cos(newAngle) * newDistance) + $Basics.fst(previousPos);
+            var newY = $Basics.floor($Basics.sin(newAngle) * newDistance) + $Basics.snd(previousPos);
+            var newPos = {ctor: "_Tuple2"
+                         ,_0: newX
+                         ,_1: newY};
+            return A2($Array.push,
+            {ctor: "_Tuple2"
+            ,_0: newPos
+            ,_1: seed$$},
+            planetPositions);
+         }();
+      }),
+      $Array.empty,
+      planets));
+   });
+   var getPlanetPosition = F2(function (index,
+   planetPositions) {
+      return A2($Maybe.withDefault,
+      {ctor: "_Tuple2",_0: 0,_1: 0},
+      A2($Array.get,
+      index,
+      planetPositions));
+   });
+   var nearestPlanets = F2(function (currentPlanet,
+   planetPositions) {
+      return function () {
+         var currentPos = A2(getPlanetPosition,
+         currentPlanet,
+         planetPositions);
+         var curX = $Basics.toFloat($Basics.fst(currentPos));
+         var curY = $Basics.toFloat($Basics.snd(currentPos));
+         var distances = A2($Array.indexedMap,
+         F2(function (index,_v4) {
+            return function () {
+               switch (_v4.ctor)
+               {case "_Tuple2":
+                  return function () {
+                       var dy = $Basics.toFloat(_v4._1) - curY;
+                       var dx = $Basics.toFloat(_v4._0) - curX;
+                       return {ctor: "_Tuple2"
+                              ,_0: index
+                              ,_1: $Basics.sqrt(Math.pow(dx,
+                              2) + Math.pow(dy,2))};
+                    }();}
+               _U.badCase($moduleName,
+               "between lines 102 and 106");
+            }();
+         }),
+         planetPositions);
+         var foo = A2($Debug.log,
+         "distances",
+         distances);
+         return $List.take(3)($List.sortBy(function (_v8) {
+            return function () {
+               switch (_v8.ctor)
+               {case "_Tuple2": return _v8._1;}
+               _U.badCase($moduleName,
+               "on line 112, column 45 to 53");
+            }();
+         })($Array.toList(distances)));
+      }();
+   });
+   var dummyPlanet = {_: {}
+                     ,image: "Fail"
+                     ,name: "Fail"
+                     ,nearestPlanets: _L.fromArray([])
+                     ,population: 0};
+   var getPlanet = F2(function (index,
+   planets) {
+      return A2($Maybe.withDefault,
+      dummyPlanet,
+      A2($Array.get,index,planets));
+   });
+   var startingPlanet = function (galaxy) {
+      return function () {
+         var nearestPlanetDistances = A2(nearestPlanets,
+         0,
+         galaxy.planetPositions);
+         var nps = A2($List.map,
+         function (_v12) {
+            return function () {
+               switch (_v12.ctor)
+               {case "_Tuple2":
+                  return function () {
+                       var nearbyPlanet = A2(getPlanet,
+                       _v12._0,
+                       galaxy.planets);
+                       return {ctor: "_Tuple2"
+                              ,_0: nearbyPlanet.name
+                              ,_1: $Basics.floor(_v12._1)};
+                    }();}
+               _U.badCase($moduleName,
+               "between lines 57 and 60");
+            }();
+         },
+         nearestPlanetDistances);
+         var planet = A2(getPlanet,
+         0,
+         galaxy.planets);
+         return _U.replace([["nearestPlanets"
+                            ,nps]],
+         planet);
+      }();
+   };
+   var newGalaxy = function (seed) {
+      return function () {
+         var seedList = A2($Util$RandomUtil.seedList,
+         100,
+         seed);
+         var shuffledPlanetNames = A2($Util$RandomUtil.shuffleList,
+         $Location$Planet.planetNames,
+         seed);
+         var planetList = A3($List.map2,
+         $Location$Planet.getRandomPlanet,
+         shuffledPlanetNames,
+         seedList);
+         var newPlanets = $Array.fromList(planetList);
+         var newPlanetPositions = A2(randomPlanetPositions,
+         seed,
+         newPlanets);
+         var foo = A2($Debug.log,
+         "positions",
+         newPlanetPositions);
+         return {_: {}
+                ,planetPositions: newPlanetPositions
+                ,planets: newPlanets};
+      }();
+   };
+   var Galaxy = F2(function (a,b) {
+      return {_: {}
+             ,planetPositions: b
+             ,planets: a};
+   });
+   _elm.Location.Galaxy.values = {_op: _op
+                                 ,Galaxy: Galaxy
+                                 ,newGalaxy: newGalaxy
+                                 ,dummyPlanet: dummyPlanet
+                                 ,getPlanet: getPlanet
+                                 ,getPlanetPosition: getPlanetPosition
+                                 ,startingPlanet: startingPlanet
+                                 ,randomPlanetPositions: randomPlanetPositions
+                                 ,nearestPlanets: nearestPlanets};
+   return _elm.Location.Galaxy.values;
+};
+Elm.Location = Elm.Location || {};
 Elm.Location.Planet = Elm.Location.Planet || {};
 Elm.Location.Planet.make = function (_elm) {
    "use strict";
@@ -4449,7 +4656,6 @@ Elm.Location.Planet.make = function (_elm) {
    $moduleName = "Location.Planet",
    $Array = Elm.Array.make(_elm),
    $Basics = Elm.Basics.make(_elm),
-   $Debug = Elm.Debug.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
@@ -4458,7 +4664,7 @@ Elm.Location.Planet.make = function (_elm) {
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $Util$ArrayUtil = Elm.Util.ArrayUtil.make(_elm),
-   $Util$StringUtil = Elm.Util.StringUtil.make(_elm);
+   $Util$RandomUtil = Elm.Util.RandomUtil.make(_elm);
    var stats = function (planet) {
       return A2($Html.p,
       _L.fromArray([]),
@@ -4467,7 +4673,32 @@ Elm.Location.Planet.make = function (_elm) {
                    $Basics.toString(planet.population)))
                    ,A2($Html.br,
                    _L.fromArray([]),
-                   _L.fromArray([]))]));
+                   _L.fromArray([]))
+                   ,$Html.text("Nearest planets:")
+                   ,A2($Html.br,
+                   _L.fromArray([]),
+                   _L.fromArray([]))
+                   ,A2($Html.ul,
+                   _L.fromArray([]),
+                   A2($List.map,
+                   function (_v0) {
+                      return function () {
+                         switch (_v0.ctor)
+                         {case "_Tuple2":
+                            return A2($Html.li,
+                              _L.fromArray([]),
+                              _L.fromArray([$Html.text(A2($Basics._op["++"],
+                              _v0._0,
+                              A2($Basics._op["++"],
+                              " (",
+                              A2($Basics._op["++"],
+                              $Basics.toString(_v0._1),
+                              " ly)"))))]));}
+                         _U.badCase($moduleName,
+                         "on line 116, column 11 to 80");
+                      }();
+                   },
+                   planet.nearestPlanets))]));
    };
    var planetName = function (name) {
       return A2($Html.h2,
@@ -4484,18 +4715,14 @@ Elm.Location.Planet.make = function (_elm) {
                    ,planetName(planet.name)
                    ,stats(planet)]));
    };
-   var randomInt = F2(function (seed,
-   maxInt) {
-      return A2($Random.generate,
-      A2($Random.$int,0,maxInt),
-      seed);
-   });
-   var Planet = F3(function (a,
+   var Planet = F4(function (a,
    b,
-   c) {
+   c,
+   d) {
       return {_: {}
              ,image: b
              ,name: a
+             ,nearestPlanets: d
              ,population: c};
    });
    var planetImages = $Array.fromList(_L.fromArray(["assets/planets/earth.png"
@@ -4511,110 +4738,87 @@ Elm.Location.Planet.make = function (_elm) {
                                                    ,"assets/planets/p8shaded.png"
                                                    ,"assets/planets/p9shaded.png"
                                                    ,"assets/planets/p10shaded.png"]));
-   var planetNames = $Array.fromList(_L.fromArray(["1249 Scuti III"
-                                                  ,"2713 Antliae VII"
-                                                  ,"2780 Pushya VII"
-                                                  ,"3876 Liu Xiu VII"
-                                                  ,"3887 Sagittae Prime"
-                                                  ,"4410 Scuti V"
-                                                  ,"6385 Lyncis VII"
-                                                  ,"8112 Gui Xiu VI"
-                                                  ,"8886 Kui Xiu Prime"
-                                                  ,"9100 Magha Prime"
-                                                  ,"Almaren"
-                                                  ,"Anu"
-                                                  ,"Asherah"
-                                                  ,"Balha II"
-                                                  ,"Cybele Prime"
-                                                  ,"D\'Endan"
-                                                  ,"Dari II"
-                                                  ,"Di-Yu"
-                                                  ,"Dr\'Mado"
-                                                  ,"Emhan Betu"
-                                                  ,"Enlil"
-                                                  ,"Ganiea"
-                                                  ,"Hura VII"
-                                                  ,"Iahamu III"
-                                                  ,"Keniea VI"
-                                                  ,"Lurma III"
-                                                  ,"Mara R\'Vani"
-                                                  ,"Metra"
-                                                  ,"Minbe"
-                                                  ,"Natha"
-                                                  ,"New Britain"
-                                                  ,"New Gaia"
-                                                  ,"New Rhea"
-                                                  ,"New Terra"
-                                                  ,"New Thyoph"
-                                                  ,"New Titan"
-                                                  ,"New Triton"
-                                                  ,"New Xena"
-                                                  ,"Niano"
-                                                  ,"Shu VII"
-                                                  ,"Sietynas IV"
-                                                  ,"Skadi II"
-                                                  ,"Sycia II"
-                                                  ,"Tando"
-                                                  ,"Tane T\'Agan"
-                                                  ,"Tholy Prime"
-                                                  ,"Tipa"
-                                                  ,"Vogi IV"
-                                                  ,"Zakar VII"]));
-   var randomPlanet = function (seed) {
+   var getRandomPlanet = F2(function (planetName,
+   seed) {
       return function () {
-         var _ = A3($Util$ArrayUtil.randomArrayElement,
-         seed,
-         planetNames,
-         "Earth");
-         var planetName = function () {
-            switch (_.ctor)
-            {case "_Tuple2": return _._0;}
-            _U.badCase($moduleName,
-            "on line 96, column 28 to 81");
-         }();
-         var foo2 = A2($Debug.log,
-         "planetName",
-         planetName);
-         var planetSeed = $Random.initialSeed($Util$StringUtil.hashCode(planetName));
-         var foo1 = A2($Debug.log,
-         "planetSeed",
-         planetSeed);
          var $ = A3($Util$ArrayUtil.randomArrayElement,
-         planetSeed,
+         seed,
          planetImages,
          "Earth"),
          planetImage = $._0,
-         seed$ = $._1;
-         var foo3 = A2($Debug.log,
-         "planetImage",
-         planetImage);
-         var $ = A2(randomInt,
-         seed$,
+         seed1 = $._1;
+         var $ = A2($Util$RandomUtil.randomInt,
+         seed1,
          10000),
          planetPopulation = $._0,
-         seed$$ = $._1;
-         var foo4 = A2($Debug.log,
-         "planetPopulation",
-         planetPopulation);
-         var $ = A2(randomInt,seed$$,8),
+         seed2 = $._1;
+         var $ = A2($Util$RandomUtil.randomInt,
+         seed2,
+         8),
          planetPopulationMultiplier = $._0,
-         seed$$$ = $._1;
-         var foo5 = A2($Debug.log,
-         "planetPopulationMultiplier",
-         planetPopulationMultiplier);
+         seed3 = $._1;
          return {_: {}
                 ,image: planetImage
                 ,name: planetName
+                ,nearestPlanets: _L.fromArray([])
                 ,population: planetPopulation * Math.pow(10,
                 planetPopulationMultiplier)};
       }();
-   };
+   });
+   var planetNames = _L.fromArray(["1249 Scuti III"
+                                  ,"2713 Antliae VII"
+                                  ,"2780 Pushya VII"
+                                  ,"3876 Liu Xiu VII"
+                                  ,"3887 Sagittae Prime"
+                                  ,"4410 Scuti V"
+                                  ,"6385 Lyncis VII"
+                                  ,"8112 Gui Xiu VI"
+                                  ,"8886 Kui Xiu Prime"
+                                  ,"9100 Magha Prime"
+                                  ,"Almaren"
+                                  ,"Anu"
+                                  ,"Asherah"
+                                  ,"Balha II"
+                                  ,"Cybele Prime"
+                                  ,"D\'Endan"
+                                  ,"Dari II"
+                                  ,"Di-Yu"
+                                  ,"Dr\'Mado"
+                                  ,"Emhan Betu"
+                                  ,"Enlil"
+                                  ,"Ganiea"
+                                  ,"Hura VII"
+                                  ,"Iahamu III"
+                                  ,"Keniea VI"
+                                  ,"Lurma III"
+                                  ,"Mara R\'Vani"
+                                  ,"Metra"
+                                  ,"Minbe"
+                                  ,"Natha"
+                                  ,"New Britain"
+                                  ,"New Gaia"
+                                  ,"New Rhea"
+                                  ,"New Terra"
+                                  ,"New Thyoph"
+                                  ,"New Titan"
+                                  ,"New Triton"
+                                  ,"New Xena"
+                                  ,"Niano"
+                                  ,"Shu VII"
+                                  ,"Sietynas IV"
+                                  ,"Skadi II"
+                                  ,"Sycia II"
+                                  ,"Tando"
+                                  ,"Tane T\'Agan"
+                                  ,"Tholy Prime"
+                                  ,"Tipa"
+                                  ,"Vogi IV"
+                                  ,"Zakar VII"]);
    _elm.Location.Planet.values = {_op: _op
                                  ,planetNames: planetNames
                                  ,planetImages: planetImages
                                  ,Planet: Planet
-                                 ,randomInt: randomInt
-                                 ,randomPlanet: randomPlanet
+                                 ,getRandomPlanet: getRandomPlanet
                                  ,planetName: planetName
                                  ,stats: stats
                                  ,view: view};
@@ -8061,6 +8265,26 @@ Elm.Native.List.make = function(localRuntime) {
 
 };
 
+Elm.Native.Now = {};
+
+Elm.Native.Now.make = function(localRuntime) {
+
+  localRuntime.Native = localRuntime.Native || {};
+
+
+  localRuntime.Native.Now = localRuntime.Native.Now || {};
+
+  if (localRuntime.Native.Now.values) {
+    return localRuntime.Native.Now.values;
+  }
+
+  var Result = Elm.Result.make(localRuntime);
+
+  return localRuntime.Native.Now.values = {
+    loadTime: (new Date()).getTime()
+  };
+
+};
 Elm.Native.Port = {};
 Elm.Native.Port.make = function(localRuntime) {
 
@@ -14226,6 +14450,20 @@ Elm.Util.ArrayUtil.make = function (_elm) {
    $Random = Elm.Random.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm);
+   var first = F2(function (array,
+   $default) {
+      return A2($Maybe.withDefault,
+      $default,
+      A2($Array.get,0,array));
+   });
+   var last = F2(function (array,
+   $default) {
+      return A2($Maybe.withDefault,
+      $default,
+      A2($Array.get,
+      $Array.length(array) - 1,
+      array));
+   });
    var randomArrayElement = F3(function (seed,
    array,
    $default) {
@@ -14248,8 +14486,106 @@ Elm.Util.ArrayUtil.make = function (_elm) {
       }();
    });
    _elm.Util.ArrayUtil.values = {_op: _op
-                                ,randomArrayElement: randomArrayElement};
+                                ,randomArrayElement: randomArrayElement
+                                ,last: last
+                                ,first: first};
    return _elm.Util.ArrayUtil.values;
+};
+Elm.Util = Elm.Util || {};
+Elm.Util.RandomUtil = Elm.Util.RandomUtil || {};
+Elm.Util.RandomUtil.make = function (_elm) {
+   "use strict";
+   _elm.Util = _elm.Util || {};
+   _elm.Util.RandomUtil = _elm.Util.RandomUtil || {};
+   if (_elm.Util.RandomUtil.values)
+   return _elm.Util.RandomUtil.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Util.RandomUtil",
+   $Array = Elm.Array.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Random = Elm.Random.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var zip = $List.map2(F2(function (v0,
+   v1) {
+      return {ctor: "_Tuple2"
+             ,_0: v0
+             ,_1: v1};
+   }));
+   var shuffleList = F2(function (listToShuffle,
+   seed) {
+      return function () {
+         var _ = A2($Random.generate,
+         A2($Random.list,
+         $List.length(listToShuffle),
+         A2($Random.$int,
+         $Random.minInt,
+         $Random.maxInt)),
+         seed);
+         var randomInts = function () {
+            switch (_.ctor)
+            {case "_Tuple2": return _._0;}
+            _U.badCase($moduleName,
+            "on line 25, column 23 to 91");
+         }();
+         var zippedLists = A2(zip,
+         listToShuffle,
+         randomInts);
+         var shuffledList = A2($List.sortBy,
+         $Basics.snd,
+         zippedLists);
+         return A2($List.map,
+         $Basics.fst,
+         shuffledList);
+      }();
+   });
+   var seedList = F2(function (length,
+   seed) {
+      return function () {
+         var _ = A2($Random.generate,
+         A2($Random.list,
+         length,
+         A2($Random.$int,
+         $Random.minInt,
+         $Random.maxInt)),
+         seed);
+         var seedValues = function () {
+            switch (_.ctor)
+            {case "_Tuple2": return _._0;}
+            _U.badCase($moduleName,
+            "on line 16, column 23 to 70");
+         }();
+         return A2($List.map,
+         function (n) {
+            return $Random.initialSeed(n);
+         },
+         seedValues);
+      }();
+   });
+   var seedArray = F2(function (length,
+   seed) {
+      return $Array.fromList(A2(seedList,
+      length,
+      seed));
+   });
+   var randomInt = F2(function (seed,
+   maxInt) {
+      return A2($Random.generate,
+      A2($Random.$int,0,maxInt),
+      seed);
+   });
+   _elm.Util.RandomUtil.values = {_op: _op
+                                 ,randomInt: randomInt
+                                 ,seedArray: seedArray
+                                 ,seedList: seedList
+                                 ,zip: zip
+                                 ,shuffleList: shuffleList};
+   return _elm.Util.RandomUtil.values;
 };
 Elm.Util = Elm.Util || {};
 Elm.Util.StringUtil = Elm.Util.StringUtil || {};
@@ -14290,8 +14626,8 @@ Elm.Util.StringUtil.make = function (_elm) {
       s);
    };
    _elm.Util.StringUtil.values = {_op: _op
-                                 ,partialHash: partialHash
-                                 ,hashCode: hashCode};
+                                 ,hashCode: hashCode
+                                 ,partialHash: partialHash};
    return _elm.Util.StringUtil.values;
 };
 Elm.VirtualDom = Elm.VirtualDom || {};

@@ -11,3 +11,11 @@ randomArrayElement seed array default =
     randomElement = Maybe.withDefault default (Array.get randomIndex array)
   in
     (randomElement, seed')
+
+last : Array a -> a -> a
+last array default =
+  Maybe.withDefault default (Array.get (Array.length array - 1) array)
+
+first : Array a -> a -> a
+first array default =
+  Maybe.withDefault default (Array.get 0 array)

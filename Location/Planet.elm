@@ -4,14 +4,16 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 
-import Array
+import Array exposing (Array)
+import Basics exposing (cos, sin, pi)
 import Debug
 import Random
 
-import Util.ArrayUtil
+import Util.ArrayUtil as ArrayUtil
 import Util.StringUtil
+import Util.RandomUtil as Rand
 
-planetNames = Array.fromList [
+planetNames = [
   "1249 Scuti III",
   "2713 Antliae VII",
   "2780 Pushya VII",
@@ -78,30 +80,25 @@ planetImages = Array.fromList [
   "assets/planets/p9shaded.png",
   "assets/planets/p10shaded.png" ]
 
-
 type alias Planet =
   { name : String,
     image : String,
-    population : Int
+    population : Int,
+    nearestPlanets : List (String, Int)
   }
 
-randomInt seed maxInt =
-  Random.generate (Random.int 0 maxInt) seed
-
-
-randomPlanet : Random.Seed -> Planet
-randomPlanet seed =
+getRandomPlanet : String -> Random.Seed -> Planet
+getRandomPlanet planetName seed =
   let
     --get the planet index and base all random values on that
-    (planetName, _) = Util.ArrayUtil.randomArrayElement seed planetNames "Earth"
-    planetSeed = Random.initialSeed (Util.StringUtil.hashCode planetName)
-    (planetImage, seed') = Util.ArrayUtil.randomArrayElement planetSeed planetImages "Earth"
-    (planetPopulation, seed'') = (randomInt seed' 10000)
-    (planetPopulationMultiplier, seed''') = (randomInt seed'' 8)
+    (planetImage, seed1) = ArrayUtil.randomArrayElement seed planetImages "Earth"
+    (planetPopulation, seed2) = (Rand.randomInt seed1 10000)
+    (planetPopulationMultiplier, seed3) = (Rand.randomInt seed2 8)
   in
     { name = planetName,
       image = planetImage,
-      population = planetPopulation * (10 ^ planetPopulationMultiplier)
+      population = planetPopulation * (10 ^ planetPopulationMultiplier),
+      nearestPlanets = []
     }
 
 --VIEW
@@ -112,7 +109,12 @@ planetName name =
 stats : Planet -> Html
 stats planet =
   p [ ]
-    [ text ("Population: " ++ (toString planet.population)), br [ ] [ ]
+    [ text ("Population: " ++ (toString planet.population)), br [ ] [ ],
+      text ("Nearest planets:"), br [ ] [ ],
+      ul [ ]
+        (List.map (\(planetName, distance) ->
+          li [ ] [ text (planetName ++ " (" ++ (toString distance) ++ " ly)") ])
+        planet.nearestPlanets)
     ]
 
 view : Planet -> Html

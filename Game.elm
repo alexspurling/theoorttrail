@@ -3,6 +3,8 @@ module Game where
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+
+import Array exposing (Array)
 import StartApp
 import Signal exposing (Address, (<~))
 import Random
@@ -11,20 +13,27 @@ import Debug
 
 import Character.Player exposing (Player)
 import Location.Planet exposing (Planet)
+import Location.Galaxy exposing (Galaxy)
 
-port timestamp : Int
+import Native.Now
 
 -- MODEL
 
 type alias Model =
   { player : Player,
+    galaxy : Galaxy,
     location : Planet
   }
 
 initialModel : Random.Seed -> Model
 initialModel initialSeed =
+  let
+    newGalaxy = Location.Galaxy.newGalaxy initialSeed
+    startingPlanet = Location.Galaxy.startingPlanet newGalaxy
+  in
   { player = Character.Player.randomPlayer initialSeed,
-    location = Location.Planet.randomPlanet initialSeed
+    galaxy = newGalaxy,
+    location = startingPlanet
   }
 
 -- UPDATE
@@ -56,7 +65,7 @@ view address model =
 
 mainApp : StartApp.App Model Action
 mainApp =
-  { model = initialModel (Random.initialSeed timestamp),
+  { model = initialModel (Random.initialSeed Native.Now.loadTime),
     view = view,
     update = update
   }
