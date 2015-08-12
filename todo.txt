@@ -1,0 +1,12 @@
+Change layout
+Visit planets!
+  Display fractional planet distance when < 10ly
+  Add ship
+    Add ship position
+    Add ship velocity
+    Add ship acceleration
+  Add buttons
+    Add click handler to buttons
+    Add time signal
+    On tick, check motion state
+      if travelling update ship position
