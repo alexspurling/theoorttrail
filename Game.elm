@@ -9,6 +9,7 @@ import Random
 import Time
 import Debug
 
+import Matrix
 import Character.Player exposing (Player)
 import Location.Planet exposing (Planet)
 
@@ -18,13 +19,15 @@ port timestamp : Int
 
 type alias Model =
   { player : Player,
-    location : Planet
+    location : Planet,
+    distances : Matrix.Matrix Int
   }
 
 initialModel : Random.Seed -> Model
 initialModel initialSeed =
   { player = Character.Player.randomPlayer initialSeed,
-    location = Location.Planet.randomPlanet initialSeed
+    location = Location.Planet.randomPlanet initialSeed,
+    distances = Location.Planet.planetDistances initialSeed
   }
 
 -- UPDATE
