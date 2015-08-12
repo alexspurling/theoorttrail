@@ -2029,7 +2029,6 @@ Elm.Game.make = function (_elm) {
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
    $Location$Planet = Elm.Location.Planet.make(_elm),
-   $Matrix = Elm.Matrix.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Random = Elm.Random.make(_elm),
    $Result = Elm.Result.make(_elm),
@@ -2054,21 +2053,17 @@ Elm.Game.make = function (_elm) {
          switch (action.ctor)
          {case "NoOp": return model;}
          _U.badCase($moduleName,
-         "between lines 40 and 42");
+         "between lines 37 and 39");
       }();
    });
    var NoOp = {ctor: "NoOp"};
    var initialModel = function (initialSeed) {
       return {_: {}
-             ,distances: $Location$Planet.planetDistances(initialSeed)
              ,location: $Location$Planet.randomPlanet(initialSeed)
              ,player: $Character$Player.randomPlayer(initialSeed)};
    };
-   var Model = F3(function (a,
-   b,
-   c) {
+   var Model = F2(function (a,b) {
       return {_: {}
-             ,distances: c
              ,location: b
              ,player: a};
    });
@@ -4458,7 +4453,6 @@ Elm.Location.Planet.make = function (_elm) {
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
-   $Matrix = Elm.Matrix.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Random = Elm.Random.make(_elm),
    $Result = Elm.Result.make(_elm),
@@ -4517,81 +4511,55 @@ Elm.Location.Planet.make = function (_elm) {
                                                    ,"assets/planets/p8shaded.png"
                                                    ,"assets/planets/p9shaded.png"
                                                    ,"assets/planets/p10shaded.png"]));
-   var zeroDiagonal = function (matrix) {
-      return A2($Matrix.mapWithLocation,
-      F2(function (_v0,distance) {
-         return function () {
-            switch (_v0.ctor)
-            {case "_Tuple2":
-               return _U.eq(_v0._0,
-                 _v0._1) ? 0 : distance;}
-            _U.badCase($moduleName,
-            "on line 108, column 47 to 77");
-         }();
-      }),
-      matrix);
-   };
-   var mirrorMatrix = function (matrix) {
-      return A2($Matrix.mapWithLocation,
-      F2(function (_v4,distance) {
-         return function () {
-            switch (_v4.ctor)
-            {case "_Tuple2":
-               return _U.cmp(_v4._0,
-                 _v4._1) < 0 ? distance : A2($Maybe.withDefault,
-                 0,
-                 A2($Matrix.get,
-                 {ctor: "_Tuple2"
-                 ,_0: _v4._1
-                 ,_1: _v4._0},
-                 matrix));}
-            _U.badCase($moduleName,
-            "between lines 100 and 103");
-         }();
-      }),
-      matrix);
-   };
-   var PlanetDistance = F2(function (a,
-   b) {
-      return {_: {}
-             ,distance: b
-             ,planetIndex: a};
-   });
    var planetNames = $Array.fromList(_L.fromArray(["1249 Scuti III"
                                                   ,"2713 Antliae VII"
+                                                  ,"2780 Pushya VII"
+                                                  ,"3876 Liu Xiu VII"
+                                                  ,"3887 Sagittae Prime"
+                                                  ,"4410 Scuti V"
+                                                  ,"6385 Lyncis VII"
+                                                  ,"8112 Gui Xiu VI"
+                                                  ,"8886 Kui Xiu Prime"
+                                                  ,"9100 Magha Prime"
+                                                  ,"Almaren"
+                                                  ,"Anu"
+                                                  ,"Asherah"
+                                                  ,"Balha II"
+                                                  ,"Cybele Prime"
+                                                  ,"D\'Endan"
+                                                  ,"Dari II"
+                                                  ,"Di-Yu"
+                                                  ,"Dr\'Mado"
+                                                  ,"Emhan Betu"
+                                                  ,"Enlil"
+                                                  ,"Ganiea"
+                                                  ,"Hura VII"
+                                                  ,"Iahamu III"
+                                                  ,"Keniea VI"
+                                                  ,"Lurma III"
+                                                  ,"Mara R\'Vani"
+                                                  ,"Metra"
+                                                  ,"Minbe"
+                                                  ,"Natha"
+                                                  ,"New Britain"
+                                                  ,"New Gaia"
+                                                  ,"New Rhea"
+                                                  ,"New Terra"
+                                                  ,"New Thyoph"
+                                                  ,"New Titan"
+                                                  ,"New Triton"
+                                                  ,"New Xena"
+                                                  ,"Niano"
+                                                  ,"Shu VII"
+                                                  ,"Sietynas IV"
+                                                  ,"Skadi II"
+                                                  ,"Sycia II"
+                                                  ,"Tando"
+                                                  ,"Tane T\'Agan"
+                                                  ,"Tholy Prime"
                                                   ,"Tipa"
                                                   ,"Vogi IV"
                                                   ,"Zakar VII"]));
-   var planetDistances = function (seed) {
-      return function () {
-         var numPlanets = $Array.length(planetNames);
-         var $ = A2($Random.generate,
-         A2($Random.list,
-         numPlanets * numPlanets,
-         A2($Random.$int,1,10)),
-         seed),
-         randomDistances = $._0,
-         seed$ = $._1;
-         var initialMatrix = A2($Array.indexedMap,
-         F2(function (index,planet) {
-            return function () {
-               var randomSubset = A2($List.take,
-               numPlanets,
-               A2($List.drop,
-               index * numPlanets,
-               randomDistances));
-               return $Array.fromList(randomSubset);
-            }();
-         }),
-         planetNames);
-         var mirroredMatrix = mirrorMatrix(initialMatrix);
-         var finalMatrix = zeroDiagonal(mirroredMatrix);
-         var foo = A2($Debug.log,
-         "Distances",
-         finalMatrix);
-         return finalMatrix;
-      }();
-   };
    var randomPlanet = function (seed) {
       return function () {
          var _ = A3($Util$ArrayUtil.randomArrayElement,
@@ -4602,23 +4570,38 @@ Elm.Location.Planet.make = function (_elm) {
             switch (_.ctor)
             {case "_Tuple2": return _._0;}
             _U.badCase($moduleName,
-            "on line 141, column 28 to 81");
+            "on line 96, column 28 to 81");
          }();
+         var foo2 = A2($Debug.log,
+         "planetName",
+         planetName);
          var planetSeed = $Random.initialSeed($Util$StringUtil.hashCode(planetName));
+         var foo1 = A2($Debug.log,
+         "planetSeed",
+         planetSeed);
          var $ = A3($Util$ArrayUtil.randomArrayElement,
          planetSeed,
          planetImages,
          "Earth"),
          planetImage = $._0,
          seed$ = $._1;
+         var foo3 = A2($Debug.log,
+         "planetImage",
+         planetImage);
          var $ = A2(randomInt,
          seed$,
          10000),
          planetPopulation = $._0,
          seed$$ = $._1;
+         var foo4 = A2($Debug.log,
+         "planetPopulation",
+         planetPopulation);
          var $ = A2(randomInt,seed$$,8),
          planetPopulationMultiplier = $._0,
          seed$$$ = $._1;
+         var foo5 = A2($Debug.log,
+         "planetPopulationMultiplier",
+         planetPopulationMultiplier);
          return {_: {}
                 ,image: planetImage
                 ,name: planetName
@@ -4628,10 +4611,6 @@ Elm.Location.Planet.make = function (_elm) {
    };
    _elm.Location.Planet.values = {_op: _op
                                  ,planetNames: planetNames
-                                 ,PlanetDistance: PlanetDistance
-                                 ,planetDistances: planetDistances
-                                 ,mirrorMatrix: mirrorMatrix
-                                 ,zeroDiagonal: zeroDiagonal
                                  ,planetImages: planetImages
                                  ,Planet: Planet
                                  ,randomInt: randomInt
@@ -4640,137 +4619,6 @@ Elm.Location.Planet.make = function (_elm) {
                                  ,stats: stats
                                  ,view: view};
    return _elm.Location.Planet.values;
-};
-Elm.Matrix = Elm.Matrix || {};
-Elm.Matrix.make = function (_elm) {
-   "use strict";
-   _elm.Matrix = _elm.Matrix || {};
-   if (_elm.Matrix.values)
-   return _elm.Matrix.values;
-   var _op = {},
-   _N = Elm.Native,
-   _U = _N.Utils.make(_elm),
-   _L = _N.List.make(_elm),
-   $moduleName = "Matrix",
-   $Array = Elm.Array.make(_elm),
-   $Basics = Elm.Basics.make(_elm),
-   $List = Elm.List.make(_elm),
-   $Maybe = Elm.Maybe.make(_elm),
-   $Result = Elm.Result.make(_elm),
-   $Signal = Elm.Signal.make(_elm);
-   var rowCount = function (m) {
-      return $Array.length(m);
-   };
-   var colCount = function (m) {
-      return $Maybe.withDefault(0)($Maybe.map($Array.length)(A2($Array.get,
-      0,
-      m)));
-   };
-   var fromList = function (l) {
-      return $Array.fromList(A2($List.map,
-      $Array.fromList,
-      l));
-   };
-   var toList = function (m) {
-      return $Array.toList(A2($Array.map,
-      $Array.toList,
-      m));
-   };
-   var flatten = function (m) {
-      return $List.concat(toList(m));
-   };
-   var map = F2(function (f,m) {
-      return A2($Array.map,
-      $Array.map(f),
-      m);
-   });
-   var col = $Basics.snd;
-   var row = $Basics.fst;
-   var get = F2(function (location,
-   m) {
-      return A2($Maybe.andThen,
-      A2($Array.get,row(location),m),
-      $Array.get(col(location)));
-   });
-   var update = F3(function (location,
-   f,
-   m) {
-      return $Maybe.withDefault(m)($Maybe.map(function (current) {
-         return $Maybe.withDefault(m)($Maybe.map(function (oldRow) {
-            return function (newRow) {
-               return A3($Array.set,
-               row(location),
-               newRow,
-               m);
-            }(A3($Array.set,
-            col(location),
-            f(current),
-            oldRow));
-         })(A2($Array.get,
-         row(location),
-         m)));
-      })(A2(get,location,m)));
-   });
-   var set = F3(function (location,
-   value,
-   m) {
-      return A3(update,
-      location,
-      $Basics.always(value),
-      m);
-   });
-   var loc = F2(function (v0,v1) {
-      return {ctor: "_Tuple2"
-             ,_0: v0
-             ,_1: v1};
-   });
-   var matrix = F3(function (numRows,
-   numCols,
-   f) {
-      return A2($Array.initialize,
-      numRows,
-      function (row) {
-         return A2($Array.initialize,
-         numCols,
-         function (col) {
-            return f(A2(loc,row,col));
-         });
-      });
-   });
-   var square = function (size) {
-      return A2(matrix,size,size);
-   };
-   var mapWithLocation = F2(function (f,
-   m) {
-      return A2($Array.indexedMap,
-      F2(function (rowNum,row) {
-         return A2($Array.indexedMap,
-         F2(function (colNum,element) {
-            return A2(f,
-            A2(loc,rowNum,colNum),
-            element);
-         }),
-         row);
-      }),
-      m);
-   });
-   _elm.Matrix.values = {_op: _op
-                        ,loc: loc
-                        ,row: row
-                        ,col: col
-                        ,square: square
-                        ,matrix: matrix
-                        ,map: map
-                        ,mapWithLocation: mapWithLocation
-                        ,toList: toList
-                        ,fromList: fromList
-                        ,flatten: flatten
-                        ,get: get
-                        ,set: set
-                        ,update: update
-                        ,colCount: colCount
-                        ,rowCount: rowCount};
-   return _elm.Matrix.values;
 };
 Elm.Maybe = Elm.Maybe || {};
 Elm.Maybe.make = function (_elm) {
@@ -10617,38 +10465,6 @@ Elm.Native.Time.make = function(localRuntime)
 
 };
 
-Elm.Native.Trampoline = {};
-Elm.Native.Trampoline.make = function(localRuntime) {
-
-	localRuntime.Native = localRuntime.Native || {};
-	localRuntime.Native.Trampoline = localRuntime.Native.Trampoline || {};
-	if (localRuntime.Native.Trampoline.values)
-	{
-		return localRuntime.Native.Trampoline.values;
-	}
-
-	// trampoline : Trampoline a -> a
-	function trampoline(t)
-	{
-		var tramp = t;
-		while(true)
-		{
-			switch(tramp.ctor)
-			{
-				case "Done":
-					return tramp._0;
-				case "Continue":
-					tramp = tramp._0({ ctor: "_Tuple0" });
-					continue;
-			}
-		}
-	}
-
-	return localRuntime.Native.Trampoline.values = {
-		trampoline: trampoline
-	};
-};
-
 Elm.Native.Transform2D = {};
 Elm.Native.Transform2D.make = function(localRuntime) {
 
@@ -13393,148 +13209,6 @@ Elm.Random.make = function (_elm) {
                         ,Seed: Seed};
    return _elm.Random.values;
 };
-Elm.Random = Elm.Random || {};
-Elm.Random.Array = Elm.Random.Array || {};
-Elm.Random.Array.make = function (_elm) {
-   "use strict";
-   _elm.Random = _elm.Random || {};
-   _elm.Random.Array = _elm.Random.Array || {};
-   if (_elm.Random.Array.values)
-   return _elm.Random.Array.values;
-   var _op = {},
-   _N = Elm.Native,
-   _U = _N.Utils.make(_elm),
-   _L = _N.List.make(_elm),
-   $moduleName = "Random.Array",
-   $Array = Elm.Array.make(_elm),
-   $Basics = Elm.Basics.make(_elm),
-   $List = Elm.List.make(_elm),
-   $Maybe = Elm.Maybe.make(_elm),
-   $Random = Elm.Random.make(_elm),
-   $Result = Elm.Result.make(_elm),
-   $Signal = Elm.Signal.make(_elm),
-   $Trampoline = Elm.Trampoline.make(_elm);
-   var choose = F2(function (seed,
-   arr) {
-      return _U.eq(arr,
-      $Array.empty) ? {ctor: "_Tuple3"
-                      ,_0: $Maybe.Nothing
-                      ,_1: seed
-                      ,_2: arr} : function () {
-         var intGen = A2($Random.$int,
-         0,
-         $Array.length(arr) - 1);
-         var $ = A2($Random.generate,
-         intGen,
-         seed),
-         index = $._0,
-         seed$ = $._1;
-         var front = A3($Array.slice,
-         0,
-         index,
-         arr);
-         var back = A3($Array.slice,
-         index + 1,
-         $Array.length(arr),
-         arr);
-         return {ctor: "_Tuple3"
-                ,_0: A2($Array.get,index,arr)
-                ,_1: seed$
-                ,_2: A2($Array.append,
-                front,
-                back)};
-      }();
-   });
-   var shuffle = F2(function (seed,
-   arr) {
-      return _U.eq(arr,
-      $Array.empty) ? {ctor: "_Tuple2"
-                      ,_0: arr
-                      ,_1: seed} : function () {
-         var helper = function (_v0) {
-            return function () {
-               switch (_v0.ctor)
-               {case "_Tuple3":
-                  return function () {
-                       var $ = A2(choose,
-                       _v0._0,
-                       _v0._2),
-                       m_val = $._0,
-                       s$ = $._1,
-                       a$ = $._2;
-                       return function () {
-                          switch (m_val.ctor)
-                          {case "Just":
-                             return $Trampoline.Continue(function (_v7) {
-                                  return function () {
-                                     switch (_v7.ctor)
-                                     {case "_Tuple0":
-                                        return helper({ctor: "_Tuple3"
-                                                      ,_0: s$
-                                                      ,_1: A2($List._op["::"],
-                                                      m_val._0,
-                                                      _v0._1)
-                                                      ,_2: a$});}
-                                     _U.badCase($moduleName,
-                                     "on line 55, column 48 to 71");
-                                  }();
-                               });
-                             case "Nothing":
-                             return $Trampoline.Done({ctor: "_Tuple3"
-                                                     ,_0: _v0._0
-                                                     ,_1: _v0._1
-                                                     ,_2: _v0._2});}
-                          _U.badCase($moduleName,
-                          "between lines 53 and 56");
-                       }();
-                    }();}
-               _U.badCase($moduleName,
-               "between lines 52 and 56");
-            }();
-         };
-         var _ = $Trampoline.trampoline(helper({ctor: "_Tuple3"
-                                               ,_0: seed
-                                               ,_1: _L.fromArray([])
-                                               ,_2: arr}));
-         var seed$ = function () {
-            switch (_.ctor)
-            {case "_Tuple3": return _._0;}
-            _U.badCase($moduleName,
-            "on line 56, column 32 to 67");
-         }();
-         var shuffled = function () {
-            switch (_.ctor)
-            {case "_Tuple3": return _._1;}
-            _U.badCase($moduleName,
-            "on line 56, column 32 to 67");
-         }();
-         return {ctor: "_Tuple2"
-                ,_0: $Array.fromList(shuffled)
-                ,_1: seed$};
-      }();
-   });
-   var sample = F2(function (seed,
-   arr) {
-      return function () {
-         var intGen = A2($Random.$int,
-         0,
-         $Array.length(arr) - 1);
-         var $ = A2($Random.generate,
-         intGen,
-         seed),
-         index = $._0,
-         seed$ = $._1;
-         return {ctor: "_Tuple2"
-                ,_0: A2($Array.get,index,arr)
-                ,_1: seed$};
-      }();
-   });
-   _elm.Random.Array.values = {_op: _op
-                              ,sample: sample
-                              ,choose: choose
-                              ,shuffle: shuffle};
-   return _elm.Random.Array.values;
-};
 Elm.Result = Elm.Result || {};
 Elm.Result.make = function (_elm) {
    "use strict";
@@ -14467,32 +14141,6 @@ Elm.Time.make = function (_elm) {
                       ,since: since};
    return _elm.Time.values;
 };
-Elm.Trampoline = Elm.Trampoline || {};
-Elm.Trampoline.make = function (_elm) {
-   "use strict";
-   _elm.Trampoline = _elm.Trampoline || {};
-   if (_elm.Trampoline.values)
-   return _elm.Trampoline.values;
-   var _op = {},
-   _N = Elm.Native,
-   _U = _N.Utils.make(_elm),
-   _L = _N.List.make(_elm),
-   $moduleName = "Trampoline",
-   $Native$Trampoline = Elm.Native.Trampoline.make(_elm);
-   var trampoline = $Native$Trampoline.trampoline;
-   var Continue = function (a) {
-      return {ctor: "Continue"
-             ,_0: a};
-   };
-   var Done = function (a) {
-      return {ctor: "Done",_0: a};
-   };
-   _elm.Trampoline.values = {_op: _op
-                            ,trampoline: trampoline
-                            ,Done: Done
-                            ,Continue: Continue};
-   return _elm.Trampoline.values;
-};
 Elm.Transform2D = Elm.Transform2D || {};
 Elm.Transform2D.make = function (_elm) {
    "use strict";
@@ -14642,8 +14290,8 @@ Elm.Util.StringUtil.make = function (_elm) {
       s);
    };
    _elm.Util.StringUtil.values = {_op: _op
-                                 ,hashCode: hashCode
-                                 ,partialHash: partialHash};
+                                 ,partialHash: partialHash
+                                 ,hashCode: hashCode};
    return _elm.Util.StringUtil.values;
 };
 Elm.VirtualDom = Elm.VirtualDom || {};

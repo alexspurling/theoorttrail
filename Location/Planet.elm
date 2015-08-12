@@ -8,17 +8,12 @@ import Array
 import Debug
 import Random
 
-import Random.Array
-import Matrix
-
 import Util.ArrayUtil
 import Util.StringUtil
 
-planetNames : Array.Array String
 planetNames = Array.fromList [
   "1249 Scuti III",
   "2713 Antliae VII",
-{--
   "2780 Pushya VII",
   "3876 Liu Xiu VII",
   "3887 Sagittae Prime",
@@ -63,49 +58,9 @@ planetNames = Array.fromList [
   "Tando",
   "Tane T'Agan",
   "Tholy Prime",
---}
   "Tipa",
   "Vogi IV",
   "Zakar VII" ]
-
-type alias PlanetDistance =
-  { planetIndex : Int,
-    distance : Int
-  }
-
-planetDistances : Random.Seed -> Matrix.Matrix Int
-planetDistances seed =
-  let
-    numPlanets = Array.length planetNames
-    --Get a whole bunch of random distances (one for each pair of planets i.e n^2)
-    (randomDistances, seed') = Random.generate (Random.list (numPlanets * numPlanets) (Random.int 1 10)) seed
-    randomMatrix = Array.indexedMap
-      (\index planet ->
-        let
-          --Get a subset of the random numbers that we generated earlier
-          randomSubset = List.take numPlanets (List.drop (index * numPlanets) randomDistances)
-        in
-          Array.fromList randomSubset) planetNames
-    mirroredMatrix = mirrorMatrix randomMatrix
-    finalMatrix = zeroDiagonal mirroredMatrix
-    foo = Debug.log "Distances" finalMatrix
-  in
-    finalMatrix
-
---copies the bottom left of the matrix over to the top right
-mirrorMatrix : Matrix.Matrix Int -> Matrix.Matrix Int
-mirrorMatrix matrix =
-  Matrix.mapWithLocation
-    (\(x, y) distance ->
-      if x < y then
-        distance
-      else
-        Maybe.withDefault 0 (Matrix.get (y, x) matrix))
-    matrix
-
-zeroDiagonal : Matrix.Matrix Int -> Matrix.Matrix Int
-zeroDiagonal matrix =
-  Matrix.mapWithLocation (\(x, y) distance -> if x == y then 0 else distance) matrix
 
 
 planetImages = Array.fromList [
