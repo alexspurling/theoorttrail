@@ -14,6 +14,7 @@ import Debug
 import Character.Player exposing (Player)
 import Location.Planet exposing (Planet)
 import Location.Galaxy exposing (Galaxy)
+import Ship.Ship exposing (Ship)
 
 import Native.Now
 
@@ -22,7 +23,8 @@ import Native.Now
 type alias Model =
   { player : Player,
     galaxy : Galaxy,
-    location : Planet
+    location : Planet,
+    ship : Ship
   }
 
 initialModel : Random.Seed -> Model
@@ -30,10 +32,12 @@ initialModel initialSeed =
   let
     newGalaxy = Location.Galaxy.newGalaxy initialSeed
     startingPlanet = Location.Galaxy.startingPlanet newGalaxy
+    newShip = Ship.Ship.startingShip
   in
   { player = Character.Player.randomPlayer initialSeed,
     galaxy = newGalaxy,
-    location = startingPlanet
+    location = startingPlanet,
+    ship = newShip
   }
 
 -- UPDATE

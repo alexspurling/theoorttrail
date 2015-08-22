@@ -8,6 +8,7 @@ import Random
 import Util.ArrayUtil as ArrayUtil
 import Location.Planet exposing (Planet, planetNames, getRandomPlanet)
 import Util.RandomUtil as Rand
+import Util.Game exposing (..)
 
 type alias Galaxy =
   {
@@ -61,9 +62,6 @@ startingPlanet galaxy =
       nearestPlanetDistances
   in
     {planet | nearestPlanets <- nps}
-
-
-type alias Pos = (Int, Int)
 
 {-- Generates an array of random positions no more than a certain distance
 from the last position. It does this by folding over the input array, taking

@@ -2034,6 +2034,7 @@ Elm.Game.make = function (_elm) {
    $Native$Now = Elm.Native.Now.make(_elm),
    $Random = Elm.Random.make(_elm),
    $Result = Elm.Result.make(_elm),
+   $Ship$Ship = Elm.Ship.Ship.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $StartApp = Elm.StartApp.make(_elm);
    var eventsBox = function (model) {
@@ -2055,18 +2056,20 @@ Elm.Game.make = function (_elm) {
          switch (action.ctor)
          {case "NoOp": return model;}
          _U.badCase($moduleName,
-         "between lines 46 and 48");
+         "between lines 50 and 52");
       }();
    });
    var NoOp = {ctor: "NoOp"};
    var initialModel = function (initialSeed) {
       return function () {
+         var newShip = $Ship$Ship.startingShip;
          var newGalaxy = $Location$Galaxy.newGalaxy(initialSeed);
          var startingPlanet = $Location$Galaxy.startingPlanet(newGalaxy);
          return {_: {}
                 ,galaxy: newGalaxy
                 ,location: startingPlanet
-                ,player: $Character$Player.randomPlayer(initialSeed)};
+                ,player: $Character$Player.randomPlayer(initialSeed)
+                ,ship: newShip};
       }();
    };
    var mainApp = {_: {}
@@ -2074,13 +2077,15 @@ Elm.Game.make = function (_elm) {
                  ,update: update
                  ,view: view};
    var main = $StartApp.start(mainApp);
-   var Model = F3(function (a,
+   var Model = F4(function (a,
    b,
-   c) {
+   c,
+   d) {
       return {_: {}
              ,galaxy: b
              ,location: c
-             ,player: a};
+             ,player: a
+             ,ship: d};
    });
    _elm.Game.values = {_op: _op
                       ,Model: Model
@@ -4461,6 +4466,7 @@ Elm.Location.Galaxy.make = function (_elm) {
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $Util$ArrayUtil = Elm.Util.ArrayUtil.make(_elm),
+   $Util$Game = Elm.Util.Game.make(_elm),
    $Util$RandomUtil = Elm.Util.RandomUtil.make(_elm);
    var randomPlanetPositions = F2(function (initialSeed,
    planets) {
@@ -4470,7 +4476,7 @@ Elm.Location.Galaxy.make = function (_elm) {
             switch (_v0.ctor)
             {case "_Tuple2": return _v0._0;}
             _U.badCase($moduleName,
-            "on line 75, column 30 to 33");
+            "on line 73, column 30 to 33");
          }();
       },
       A3($Array.foldl,
@@ -4542,7 +4548,7 @@ Elm.Location.Galaxy.make = function (_elm) {
                               2) + Math.pow(dy,2))};
                     }();}
                _U.badCase($moduleName,
-               "between lines 102 and 106");
+               "between lines 100 and 104");
             }();
          }),
          planetPositions);
@@ -4554,7 +4560,7 @@ Elm.Location.Galaxy.make = function (_elm) {
                switch (_v8.ctor)
                {case "_Tuple2": return _v8._1;}
                _U.badCase($moduleName,
-               "on line 112, column 45 to 53");
+               "on line 110, column 45 to 53");
             }();
          })($Array.toList(distances)));
       }();
@@ -4589,7 +4595,7 @@ Elm.Location.Galaxy.make = function (_elm) {
                               ,_1: _v12._1};
                     }();}
                _U.badCase($moduleName,
-               "between lines 57 and 60");
+               "between lines 58 and 61");
             }();
          },
          nearestPlanetDistances);
@@ -13687,6 +13693,42 @@ Elm.Result.make = function (_elm) {
                         ,Err: Err};
    return _elm.Result.values;
 };
+Elm.Ship = Elm.Ship || {};
+Elm.Ship.Ship = Elm.Ship.Ship || {};
+Elm.Ship.Ship.make = function (_elm) {
+   "use strict";
+   _elm.Ship = _elm.Ship || {};
+   _elm.Ship.Ship = _elm.Ship.Ship || {};
+   if (_elm.Ship.Ship.values)
+   return _elm.Ship.Ship.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Ship.Ship",
+   $Basics = Elm.Basics.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $Util$Game = Elm.Util.Game.make(_elm);
+   var startingShip = {_: {}
+                      ,health: 100
+                      ,name: "USS SS Susceptiple"
+                      ,position: {ctor: "_Tuple2"
+                                 ,_0: 0
+                                 ,_1: 0}};
+   var Ship = F3(function (a,b,c) {
+      return {_: {}
+             ,health: c
+             ,name: a
+             ,position: b};
+   });
+   _elm.Ship.Ship.values = {_op: _op
+                           ,Ship: Ship
+                           ,startingShip: startingShip};
+   return _elm.Ship.Ship.values;
+};
 Elm.Signal = Elm.Signal || {};
 Elm.Signal.make = function (_elm) {
    "use strict";
@@ -14500,6 +14542,27 @@ Elm.Util.ArrayUtil.make = function (_elm) {
                                 ,last: last
                                 ,first: first};
    return _elm.Util.ArrayUtil.values;
+};
+Elm.Util = Elm.Util || {};
+Elm.Util.Game = Elm.Util.Game || {};
+Elm.Util.Game.make = function (_elm) {
+   "use strict";
+   _elm.Util = _elm.Util || {};
+   _elm.Util.Game = _elm.Util.Game || {};
+   if (_elm.Util.Game.values)
+   return _elm.Util.Game.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Util.Game",
+   $Basics = Elm.Basics.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   _elm.Util.Game.values = {_op: _op};
+   return _elm.Util.Game.values;
 };
 Elm.Util = Elm.Util || {};
 Elm.Util.RandomUtil = Elm.Util.RandomUtil || {};
