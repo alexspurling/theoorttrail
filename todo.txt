@@ -9,4 +9,7 @@ Visit planets!
     Add click handler to buttons
     Add time signal
     On tick, check motion state
-      if travelling update ship position
+      if travelling
+        update ship position
+        recalculate planet distances
+
