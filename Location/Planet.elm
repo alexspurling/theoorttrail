@@ -106,14 +106,21 @@ getRandomPlanet planetName seed =
 planetName name =
   h2 [ ] [ text name ]
 
-formatDistance : Float -> String
-formatDistance distance =
+displayDistance : Float -> String
+displayDistance distance =
+  if distance == 0 then
+    " (Visiting)"
+  else
+    " (" ++ (roundDistance distance) ++ " ly)"
+
+roundDistance : Float -> String
+roundDistance distance =
   if distance < 10 then
     --Round to a single decimal place
     toString ((toFloat (floor (distance * 10))) / 10)
   else
     --Otherwise we just show the integer value
-    toString <| floor <| distance
+    toString <| toFloat <| floor distance
 
 stats : Planet -> Html
 stats planet =
@@ -122,7 +129,7 @@ stats planet =
       text ("Nearest planets:"), br [ ] [ ],
       ul [ ]
         (List.map (\(planetName, distance) ->
-          li [ ] [ text (planetName ++ " (" ++ (formatDistance distance) ++ " ly)") ])
+          li [ ] [ text (planetName ++ displayDistance distance) ])
         planet.nearestPlanets)
     ]
 

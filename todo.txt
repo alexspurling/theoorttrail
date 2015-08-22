@@ -1,6 +1,6 @@
 Change layout
 Visit planets!
-  Display fractional planet distance when < 10ly
+  Display fractional planet distance when < 10ly DONE
   Add ship
     Add ship position
     Add ship velocity

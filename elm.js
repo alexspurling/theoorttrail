@@ -4665,9 +4665,17 @@ Elm.Location.Planet.make = function (_elm) {
    $Signal = Elm.Signal.make(_elm),
    $Util$ArrayUtil = Elm.Util.ArrayUtil.make(_elm),
    $Util$RandomUtil = Elm.Util.RandomUtil.make(_elm);
-   var formatDistance = function (distance) {
+   var roundDistance = function (distance) {
       return _U.cmp(distance,
-      10) < 0 ? $Basics.toString($Basics.toFloat($Basics.floor(distance * 10)) / 10) : $Basics.toString($Basics.floor(distance));
+      10) < 0 ? $Basics.toString($Basics.toFloat($Basics.floor(distance * 10)) / 10) : $Basics.toString($Basics.toFloat($Basics.floor(distance)));
+   };
+   var displayDistance = function (distance) {
+      return _U.eq(distance,
+      0) ? " (Visiting)" : A2($Basics._op["++"],
+      " (",
+      A2($Basics._op["++"],
+      roundDistance(distance),
+      " ly)"));
    };
    var stats = function (planet) {
       return A2($Html.p,
@@ -4693,13 +4701,9 @@ Elm.Location.Planet.make = function (_elm) {
                               _L.fromArray([]),
                               _L.fromArray([$Html.text(A2($Basics._op["++"],
                               _v0._0,
-                              A2($Basics._op["++"],
-                              " (",
-                              A2($Basics._op["++"],
-                              formatDistance(_v0._1),
-                              " ly)"))))]));}
+                              displayDistance(_v0._1)))]));}
                          _U.badCase($moduleName,
-                         "on line 125, column 11 to 86");
+                         "on line 132, column 11 to 67");
                       }();
                    },
                    planet.nearestPlanets))]));
@@ -4824,7 +4828,8 @@ Elm.Location.Planet.make = function (_elm) {
                                  ,Planet: Planet
                                  ,getRandomPlanet: getRandomPlanet
                                  ,planetName: planetName
-                                 ,formatDistance: formatDistance
+                                 ,displayDistance: displayDistance
+                                 ,roundDistance: roundDistance
                                  ,stats: stats
                                  ,view: view};
    return _elm.Location.Planet.values;
