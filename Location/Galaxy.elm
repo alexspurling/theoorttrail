@@ -57,7 +57,7 @@ startingPlanet galaxy =
         let
           nearbyPlanet = getPlanet index galaxy.planets
         in
-          (nearbyPlanet.name, floor distance))
+          (nearbyPlanet.name, distance))
       nearestPlanetDistances
   in
     {planet | nearestPlanets <- nps}
@@ -110,4 +110,4 @@ nearestPlanets currentPlanet planetPositions =
     distances
       |> Array.toList
       |> List.sortBy (\(index, distance) -> distance)
-      |> List.take 3
+      |> List.take 4

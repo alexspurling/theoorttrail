@@ -4549,7 +4549,7 @@ Elm.Location.Galaxy.make = function (_elm) {
          var foo = A2($Debug.log,
          "distances",
          distances);
-         return $List.take(3)($List.sortBy(function (_v8) {
+         return $List.take(4)($List.sortBy(function (_v8) {
             return function () {
                switch (_v8.ctor)
                {case "_Tuple2": return _v8._1;}
@@ -4586,7 +4586,7 @@ Elm.Location.Galaxy.make = function (_elm) {
                        galaxy.planets);
                        return {ctor: "_Tuple2"
                               ,_0: nearbyPlanet.name
-                              ,_1: $Basics.floor(_v12._1)};
+                              ,_1: _v12._1};
                     }();}
                _U.badCase($moduleName,
                "between lines 57 and 60");
@@ -4665,6 +4665,10 @@ Elm.Location.Planet.make = function (_elm) {
    $Signal = Elm.Signal.make(_elm),
    $Util$ArrayUtil = Elm.Util.ArrayUtil.make(_elm),
    $Util$RandomUtil = Elm.Util.RandomUtil.make(_elm);
+   var formatDistance = function (distance) {
+      return _U.cmp(distance,
+      10) < 0 ? $Basics.toString($Basics.toFloat($Basics.floor(distance * 10)) / 10) : $Basics.toString($Basics.floor(distance));
+   };
    var stats = function (planet) {
       return A2($Html.p,
       _L.fromArray([]),
@@ -4692,10 +4696,10 @@ Elm.Location.Planet.make = function (_elm) {
                               A2($Basics._op["++"],
                               " (",
                               A2($Basics._op["++"],
-                              $Basics.toString(_v0._1),
+                              formatDistance(_v0._1),
                               " ly)"))))]));}
                          _U.badCase($moduleName,
-                         "on line 116, column 11 to 80");
+                         "on line 125, column 11 to 86");
                       }();
                    },
                    planet.nearestPlanets))]));
@@ -4820,6 +4824,7 @@ Elm.Location.Planet.make = function (_elm) {
                                  ,Planet: Planet
                                  ,getRandomPlanet: getRandomPlanet
                                  ,planetName: planetName
+                                 ,formatDistance: formatDistance
                                  ,stats: stats
                                  ,view: view};
    return _elm.Location.Planet.values;

@@ -84,7 +84,7 @@ type alias Planet =
   { name : String,
     image : String,
     population : Int,
-    nearestPlanets : List (String, Int)
+    nearestPlanets : List (String, Float)
   }
 
 getRandomPlanet : String -> Random.Seed -> Planet
@@ -106,6 +106,15 @@ getRandomPlanet planetName seed =
 planetName name =
   h2 [ ] [ text name ]
 
+formatDistance : Float -> String
+formatDistance distance =
+  if distance < 10 then
+    --Round to a single decimal place
+    toString ((toFloat (floor (distance * 10))) / 10)
+  else
+    --Otherwise we just show the integer value
+    toString <| floor <| distance
+
 stats : Planet -> Html
 stats planet =
   p [ ]
@@ -113,7 +122,7 @@ stats planet =
       text ("Nearest planets:"), br [ ] [ ],
       ul [ ]
         (List.map (\(planetName, distance) ->
-          li [ ] [ text (planetName ++ " (" ++ (toString distance) ++ " ly)") ])
+          li [ ] [ text (planetName ++ " (" ++ (formatDistance distance) ++ " ly)") ])
         planet.nearestPlanets)
     ]
 
