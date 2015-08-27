@@ -6,13 +6,12 @@ body {
 }
 
 .game {
-  margin: 50px auto;
-  padding: 0px 50px;
+  margin: auto;
+  width: 600px;
 }
 
 .gamepanel {
   display: flex;
-  width: 600px;
 }
 
 div.panel {
