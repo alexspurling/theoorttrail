@@ -7,10 +7,20 @@ body {
 
 .game {
   margin: auto;
+  width: 600px;
 }
 
 .gamepanel {
   display: flex;
+}
+
+@media all and (max-width: 400px) {
+  .game {
+    width: auto;
+  }
+  .gamepanel {
+    flex-direction: column;
+  }
 }
 
 div.panel {
