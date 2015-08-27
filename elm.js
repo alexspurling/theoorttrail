@@ -2045,9 +2045,11 @@ Elm.Game.make = function (_elm) {
    var view = F2(function (address,
    model) {
       return A2($Html.div,
-      _L.fromArray([$Html$Attributes.id("container")]),
-      _L.fromArray([$Location$Planet.view(model.location)
-                   ,$Character$Player.view(model.player)
+      _L.fromArray([$Html$Attributes.$class("game")]),
+      _L.fromArray([A2($Html.div,
+                   _L.fromArray([$Html$Attributes.$class("gamepanel")]),
+                   _L.fromArray([$Location$Planet.view(model.location)
+                                ,$Character$Player.view(model.player)]))
                    ,eventsBox(model)]));
    });
    var update = F2(function (action,

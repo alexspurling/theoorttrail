@@ -17,10 +17,32 @@ body {
   line-height: 1.4em;
 }
 
-#container {
-  width: 500px;
-  margin: 50px auto;
-  padding: 0px 50px;
+.game {
+  margin: auto;
+  width: 600px;
+}
+
+.gamepanel {
+  display: flex;
+}
+
+@media all and (max-width: 400px) {
+  .game {
+    width: auto;
+  }
+  .gamepanel {
+    flex-direction: column;
+  }
+}
+
+div.panel {
+  background: #61a1bc;
+  background: #fff;
+  position: relative;
+  padding: 15px 30px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  flex: 1;
 }
 
 h1 {
@@ -176,16 +198,6 @@ hr {
   margin: 20px 0;
   border: 0;
   border-top: 1px dashed #c5c5c5;
-}
-
-
-div.panel {
-  background: #61a1bc;
-  background: #fff;
-  position: relative;
-  padding: 15px 30px;
-  margin-bottom: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 img.avatar {

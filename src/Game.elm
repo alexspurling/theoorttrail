@@ -59,9 +59,11 @@ eventsBox model =
 
 view : Address Action -> Model -> Html
 view address model =
-  div [ id "container" ]
-    [ Location.Planet.view model.location,
-      Character.Player.view model.player,
+  div [ class "game" ]
+    [ div [ class "gamepanel" ]
+      [ Location.Planet.view model.location,
+        Character.Player.view model.player
+      ],
       eventsBox model ]
 
 -- WIRE IT ALL TOGETHER
