@@ -15,13 +15,6 @@ body {
   width: 600px;
 }
 
-@media all and (max-width: 400px) {
-  .gamepanel {
-    flex-direction: column;
-    width: auto;
-  }
-}
-
 div.panel {
   background: #61a1bc;
   background: #fff;
