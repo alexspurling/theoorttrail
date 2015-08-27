@@ -1,0 +1,32 @@
+body {
+  background: #eaeaea;
+  color: #4f4f4f;
+  font: 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.4em;
+}
+
+.game {
+  margin: 50px auto;
+  padding: 0px 50px;
+}
+
+.gamepanel {
+  display: flex;
+  width: 600px;
+}
+
+@media all and (min-aspect-ratio: 600px) {
+  .gamepanel {
+    flex-direction: column;
+    width: auto;
+  }
+}
+
+div.panel {
+  background: #61a1bc;
+  background: #fff;
+  padding: 15px 30px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  flex: 1;
+}
