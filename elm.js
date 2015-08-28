@@ -2048,8 +2048,8 @@ Elm.Game.make = function (_elm) {
       _L.fromArray([$Html$Attributes.$class("game")]),
       _L.fromArray([A2($Html.div,
                    _L.fromArray([$Html$Attributes.$class("gamepanel")]),
-                   _L.fromArray([$Location$Planet.view(model.location)
-                                ,$Character$Player.view(model.player)]))
+                   _L.fromArray([$Ship$Ship.view(model.ship)
+                                ,$Location$Planet.view(model.location)]))
                    ,eventsBox(model)]));
    });
    var update = F2(function (action,
@@ -13709,26 +13709,81 @@ Elm.Ship.Ship.make = function (_elm) {
    _L = _N.List.make(_elm),
    $moduleName = "Ship.Ship",
    $Basics = Elm.Basics.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $Util$Game = Elm.Util.Game.make(_elm);
+   var status = function (s) {
+      return A2($Html.p,
+      _L.fromArray([]),
+      _L.fromArray([$Html.text(A2($Basics._op["++"],
+      "Status: ",
+      s.status))]));
+   };
+   var stats = function (s) {
+      return A2($Html.p,
+      _L.fromArray([]),
+      _L.fromArray([$Html.text(A2($Basics._op["++"],
+                   "Health: ",
+                   $Basics.toString(s.health)))
+                   ,A2($Html.br,
+                   _L.fromArray([]),
+                   _L.fromArray([]))
+                   ,$Html.text(A2($Basics._op["++"],
+                   "Shields: ",
+                   A2($Basics._op["++"],
+                   $Basics.toString(s.shields),
+                   "%")))
+                   ,A2($Html.br,
+                   _L.fromArray([]),
+                   _L.fromArray([]))]));
+   };
+   var shipName = function (name) {
+      return A2($Html.h2,
+      _L.fromArray([]),
+      _L.fromArray([$Html.text(name)]));
+   };
+   var view = function (ship) {
+      return A2($Html.div,
+      _L.fromArray([$Html$Attributes.$class("panel")]),
+      _L.fromArray([A2($Html.img,
+                   _L.fromArray([$Html$Attributes.src("assets/hardbrain.png")
+                                ,$Html$Attributes.$class("avatar")]),
+                   _L.fromArray([]))
+                   ,shipName(ship.name)
+                   ,stats(ship)
+                   ,status(ship)]));
+   };
    var startingShip = {_: {}
                       ,health: 100
                       ,name: "USS SS Susceptiple"
                       ,position: {ctor: "_Tuple2"
                                  ,_0: 0
-                                 ,_1: 0}};
-   var Ship = F3(function (a,b,c) {
+                                 ,_1: 0}
+                      ,shields: 100
+                      ,status: "Orbiting"};
+   var Ship = F5(function (a,
+   b,
+   c,
+   d,
+   e) {
       return {_: {}
              ,health: c
              ,name: a
-             ,position: b};
+             ,position: b
+             ,shields: d
+             ,status: e};
    });
    _elm.Ship.Ship.values = {_op: _op
                            ,Ship: Ship
-                           ,startingShip: startingShip};
+                           ,startingShip: startingShip
+                           ,shipName: shipName
+                           ,stats: stats
+                           ,status: status
+                           ,view: view};
    return _elm.Ship.Ship.values;
 };
 Elm.Signal = Elm.Signal || {};

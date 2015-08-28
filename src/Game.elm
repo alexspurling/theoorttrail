@@ -61,8 +61,8 @@ view : Address Action -> Model -> Html
 view address model =
   div [ class "game" ]
     [ div [ class "gamepanel" ]
-      [ Location.Planet.view model.location,
-        Character.Player.view model.player
+      [ Ship.Ship.view model.ship,
+        Location.Planet.view model.location
       ],
       eventsBox model ]
 
