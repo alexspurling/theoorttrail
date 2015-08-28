@@ -17,7 +17,7 @@ type alias Ship =
 
 startingShip : Ship
 startingShip =
-  { name = "USS SS Susceptiple",
+  { name = "USS SS Susceptible",
     position = (0,0),
     health = 100,
     shields = 100,
