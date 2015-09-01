@@ -27,15 +27,18 @@ startingShip =
 
 -- VIEW
 
+shipName : String -> Html
 shipName name =
   h2 [ ] [ text name ]
 
+stats : Ship -> Html
 stats s =
   p [ ]
     [ text ("Health: " ++ (toString s.health)), br [ ] [ ],
       text ("Shields: " ++ (toString s.shields) ++ "%"), br [ ] [ ]
     ]
 
+status : Ship -> Html
 status s =
   p [ ]
     [ text ("Status: " ++ s.status) ]

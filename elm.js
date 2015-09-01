@@ -13759,7 +13759,7 @@ Elm.Ship.Ship.make = function (_elm) {
    };
    var startingShip = {_: {}
                       ,health: 100
-                      ,name: "USS SS Susceptiple"
+                      ,name: "USS SS Susceptible"
                       ,position: {ctor: "_Tuple2"
                                  ,_0: 0
                                  ,_1: 0}

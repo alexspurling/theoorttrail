@@ -1,17 +1,25 @@
 {
-    "version": "1.0.0",
-    "summary": "The Oort Trail",
-    "repository": "https://github.com/alexspurling/theoorttrail.git",
-    "license": "BSD3",
-    "source-directories": [
-        "src"
-    ],
-    "native-modules": true,
-    "exposed-modules": [],
     "dependencies": {
         "elm-lang/core": "2.1.0 <= v < 3.0.0",
         "evancz/elm-html": "3.0.0 <= v < 4.0.0",
         "evancz/start-app": "1.0.0 <= v < 2.0.0"
     },
-    "elm-version": "0.15.1 <= v < 0.16.0"
+    "elm-version": "0.15.1 <= v < 0.16.0",
+    "exposed-modules": [],
+    "license": "BSD3",
+    "native-modules": true,
+    "repository": "https://github.com/alexspurling/theoorttrail.git",
+    "source-directories": [
+        "src"
+    ],
+    "sublime-build": {
+        "output": {
+            "components": {
+                "ext": "js"
+            },
+            "path": "elm.js"
+        }
+    },
+    "summary": "The Oort Trail",
+    "version": "1.0.0"
 }
