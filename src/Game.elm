@@ -15,6 +15,7 @@ import Character.Player exposing (Player)
 import Location.Planet exposing (Planet)
 import Location.Galaxy exposing (Galaxy)
 import Ship.Ship exposing (Ship)
+import Util.Game exposing (GameAction(..))
 
 import Native.Now
 
@@ -42,10 +43,7 @@ initialModel initialSeed =
 
 -- UPDATE
 
-type Action =
-  NoOp
-
-update : Action -> Model -> Model
+update : GameAction -> Model -> Model
 update action model =
   case action of
     NoOp ->
@@ -57,19 +55,19 @@ eventsBox : Model -> Html
 eventsBox model =
   textarea [ ] [ ]
 
-view : Address Action -> Model -> Html
+view : Address GameAction -> Model -> Html
 view address model =
   div [ class "game" ]
     [ div [ class "gamepanel" ]
       [ Ship.Ship.view model.ship,
-        Location.Planet.view model.location
+        Location.Planet.view address model.location
       ],
       eventsBox model ]
 
 -- WIRE IT ALL TOGETHER
 
 
-mainApp : StartApp.App Model Action
+mainApp : StartApp.App Model GameAction
 mainApp =
   { model = initialModel (Random.initialSeed Native.Now.loadTime),
     view = view,

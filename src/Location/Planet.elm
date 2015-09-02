@@ -8,10 +8,12 @@ import Array exposing (Array)
 import Basics exposing (cos, sin, pi)
 import Debug
 import Random
+import Signal exposing (Address)
 
 import Util.ArrayUtil as ArrayUtil
 import Util.StringUtil
 import Util.RandomUtil as Rand
+import Util.Game exposing (GameAction(..))
 
 planetNames = [
   "1249 Scuti III",
@@ -80,10 +82,16 @@ planetImages = Array.fromList [
   "assets/planets/p9shaded.png",
   "assets/planets/p10shaded.png" ]
 
+planetClasses = Array.fromList [
+  "Rocky",
+  "Icy",
+  "Gas Giant" ]
+
 type alias Planet =
   { name : String,
     image : String,
     population : Int,
+    class : String,
     nearestPlanets : List (String, Float)
   }
 
@@ -94,10 +102,12 @@ getRandomPlanet planetName seed =
     (planetImage, seed1) = ArrayUtil.randomArrayElement seed planetImages "Earth"
     (planetPopulation, seed2) = (Rand.randomInt seed1 10000)
     (planetPopulationMultiplier, seed3) = (Rand.randomInt seed2 8)
+    (planetClass, seed4) = ArrayUtil.randomArrayElement seed planetClasses "Rocky"
   in
     { name = planetName,
       image = planetImage,
       population = planetPopulation * (10 ^ planetPopulationMultiplier),
+      class = planetClass,
       nearestPlanets = []
     }
 
@@ -126,18 +136,35 @@ stats : Planet -> Html
 stats planet =
   p [ ]
     [ text ("Population: " ++ (toString planet.population)), br [ ] [ ],
-      text ("Nearest planets:"), br [ ] [ ],
+      text ("Class: " ++ planet.class), br [ ] [ ]
+    ]
+
+planetActions : Address GameAction -> Html
+planetActions address =
+  div [ class "actionpanel" ]
+    [
+      button [ class "actionbutton", onClick address StartNews ] [ text "News" ],
+      button [ class "actionbutton", onClick address StartExplore ] [ text "Explore" ],
+      button [ class "actionbutton", onClick address StartTrade ] [ text "Trade" ],
+      button [ class "actionbutton", onClick address StartTravel ] [ text "Travel" ]
+    ]
+
+nearestPlanetsView : Planet -> Html
+nearestPlanetsView planet =
+  div [ ]
+    [ text ("Nearest planets:"), br [ ] [ ],
       ul [ ]
         (List.map (\(planetName, distance) ->
           li [ ] [ text (planetName ++ displayDistance distance) ])
         planet.nearestPlanets)
     ]
 
-view : Planet -> Html
-view planet =
+view : Address GameAction -> Planet -> Html
+view address planet =
   div [ class "panel" ]
     [
       img [ src planet.image, class "avatar" ] [ ],
       planetName planet.name,
-      stats planet
+      stats planet,
+      planetActions address
     ]

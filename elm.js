@@ -2036,7 +2036,8 @@ Elm.Game.make = function (_elm) {
    $Result = Elm.Result.make(_elm),
    $Ship$Ship = Elm.Ship.Ship.make(_elm),
    $Signal = Elm.Signal.make(_elm),
-   $StartApp = Elm.StartApp.make(_elm);
+   $StartApp = Elm.StartApp.make(_elm),
+   $Util$Game = Elm.Util.Game.make(_elm);
    var eventsBox = function (model) {
       return A2($Html.textarea,
       _L.fromArray([]),
@@ -2049,7 +2050,9 @@ Elm.Game.make = function (_elm) {
       _L.fromArray([A2($Html.div,
                    _L.fromArray([$Html$Attributes.$class("gamepanel")]),
                    _L.fromArray([$Ship$Ship.view(model.ship)
-                                ,$Location$Planet.view(model.location)]))
+                                ,A2($Location$Planet.view,
+                                address,
+                                model.location)]))
                    ,eventsBox(model)]));
    });
    var update = F2(function (action,
@@ -2058,10 +2061,9 @@ Elm.Game.make = function (_elm) {
          switch (action.ctor)
          {case "NoOp": return model;}
          _U.badCase($moduleName,
-         "between lines 50 and 52");
+         "between lines 48 and 50");
       }();
    });
-   var NoOp = {ctor: "NoOp"};
    var initialModel = function (initialSeed) {
       return function () {
          var newShip = $Ship$Ship.startingShip;
@@ -2092,7 +2094,6 @@ Elm.Game.make = function (_elm) {
    _elm.Game.values = {_op: _op
                       ,Model: Model
                       ,initialModel: initialModel
-                      ,NoOp: NoOp
                       ,update: update
                       ,eventsBox: eventsBox
                       ,view: view
@@ -4478,7 +4479,7 @@ Elm.Location.Galaxy.make = function (_elm) {
             switch (_v0.ctor)
             {case "_Tuple2": return _v0._0;}
             _U.badCase($moduleName,
-            "on line 73, column 30 to 33");
+            "on line 76, column 30 to 33");
          }();
       },
       A3($Array.foldl,
@@ -4550,7 +4551,7 @@ Elm.Location.Galaxy.make = function (_elm) {
                               2) + Math.pow(dy,2))};
                     }();}
                _U.badCase($moduleName,
-               "between lines 100 and 104");
+               "between lines 103 and 107");
             }();
          }),
          planetPositions);
@@ -4562,12 +4563,13 @@ Elm.Location.Galaxy.make = function (_elm) {
                switch (_v8.ctor)
                {case "_Tuple2": return _v8._1;}
                _U.badCase($moduleName,
-               "on line 110, column 45 to 53");
+               "on line 113, column 45 to 53");
             }();
          })($Array.toList(distances)));
       }();
    });
    var dummyPlanet = {_: {}
+                     ,$class: "Rocky"
                      ,image: "Fail"
                      ,name: "Fail"
                      ,nearestPlanets: _L.fromArray([])
@@ -4597,7 +4599,7 @@ Elm.Location.Galaxy.make = function (_elm) {
                               ,_1: _v12._1};
                     }();}
                _U.badCase($moduleName,
-               "between lines 58 and 61");
+               "between lines 61 and 64");
             }();
          },
          nearestPlanetDistances);
@@ -4666,13 +4668,59 @@ Elm.Location.Planet.make = function (_elm) {
    $Basics = Elm.Basics.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Random = Elm.Random.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $Util$ArrayUtil = Elm.Util.ArrayUtil.make(_elm),
+   $Util$Game = Elm.Util.Game.make(_elm),
    $Util$RandomUtil = Elm.Util.RandomUtil.make(_elm);
+   var planetActions = function (address) {
+      return A2($Html.div,
+      _L.fromArray([$Html$Attributes.$class("actionpanel")]),
+      _L.fromArray([A2($Html.button,
+                   _L.fromArray([$Html$Attributes.$class("actionbutton")
+                                ,A2($Html$Events.onClick,
+                                address,
+                                $Util$Game.StartNews)]),
+                   _L.fromArray([$Html.text("News")]))
+                   ,A2($Html.button,
+                   _L.fromArray([$Html$Attributes.$class("actionbutton")
+                                ,A2($Html$Events.onClick,
+                                address,
+                                $Util$Game.StartExplore)]),
+                   _L.fromArray([$Html.text("Explore")]))
+                   ,A2($Html.button,
+                   _L.fromArray([$Html$Attributes.$class("actionbutton")
+                                ,A2($Html$Events.onClick,
+                                address,
+                                $Util$Game.StartTrade)]),
+                   _L.fromArray([$Html.text("Trade")]))
+                   ,A2($Html.button,
+                   _L.fromArray([$Html$Attributes.$class("actionbutton")
+                                ,A2($Html$Events.onClick,
+                                address,
+                                $Util$Game.StartTravel)]),
+                   _L.fromArray([$Html.text("Travel")]))]));
+   };
+   var stats = function (planet) {
+      return A2($Html.p,
+      _L.fromArray([]),
+      _L.fromArray([$Html.text(A2($Basics._op["++"],
+                   "Population: ",
+                   $Basics.toString(planet.population)))
+                   ,A2($Html.br,
+                   _L.fromArray([]),
+                   _L.fromArray([]))
+                   ,$Html.text(A2($Basics._op["++"],
+                   "Class: ",
+                   planet.$class))
+                   ,A2($Html.br,
+                   _L.fromArray([]),
+                   _L.fromArray([]))]));
+   };
    var roundDistance = function (distance) {
       return _U.cmp(distance,
       10) < 0 ? $Basics.toString($Basics.toFloat($Basics.floor(distance * 10)) / 10) : $Basics.toString($Basics.toFloat($Basics.floor(distance)));
@@ -4685,16 +4733,10 @@ Elm.Location.Planet.make = function (_elm) {
       roundDistance(distance),
       " ly)"));
    };
-   var stats = function (planet) {
-      return A2($Html.p,
+   var nearestPlanetsView = function (planet) {
+      return A2($Html.div,
       _L.fromArray([]),
-      _L.fromArray([$Html.text(A2($Basics._op["++"],
-                   "Population: ",
-                   $Basics.toString(planet.population)))
-                   ,A2($Html.br,
-                   _L.fromArray([]),
-                   _L.fromArray([]))
-                   ,$Html.text("Nearest planets:")
+      _L.fromArray([$Html.text("Nearest planets:")
                    ,A2($Html.br,
                    _L.fromArray([]),
                    _L.fromArray([]))
@@ -4711,7 +4753,7 @@ Elm.Location.Planet.make = function (_elm) {
                               _v0._0,
                               displayDistance(_v0._1)))]));}
                          _U.badCase($moduleName,
-                         "on line 132, column 11 to 67");
+                         "on line 158, column 11 to 67");
                       }();
                    },
                    planet.nearestPlanets))]));
@@ -4721,7 +4763,8 @@ Elm.Location.Planet.make = function (_elm) {
       _L.fromArray([]),
       _L.fromArray([$Html.text(name)]));
    };
-   var view = function (planet) {
+   var view = F2(function (address,
+   planet) {
       return A2($Html.div,
       _L.fromArray([$Html$Attributes.$class("panel")]),
       _L.fromArray([A2($Html.img,
@@ -4729,18 +4772,24 @@ Elm.Location.Planet.make = function (_elm) {
                                 ,$Html$Attributes.$class("avatar")]),
                    _L.fromArray([]))
                    ,planetName(planet.name)
-                   ,stats(planet)]));
-   };
-   var Planet = F4(function (a,
+                   ,stats(planet)
+                   ,planetActions(address)]));
+   });
+   var Planet = F5(function (a,
    b,
    c,
-   d) {
+   d,
+   e) {
       return {_: {}
+             ,$class: d
              ,image: b
              ,name: a
-             ,nearestPlanets: d
+             ,nearestPlanets: e
              ,population: c};
    });
+   var planetClasses = $Array.fromList(_L.fromArray(["Rocky"
+                                                    ,"Icy"
+                                                    ,"Gas Giant"]));
    var planetImages = $Array.fromList(_L.fromArray(["assets/planets/earth.png"
                                                    ,"assets/planets/desert.png"
                                                    ,"assets/planets/ice.png"
@@ -4759,6 +4808,12 @@ Elm.Location.Planet.make = function (_elm) {
       return function () {
          var $ = A3($Util$ArrayUtil.randomArrayElement,
          seed,
+         planetClasses,
+         "Rocky"),
+         planetClass = $._0,
+         seed4 = $._1;
+         var $ = A3($Util$ArrayUtil.randomArrayElement,
+         seed,
          planetImages,
          "Earth"),
          planetImage = $._0,
@@ -4774,6 +4829,7 @@ Elm.Location.Planet.make = function (_elm) {
          planetPopulationMultiplier = $._0,
          seed3 = $._1;
          return {_: {}
+                ,$class: planetClass
                 ,image: planetImage
                 ,name: planetName
                 ,nearestPlanets: _L.fromArray([])
@@ -4833,12 +4889,15 @@ Elm.Location.Planet.make = function (_elm) {
    _elm.Location.Planet.values = {_op: _op
                                  ,planetNames: planetNames
                                  ,planetImages: planetImages
+                                 ,planetClasses: planetClasses
                                  ,Planet: Planet
                                  ,getRandomPlanet: getRandomPlanet
                                  ,planetName: planetName
                                  ,displayDistance: displayDistance
                                  ,roundDistance: roundDistance
                                  ,stats: stats
+                                 ,planetActions: planetActions
+                                 ,nearestPlanetsView: nearestPlanetsView
                                  ,view: view};
    return _elm.Location.Planet.values;
 };
@@ -14618,7 +14677,17 @@ Elm.Util.Game.make = function (_elm) {
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm);
-   _elm.Util.Game.values = {_op: _op};
+   var StartTravel = {ctor: "StartTravel"};
+   var StartTrade = {ctor: "StartTrade"};
+   var StartExplore = {ctor: "StartExplore"};
+   var StartNews = {ctor: "StartNews"};
+   var NoOp = {ctor: "NoOp"};
+   _elm.Util.Game.values = {_op: _op
+                           ,NoOp: NoOp
+                           ,StartNews: StartNews
+                           ,StartExplore: StartExplore
+                           ,StartTrade: StartTrade
+                           ,StartTravel: StartTravel};
    return _elm.Util.Game.values;
 };
 Elm.Util = Elm.Util || {};

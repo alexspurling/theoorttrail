@@ -34,13 +34,16 @@ newGalaxy seed =
   }
 
 --If we ever land on this planet, something has gone wrong
+dummyPlanet : Planet
 dummyPlanet =
   { name = "Fail",
     image = "Fail",
+    class = "Rocky",
     population = 0,
     nearestPlanets = []
   }
 
+getPlanet : Int -> Array Planet -> Planet
 getPlanet index planets =
   Maybe.withDefault dummyPlanet (Array.get index planets)
 
