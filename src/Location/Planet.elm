@@ -92,8 +92,13 @@ type alias Planet =
     image : String,
     population : Int,
     class : String,
-    nearestPlanets : List (String, Float)
+    nearestPlanets : List (String, Float),
+    state : ViewState
   }
+
+type ViewState
+  = Default
+  | Nearby
 
 getRandomPlanet : String -> Random.Seed -> Planet
 getRandomPlanet planetName seed =
@@ -108,8 +113,15 @@ getRandomPlanet planetName seed =
       image = planetImage,
       population = planetPopulation * (10 ^ planetPopulationMultiplier),
       class = planetClass,
-      nearestPlanets = []
+      nearestPlanets = [],
+      state = Default
     }
+
+--UPDATE
+
+showNearbyPlanets : Planet -> Planet
+showNearbyPlanets planet =
+  { planet | state <- Nearby }
 
 --VIEW
 
@@ -152,7 +164,7 @@ planetActions address =
 nearestPlanetsView : Planet -> Html
 nearestPlanetsView planet =
   div [ ]
-    [ text ("Nearest planets:"), br [ ] [ ],
+    [ text ("Travel to:"), br [ ] [ ],
       ul [ ]
         (List.map (\(planetName, distance) ->
           li [ ] [ text (planetName ++ displayDistance distance) ])
@@ -161,10 +173,18 @@ nearestPlanetsView planet =
 
 view : Address GameAction -> Planet -> Html
 view address planet =
-  div [ class "panel" ]
-    [
-      img [ src planet.image, class "avatar" ] [ ],
-      planetName planet.name,
-      stats planet,
-      planetActions address
-    ]
+  let
+    componentHtml =
+      case planet.state of
+        Default ->
+          stats planet
+        Nearby ->
+          nearestPlanetsView planet
+  in
+    div [ class "panel" ]
+      [
+        img [ src planet.image, class "avatar" ] [ ],
+        planetName planet.name,
+        componentHtml,
+        planetActions address
+      ]

@@ -48,6 +48,8 @@ update action model =
   case action of
     NoOp ->
       model
+    StartTravel ->
+      { model | location <- Location.Planet.showNearbyPlanets model.location }
 
 -- VIEW
 

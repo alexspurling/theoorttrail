@@ -173,17 +173,16 @@ ul {
   margin: 20px 0;
   padding: 0;
   list-style: none;
-  font-size: 1.1em;
+  font-size: 1em;
   font-weight: bold;
   text-align: left;
 }
 
 li {
   background: #f4f4f4;
-  height: 25px;
-  width: 200px;
+  height: 15px;
   position: relative;
-  padding: 10px 15px;
+  padding: 5px 10px;
   margin-bottom: 0px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }

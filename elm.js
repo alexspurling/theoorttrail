@@ -2059,9 +2059,13 @@ Elm.Game.make = function (_elm) {
    model) {
       return function () {
          switch (action.ctor)
-         {case "NoOp": return model;}
+         {case "NoOp": return model;
+            case "StartTravel":
+            return _U.replace([["location"
+                               ,$Location$Planet.showNearbyPlanets(model.location)]],
+              model);}
          _U.badCase($moduleName,
-         "between lines 48 and 50");
+         "between lines 48 and 52");
       }();
    });
    var initialModel = function (initialSeed) {
@@ -4479,7 +4483,7 @@ Elm.Location.Galaxy.make = function (_elm) {
             switch (_v0.ctor)
             {case "_Tuple2": return _v0._0;}
             _U.badCase($moduleName,
-            "on line 76, column 30 to 33");
+            "on line 77, column 30 to 33");
          }();
       },
       A3($Array.foldl,
@@ -4551,7 +4555,7 @@ Elm.Location.Galaxy.make = function (_elm) {
                               2) + Math.pow(dy,2))};
                     }();}
                _U.badCase($moduleName,
-               "between lines 103 and 107");
+               "between lines 104 and 108");
             }();
          }),
          planetPositions);
@@ -4563,7 +4567,7 @@ Elm.Location.Galaxy.make = function (_elm) {
                switch (_v8.ctor)
                {case "_Tuple2": return _v8._1;}
                _U.badCase($moduleName,
-               "on line 113, column 45 to 53");
+               "on line 114, column 45 to 53");
             }();
          })($Array.toList(distances)));
       }();
@@ -4573,7 +4577,8 @@ Elm.Location.Galaxy.make = function (_elm) {
                      ,image: "Fail"
                      ,name: "Fail"
                      ,nearestPlanets: _L.fromArray([])
-                     ,population: 0};
+                     ,population: 0
+                     ,state: $Location$Planet.Default};
    var getPlanet = F2(function (index,
    planets) {
       return A2($Maybe.withDefault,
@@ -4599,7 +4604,7 @@ Elm.Location.Galaxy.make = function (_elm) {
                               ,_1: _v12._1};
                     }();}
                _U.badCase($moduleName,
-               "between lines 61 and 64");
+               "between lines 62 and 65");
             }();
          },
          nearestPlanetDistances);
@@ -4736,7 +4741,7 @@ Elm.Location.Planet.make = function (_elm) {
    var nearestPlanetsView = function (planet) {
       return A2($Html.div,
       _L.fromArray([]),
-      _L.fromArray([$Html.text("Nearest planets:")
+      _L.fromArray([$Html.text("Travel to:")
                    ,A2($Html.br,
                    _L.fromArray([]),
                    _L.fromArray([]))
@@ -4753,7 +4758,7 @@ Elm.Location.Planet.make = function (_elm) {
                               _v0._0,
                               displayDistance(_v0._1)))]));}
                          _U.badCase($moduleName,
-                         "on line 158, column 11 to 67");
+                         "on line 170, column 11 to 67");
                       }();
                    },
                    planet.nearestPlanets))]));
@@ -4765,27 +4770,48 @@ Elm.Location.Planet.make = function (_elm) {
    };
    var view = F2(function (address,
    planet) {
-      return A2($Html.div,
-      _L.fromArray([$Html$Attributes.$class("panel")]),
-      _L.fromArray([A2($Html.img,
-                   _L.fromArray([$Html$Attributes.src(planet.image)
-                                ,$Html$Attributes.$class("avatar")]),
-                   _L.fromArray([]))
-                   ,planetName(planet.name)
-                   ,stats(planet)
-                   ,planetActions(address)]));
+      return function () {
+         var componentHtml = function () {
+            var _v4 = planet.state;
+            switch (_v4.ctor)
+            {case "Default":
+               return stats(planet);
+               case "Nearby":
+               return nearestPlanetsView(planet);}
+            _U.badCase($moduleName,
+            "between lines 178 and 183");
+         }();
+         return A2($Html.div,
+         _L.fromArray([$Html$Attributes.$class("panel")]),
+         _L.fromArray([A2($Html.img,
+                      _L.fromArray([$Html$Attributes.src(planet.image)
+                                   ,$Html$Attributes.$class("avatar")]),
+                      _L.fromArray([]))
+                      ,planetName(planet.name)
+                      ,componentHtml
+                      ,planetActions(address)]));
+      }();
    });
-   var Planet = F5(function (a,
+   var Nearby = {ctor: "Nearby"};
+   var showNearbyPlanets = function (planet) {
+      return _U.replace([["state"
+                         ,Nearby]],
+      planet);
+   };
+   var Default = {ctor: "Default"};
+   var Planet = F6(function (a,
    b,
    c,
    d,
-   e) {
+   e,
+   f) {
       return {_: {}
              ,$class: d
              ,image: b
              ,name: a
              ,nearestPlanets: e
-             ,population: c};
+             ,population: c
+             ,state: f};
    });
    var planetClasses = $Array.fromList(_L.fromArray(["Rocky"
                                                     ,"Icy"
@@ -4834,7 +4860,8 @@ Elm.Location.Planet.make = function (_elm) {
                 ,name: planetName
                 ,nearestPlanets: _L.fromArray([])
                 ,population: planetPopulation * Math.pow(10,
-                planetPopulationMultiplier)};
+                planetPopulationMultiplier)
+                ,state: Default};
       }();
    });
    var planetNames = _L.fromArray(["1249 Scuti III"
@@ -4891,7 +4918,10 @@ Elm.Location.Planet.make = function (_elm) {
                                  ,planetImages: planetImages
                                  ,planetClasses: planetClasses
                                  ,Planet: Planet
+                                 ,Default: Default
+                                 ,Nearby: Nearby
                                  ,getRandomPlanet: getRandomPlanet
+                                 ,showNearbyPlanets: showNearbyPlanets
                                  ,planetName: planetName
                                  ,displayDistance: displayDistance
                                  ,roundDistance: roundDistance
