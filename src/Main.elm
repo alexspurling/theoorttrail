@@ -1,4 +1,4 @@
-module Game where
+module Main where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)

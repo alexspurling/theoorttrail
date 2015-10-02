@@ -2012,99 +2012,6 @@ Elm.Dict.make = function (_elm) {
                       ,fromList: fromList};
    return _elm.Dict.values;
 };
-Elm.Game = Elm.Game || {};
-Elm.Game.make = function (_elm) {
-   "use strict";
-   _elm.Game = _elm.Game || {};
-   if (_elm.Game.values)
-   return _elm.Game.values;
-   var _op = {},
-   _N = Elm.Native,
-   _U = _N.Utils.make(_elm),
-   _L = _N.List.make(_elm),
-   $moduleName = "Game",
-   $Basics = Elm.Basics.make(_elm),
-   $Character$Player = Elm.Character.Player.make(_elm),
-   $Html = Elm.Html.make(_elm),
-   $Html$Attributes = Elm.Html.Attributes.make(_elm),
-   $List = Elm.List.make(_elm),
-   $Location$Galaxy = Elm.Location.Galaxy.make(_elm),
-   $Location$Planet = Elm.Location.Planet.make(_elm),
-   $Maybe = Elm.Maybe.make(_elm),
-   $Native$Now = Elm.Native.Now.make(_elm),
-   $Random = Elm.Random.make(_elm),
-   $Result = Elm.Result.make(_elm),
-   $Ship$Ship = Elm.Ship.Ship.make(_elm),
-   $Signal = Elm.Signal.make(_elm),
-   $StartApp = Elm.StartApp.make(_elm),
-   $Util$Game = Elm.Util.Game.make(_elm);
-   var eventsBox = function (model) {
-      return A2($Html.textarea,
-      _L.fromArray([]),
-      _L.fromArray([]));
-   };
-   var view = F2(function (address,
-   model) {
-      return A2($Html.div,
-      _L.fromArray([$Html$Attributes.$class("game")]),
-      _L.fromArray([A2($Html.div,
-                   _L.fromArray([$Html$Attributes.$class("gamepanel")]),
-                   _L.fromArray([$Ship$Ship.view(model.ship)
-                                ,A2($Location$Planet.view,
-                                address,
-                                model.location)]))
-                   ,eventsBox(model)]));
-   });
-   var update = F2(function (action,
-   model) {
-      return function () {
-         switch (action.ctor)
-         {case "NoOp": return model;
-            case "StartTravel":
-            return _U.replace([["location"
-                               ,$Location$Planet.showNearbyPlanets(model.location)]],
-              model);}
-         _U.badCase($moduleName,
-         "between lines 48 and 52");
-      }();
-   });
-   var initialModel = function (initialSeed) {
-      return function () {
-         var newShip = $Ship$Ship.startingShip;
-         var newGalaxy = $Location$Galaxy.newGalaxy(initialSeed);
-         var startingPlanet = $Location$Galaxy.startingPlanet(newGalaxy);
-         return {_: {}
-                ,galaxy: newGalaxy
-                ,location: startingPlanet
-                ,player: $Character$Player.randomPlayer(initialSeed)
-                ,ship: newShip};
-      }();
-   };
-   var mainApp = {_: {}
-                 ,model: initialModel($Random.initialSeed($Native$Now.loadTime))
-                 ,update: update
-                 ,view: view};
-   var main = $StartApp.start(mainApp);
-   var Model = F4(function (a,
-   b,
-   c,
-   d) {
-      return {_: {}
-             ,galaxy: b
-             ,location: c
-             ,player: a
-             ,ship: d};
-   });
-   _elm.Game.values = {_op: _op
-                      ,Model: Model
-                      ,initialModel: initialModel
-                      ,update: update
-                      ,eventsBox: eventsBox
-                      ,view: view
-                      ,mainApp: mainApp
-                      ,main: main};
-   return _elm.Game.values;
-};
 Elm.Graphics = Elm.Graphics || {};
 Elm.Graphics.Collage = Elm.Graphics.Collage || {};
 Elm.Graphics.Collage.make = function (_elm) {
@@ -4930,6 +4837,99 @@ Elm.Location.Planet.make = function (_elm) {
                                  ,nearestPlanetsView: nearestPlanetsView
                                  ,view: view};
    return _elm.Location.Planet.values;
+};
+Elm.Main = Elm.Main || {};
+Elm.Main.make = function (_elm) {
+   "use strict";
+   _elm.Main = _elm.Main || {};
+   if (_elm.Main.values)
+   return _elm.Main.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Main",
+   $Basics = Elm.Basics.make(_elm),
+   $Character$Player = Elm.Character.Player.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Location$Galaxy = Elm.Location.Galaxy.make(_elm),
+   $Location$Planet = Elm.Location.Planet.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Native$Now = Elm.Native.Now.make(_elm),
+   $Random = Elm.Random.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Ship$Ship = Elm.Ship.Ship.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $StartApp = Elm.StartApp.make(_elm),
+   $Util$Game = Elm.Util.Game.make(_elm);
+   var eventsBox = function (model) {
+      return A2($Html.textarea,
+      _L.fromArray([]),
+      _L.fromArray([]));
+   };
+   var view = F2(function (address,
+   model) {
+      return A2($Html.div,
+      _L.fromArray([$Html$Attributes.$class("game")]),
+      _L.fromArray([A2($Html.div,
+                   _L.fromArray([$Html$Attributes.$class("gamepanel")]),
+                   _L.fromArray([$Ship$Ship.view(model.ship)
+                                ,A2($Location$Planet.view,
+                                address,
+                                model.location)]))
+                   ,eventsBox(model)]));
+   });
+   var update = F2(function (action,
+   model) {
+      return function () {
+         switch (action.ctor)
+         {case "NoOp": return model;
+            case "StartTravel":
+            return _U.replace([["location"
+                               ,$Location$Planet.showNearbyPlanets(model.location)]],
+              model);}
+         _U.badCase($moduleName,
+         "between lines 48 and 52");
+      }();
+   });
+   var initialModel = function (initialSeed) {
+      return function () {
+         var newShip = $Ship$Ship.startingShip;
+         var newGalaxy = $Location$Galaxy.newGalaxy(initialSeed);
+         var startingPlanet = $Location$Galaxy.startingPlanet(newGalaxy);
+         return {_: {}
+                ,galaxy: newGalaxy
+                ,location: startingPlanet
+                ,player: $Character$Player.randomPlayer(initialSeed)
+                ,ship: newShip};
+      }();
+   };
+   var mainApp = {_: {}
+                 ,model: initialModel($Random.initialSeed($Native$Now.loadTime))
+                 ,update: update
+                 ,view: view};
+   var main = $StartApp.start(mainApp);
+   var Model = F4(function (a,
+   b,
+   c,
+   d) {
+      return {_: {}
+             ,galaxy: b
+             ,location: c
+             ,player: a
+             ,ship: d};
+   });
+   _elm.Main.values = {_op: _op
+                      ,Model: Model
+                      ,initialModel: initialModel
+                      ,update: update
+                      ,eventsBox: eventsBox
+                      ,view: view
+                      ,mainApp: mainApp
+                      ,main: main};
+   return _elm.Main.values;
 };
 Elm.Maybe = Elm.Maybe || {};
 Elm.Maybe.make = function (_elm) {
