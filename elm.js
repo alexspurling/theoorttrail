@@ -2012,6 +2012,138 @@ Elm.Dict.make = function (_elm) {
                       ,fromList: fromList};
    return _elm.Dict.values;
 };
+Elm.Effects = Elm.Effects || {};
+Elm.Effects.make = function (_elm) {
+   "use strict";
+   _elm.Effects = _elm.Effects || {};
+   if (_elm.Effects.values)
+   return _elm.Effects.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Effects",
+   $Basics = Elm.Basics.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Native$Effects = Elm.Native.Effects.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $Task = Elm.Task.make(_elm),
+   $Time = Elm.Time.make(_elm);
+   var ignore = function (task) {
+      return A2($Task.map,
+      $Basics.always({ctor: "_Tuple0"}),
+      task);
+   };
+   var requestTickSending = $Native$Effects.requestTickSending;
+   var toTaskHelp = F3(function (address,
+   effect,
+   _v0) {
+      return function () {
+         switch (_v0.ctor)
+         {case "_Tuple2":
+            return function () {
+                 switch (effect.ctor)
+                 {case "Batch":
+                    return A3($List.foldl,
+                      toTaskHelp(address),
+                      _v0,
+                      effect._0);
+                    case "None": return _v0;
+                    case "Task":
+                    return function () {
+                         var reporter = A2($Task.andThen,
+                         effect._0,
+                         function (answer) {
+                            return A2($Signal.send,
+                            address,
+                            _L.fromArray([answer]));
+                         });
+                         return {ctor: "_Tuple2"
+                                ,_0: A2($Task.andThen,
+                                _v0._0,
+                                $Basics.always(ignore($Task.spawn(reporter))))
+                                ,_1: _v0._1};
+                      }();
+                    case "Tick":
+                    return {ctor: "_Tuple2"
+                           ,_0: _v0._0
+                           ,_1: A2($List._op["::"],
+                           effect._0,
+                           _v0._1)};}
+                 _U.badCase($moduleName,
+                 "between lines 181 and 200");
+              }();}
+         _U.badCase($moduleName,
+         "between lines 181 and 200");
+      }();
+   });
+   var toTask = F2(function (address,
+   effect) {
+      return function () {
+         var $ = A3(toTaskHelp,
+         address,
+         effect,
+         {ctor: "_Tuple2"
+         ,_0: $Task.succeed({ctor: "_Tuple0"})
+         ,_1: _L.fromArray([])}),
+         combinedTask = $._0,
+         tickMessages = $._1;
+         return $List.isEmpty(tickMessages) ? combinedTask : A2($Task.andThen,
+         combinedTask,
+         $Basics.always(A2(requestTickSending,
+         address,
+         tickMessages)));
+      }();
+   });
+   var Never = function (a) {
+      return {ctor: "Never",_0: a};
+   };
+   var Batch = function (a) {
+      return {ctor: "Batch",_0: a};
+   };
+   var batch = Batch;
+   var None = {ctor: "None"};
+   var none = None;
+   var Tick = function (a) {
+      return {ctor: "Tick",_0: a};
+   };
+   var tick = Tick;
+   var Task = function (a) {
+      return {ctor: "Task",_0: a};
+   };
+   var task = Task;
+   var map = F2(function (func,
+   effect) {
+      return function () {
+         switch (effect.ctor)
+         {case "Batch":
+            return Batch(A2($List.map,
+              map(func),
+              effect._0));
+            case "None": return None;
+            case "Task":
+            return Task(A2($Task.map,
+              func,
+              effect._0));
+            case "Tick":
+            return Tick(function ($) {
+                 return func(effect._0($));
+              });}
+         _U.badCase($moduleName,
+         "between lines 136 and 147");
+      }();
+   });
+   _elm.Effects.values = {_op: _op
+                         ,none: none
+                         ,task: task
+                         ,tick: tick
+                         ,map: map
+                         ,batch: batch
+                         ,toTask: toTask};
+   return _elm.Effects.values;
+};
 Elm.Graphics = Elm.Graphics || {};
 Elm.Graphics.Collage = Elm.Graphics.Collage || {};
 Elm.Graphics.Collage.make = function (_elm) {
@@ -4851,6 +4983,7 @@ Elm.Main.make = function (_elm) {
    $moduleName = "Main",
    $Basics = Elm.Basics.make(_elm),
    $Character$Player = Elm.Character.Player.make(_elm),
+   $Effects = Elm.Effects.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
@@ -4863,11 +4996,13 @@ Elm.Main.make = function (_elm) {
    $Ship$Ship = Elm.Ship.Ship.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $StartApp = Elm.StartApp.make(_elm),
+   $Task = Elm.Task.make(_elm),
+   $Time = Elm.Time.make(_elm),
    $Util$Game = Elm.Util.Game.make(_elm);
    var eventsBox = function (model) {
-      return A2($Html.textarea,
+      return A2($Html.h2,
       _L.fromArray([]),
-      _L.fromArray([]));
+      _L.fromArray([$Html.text($Basics.toString(model.currentTime))]));
    };
    var view = F2(function (address,
    model) {
@@ -4885,13 +5020,24 @@ Elm.Main.make = function (_elm) {
    model) {
       return function () {
          switch (action.ctor)
-         {case "NoOp": return model;
+         {case "NoOp":
+            return {ctor: "_Tuple2"
+                   ,_0: model
+                   ,_1: $Effects.none};
             case "StartTravel":
-            return _U.replace([["location"
-                               ,$Location$Planet.showNearbyPlanets(model.location)]],
-              model);}
+            return {ctor: "_Tuple2"
+                   ,_0: _U.replace([["location"
+                                    ,$Location$Planet.showNearbyPlanets(model.location)]],
+                   model)
+                   ,_1: $Effects.tick($Util$Game.Tick)};
+            case "Tick":
+            return {ctor: "_Tuple2"
+                   ,_0: _U.replace([["currentTime"
+                                    ,action._0]],
+                   model)
+                   ,_1: $Effects.tick($Util$Game.Tick)};}
          _U.badCase($moduleName,
-         "between lines 48 and 52");
+         "between lines 53 and 60");
       }();
    });
    var initialModel = function (initialSeed) {
@@ -4900,22 +5046,30 @@ Elm.Main.make = function (_elm) {
          var newGalaxy = $Location$Galaxy.newGalaxy(initialSeed);
          var startingPlanet = $Location$Galaxy.startingPlanet(newGalaxy);
          return {_: {}
+                ,currentTime: 0.1
                 ,galaxy: newGalaxy
                 ,location: startingPlanet
                 ,player: $Character$Player.randomPlayer(initialSeed)
                 ,ship: newShip};
       }();
    };
-   var mainApp = {_: {}
-                 ,model: initialModel($Random.initialSeed($Native$Now.loadTime))
-                 ,update: update
-                 ,view: view};
-   var main = $StartApp.start(mainApp);
-   var Model = F4(function (a,
+   var app = $StartApp.start({_: {}
+                             ,init: {ctor: "_Tuple2"
+                                    ,_0: initialModel($Random.initialSeed($Native$Now.loadTime))
+                                    ,_1: $Effects.none}
+                             ,inputs: _L.fromArray([])
+                             ,update: update
+                             ,view: view});
+   var main = app.html;
+   var tasks = Elm.Native.Task.make(_elm).performSignal("tasks",
+   app.tasks);
+   var Model = F5(function (a,
    b,
    c,
-   d) {
+   d,
+   e) {
       return {_: {}
+             ,currentTime: e
              ,galaxy: b
              ,location: c
              ,player: a
@@ -4927,7 +5081,7 @@ Elm.Main.make = function (_elm) {
                       ,update: update
                       ,eventsBox: eventsBox
                       ,view: view
-                      ,mainApp: mainApp
+                      ,app: app
                       ,main: main};
    return _elm.Main.values;
 };
@@ -6280,6 +6434,147 @@ Elm.Native.Debug.make = function(localRuntime) {
 		watch: F2(watch),
 		watchSummary:F3(watchSummary),
 	};
+};
+
+Elm.Native.Effects = {};
+Elm.Native.Effects.make = function(localRuntime) {
+
+	localRuntime.Native = localRuntime.Native || {};
+	localRuntime.Native.Effects = localRuntime.Native.Effects || {};
+	if (localRuntime.Native.Effects.values)
+	{
+		return localRuntime.Native.Effects.values;
+	}
+
+	var Task = Elm.Native.Task.make(localRuntime);
+	var Utils = Elm.Native.Utils.make(localRuntime);
+	var Signal = Elm.Signal.make(localRuntime);
+	var List = Elm.Native.List.make(localRuntime);
+
+
+	// polyfill so things will work even if rAF is not available for some reason
+	var _requestAnimationFrame =
+		typeof requestAnimationFrame !== 'undefined'
+			? requestAnimationFrame
+			: function(cb) { setTimeout(cb, 1000 / 60); }
+			;
+
+
+	// batchedSending and sendCallback implement a small state machine in order
+	// to schedule only one send(time) call per animation frame.
+	//
+	// Invariants:
+	// 1. In the NO_REQUEST state, there is never a scheduled sendCallback.
+	// 2. In the PENDING_REQUEST and EXTRA_REQUEST states, there is always exactly
+	//    one scheduled sendCallback.
+	var NO_REQUEST = 0;
+	var PENDING_REQUEST = 1;
+	var EXTRA_REQUEST = 2;
+	var state = NO_REQUEST;
+	var messageArray = [];
+
+
+	function batchedSending(address, tickMessages)
+	{
+		// insert ticks into the messageArray
+		var foundAddress = false;
+
+		for (var i = messageArray.length; i--; )
+		{
+			if (messageArray[i].address === address)
+			{
+				foundAddress = true;
+				messageArray[i].tickMessages = A3(List.foldl, List.cons, messageArray[i].tickMessages, tickMessages);
+				break;
+			}
+		}
+
+		if (!foundAddress)
+		{
+			messageArray.push({ address: address, tickMessages: tickMessages });
+		}
+
+		// do the appropriate state transition
+		switch (state)
+		{
+			case NO_REQUEST:
+				_requestAnimationFrame(sendCallback);
+				state = PENDING_REQUEST;
+				break;
+			case PENDING_REQUEST:
+				state = PENDING_REQUEST;
+				break;
+			case EXTRA_REQUEST:
+				state = PENDING_REQUEST;
+				break;
+		}
+	}
+
+
+	function sendCallback(time)
+	{
+		switch (state)
+		{
+			case NO_REQUEST:
+				// This state should not be possible. How can there be no
+				// request, yet somehow we are actively fulfilling a
+				// request?
+				throw new Error(
+					'Unexpected send callback.\n' +
+					'Please report this to <https://github.com/evancz/elm-effects/issues>.'
+				);
+
+			case PENDING_REQUEST:
+				// At this point, we do not *know* that another frame is
+				// needed, but we make an extra request to rAF just in
+				// case. It's possible to drop a frame if rAF is called
+				// too late, so we just do it preemptively.
+				_requestAnimationFrame(sendCallback);
+				state = EXTRA_REQUEST;
+
+				// There's also stuff we definitely need to send.
+				send(time);
+				return;
+
+			case EXTRA_REQUEST:
+				// Turns out the extra request was not needed, so we will
+				// stop calling rAF. No reason to call it all the time if
+				// no one needs it.
+				state = NO_REQUEST;
+				return;
+		}
+	}
+
+
+	function send(time)
+	{
+		for (var i = messageArray.length; i--; )
+		{
+			var messages = A3(
+				List.foldl,
+				F2( function(toAction, list) { return List.Cons(toAction(time), list); } ),
+				List.Nil,
+				messageArray[i].tickMessages
+			);
+			Task.perform( A2(Signal.send, messageArray[i].address, messages) );
+		}
+		messageArray = [];
+	}
+
+
+	function requestTickSending(address, tickMessages)
+	{
+		return Task.asyncFunction(function(callback) {
+			batchedSending(address, tickMessages);
+			callback(Task.succeed(Utils.Tuple0));
+		});
+	}
+
+
+	return localRuntime.Native.Effects.values = {
+		requestTickSending: F2(requestTickSending)
+	};
+
 };
 
 
@@ -14031,45 +14326,101 @@ Elm.StartApp.make = function (_elm) {
    _L = _N.List.make(_elm),
    $moduleName = "StartApp",
    $Basics = Elm.Basics.make(_elm),
+   $Effects = Elm.Effects.make(_elm),
    $Html = Elm.Html.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
-   $Signal = Elm.Signal.make(_elm);
-   var start = function (app) {
+   $Signal = Elm.Signal.make(_elm),
+   $Task = Elm.Task.make(_elm);
+   var start = function (config) {
       return function () {
-         var actions = $Signal.mailbox($Maybe.Nothing);
-         var address = A2($Signal.forwardTo,
-         actions.address,
-         $Maybe.Just);
-         var model = A3($Signal.foldp,
-         F2(function (_v0,model) {
+         var updateStep = F2(function (action,
+         _v0) {
             return function () {
                switch (_v0.ctor)
-               {case "Just":
-                  return A2(app.update,
-                    _v0._0,
-                    model);}
+               {case "_Tuple2":
+                  return function () {
+                       var $ = A2(config.update,
+                       action,
+                       _v0._0),
+                       newModel = $._0,
+                       additionalEffects = $._1;
+                       return {ctor: "_Tuple2"
+                              ,_0: newModel
+                              ,_1: $Effects.batch(_L.fromArray([_v0._1
+                                                               ,additionalEffects]))};
+                    }();}
                _U.badCase($moduleName,
-               "on line 92, column 34 to 57");
+               "between lines 94 and 97");
             }();
-         }),
-         app.model,
-         actions.signal);
-         return A2($Signal.map,
-         app.view(address),
-         model);
+         });
+         var update = F2(function (actions,
+         _v4) {
+            return function () {
+               switch (_v4.ctor)
+               {case "_Tuple2":
+                  return A3($List.foldl,
+                    updateStep,
+                    {ctor: "_Tuple2"
+                    ,_0: _v4._0
+                    ,_1: $Effects.none},
+                    actions);}
+               _U.badCase($moduleName,
+               "on line 101, column 13 to 64");
+            }();
+         });
+         var messages = $Signal.mailbox(_L.fromArray([]));
+         var singleton = function (action) {
+            return _L.fromArray([action]);
+         };
+         var address = A2($Signal.forwardTo,
+         messages.address,
+         singleton);
+         var inputs = $Signal.mergeMany(A2($List._op["::"],
+         messages.signal,
+         A2($List.map,
+         $Signal.map(singleton),
+         config.inputs)));
+         var effectsAndModel = A3($Signal.foldp,
+         update,
+         config.init,
+         inputs);
+         var model = A2($Signal.map,
+         $Basics.fst,
+         effectsAndModel);
+         return {_: {}
+                ,html: A2($Signal.map,
+                config.view(address),
+                model)
+                ,model: model
+                ,tasks: A2($Signal.map,
+                function ($) {
+                   return $Effects.toTask(messages.address)($Basics.snd($));
+                },
+                effectsAndModel)};
       }();
    };
    var App = F3(function (a,b,c) {
       return {_: {}
-             ,model: a
-             ,update: c
-             ,view: b};
+             ,html: a
+             ,model: b
+             ,tasks: c};
+   });
+   var Config = F4(function (a,
+   b,
+   c,
+   d) {
+      return {_: {}
+             ,init: a
+             ,inputs: d
+             ,update: b
+             ,view: c};
    });
    _elm.StartApp.values = {_op: _op
-                          ,App: App
-                          ,start: start};
+                          ,start: start
+                          ,Config: Config
+                          ,App: App};
    return _elm.StartApp.values;
 };
 Elm.String = Elm.String || {};
@@ -14706,14 +15057,19 @@ Elm.Util.Game.make = function (_elm) {
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
-   $Signal = Elm.Signal.make(_elm);
+   $Signal = Elm.Signal.make(_elm),
+   $Time = Elm.Time.make(_elm);
    var StartTravel = {ctor: "StartTravel"};
    var StartTrade = {ctor: "StartTrade"};
    var StartExplore = {ctor: "StartExplore"};
    var StartNews = {ctor: "StartNews"};
+   var Tick = function (a) {
+      return {ctor: "Tick",_0: a};
+   };
    var NoOp = {ctor: "NoOp"};
    _elm.Util.Game.values = {_op: _op
                            ,NoOp: NoOp
+                           ,Tick: Tick
                            ,StartNews: StartNews
                            ,StartExplore: StartExplore
                            ,StartTrade: StartTrade

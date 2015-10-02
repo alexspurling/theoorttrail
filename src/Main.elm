@@ -6,9 +6,12 @@ import Html.Events exposing (..)
 
 import Array exposing (Array)
 import StartApp
+import Effects exposing (Effects, Never)
 import Signal exposing (Address, (<~))
 import Random
-import Time
+import Time exposing (Time, second)
+import Task
+
 import Debug
 
 import Character.Player exposing (Player)
@@ -25,7 +28,8 @@ type alias Model =
   { player : Player,
     galaxy : Galaxy,
     location : Planet,
-    ship : Ship
+    ship : Ship,
+    currentTime : Time
   }
 
 initialModel : Random.Seed -> Model
@@ -38,24 +42,28 @@ initialModel initialSeed =
   { player = Character.Player.randomPlayer initialSeed,
     galaxy = newGalaxy,
     location = startingPlanet,
-    ship = newShip
+    ship = newShip,
+    currentTime = 0.1
   }
 
 -- UPDATE
 
-update : GameAction -> Model -> Model
+update : GameAction -> Model -> (Model, Effects GameAction)
 update action model =
   case action of
     NoOp ->
-      model
+      (model, Effects.none)
     StartTravel ->
-      { model | location <- Location.Planet.showNearbyPlanets model.location }
+      ({ model | location <- Location.Planet.showNearbyPlanets model.location },
+      Effects.tick Tick)
+    Tick clockTime ->
+      ({ model | currentTime <- clockTime }, Effects.tick Tick)
 
 -- VIEW
 
 eventsBox : Model -> Html
 eventsBox model =
-  textarea [ ] [ ]
+  h2 [ ] [ text (toString model.currentTime) ]
 
 view : Address GameAction -> Model -> Html
 view address model =
@@ -68,14 +76,27 @@ view address model =
 
 -- WIRE IT ALL TOGETHER
 
-
-mainApp : StartApp.App Model GameAction
+{--
+mainApp : StartApp.App Model
 mainApp =
   { model = initialModel (Random.initialSeed Native.Now.loadTime),
     view = view,
     update = update
   }
+--}
 
-main : Signal Html
-main = StartApp.start (mainApp)
+app =
+  StartApp.start
+    { init = (initialModel (Random.initialSeed Native.Now.loadTime), Effects.none)
+    , update = update
+    , view = view
+    , inputs = []
+    }
 
+
+main =
+  app.html
+
+port tasks : Signal (Task.Task Never ())
+port tasks =
+  app.tasks
