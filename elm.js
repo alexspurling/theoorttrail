@@ -4746,7 +4746,7 @@ Elm.Location.Planet.make = function (_elm) {
                    _L.fromArray([$Html$Attributes.$class("actionbutton")
                                 ,A2($Html$Events.onClick,
                                 address,
-                                $Util$Game.StartTravel)]),
+                                $Util$Game.ShowNearby)]),
                    _L.fromArray([$Html.text("Travel")]))]));
    };
    var stats = function (planet) {
@@ -5002,7 +5002,7 @@ Elm.Main.make = function (_elm) {
    var eventsBox = function (model) {
       return A2($Html.h2,
       _L.fromArray([]),
-      _L.fromArray([$Html.text($Basics.toString(model.currentTime))]));
+      _L.fromArray([$Html.text($Basics.toString(model.fps))]));
    };
    var view = F2(function (address,
    model) {
@@ -5016,6 +5016,19 @@ Elm.Main.make = function (_elm) {
                                 model.location)]))
                    ,eventsBox(model)]));
    });
+   var updateTick = F2(function (clockTime,
+   model) {
+      return function () {
+         var curFrameSpeed = 1000 * $Time.millisecond / (clockTime - model.clockTime);
+         var fps = model.fps * 0.99 + curFrameSpeed * 1.0e-2;
+         return {ctor: "_Tuple2"
+                ,_0: _U.replace([["clockTime"
+                                 ,clockTime]
+                                ,["fps",fps]],
+                model)
+                ,_1: $Effects.tick($Util$Game.Tick)};
+      }();
+   });
    var update = F2(function (action,
    model) {
       return function () {
@@ -5024,20 +5037,18 @@ Elm.Main.make = function (_elm) {
             return {ctor: "_Tuple2"
                    ,_0: model
                    ,_1: $Effects.none};
-            case "StartTravel":
+            case "ShowNearby":
             return {ctor: "_Tuple2"
                    ,_0: _U.replace([["location"
                                     ,$Location$Planet.showNearbyPlanets(model.location)]],
                    model)
-                   ,_1: $Effects.tick($Util$Game.Tick)};
+                   ,_1: $Effects.none};
             case "Tick":
-            return {ctor: "_Tuple2"
-                   ,_0: _U.replace([["currentTime"
-                                    ,action._0]],
-                   model)
-                   ,_1: $Effects.tick($Util$Game.Tick)};}
+            return A2(updateTick,
+              action._0,
+              model);}
          _U.badCase($moduleName,
-         "between lines 53 and 60");
+         "between lines 55 and 62");
       }();
    });
    var initialModel = function (initialSeed) {
@@ -5046,7 +5057,8 @@ Elm.Main.make = function (_elm) {
          var newGalaxy = $Location$Galaxy.newGalaxy(initialSeed);
          var startingPlanet = $Location$Galaxy.startingPlanet(newGalaxy);
          return {_: {}
-                ,currentTime: 0.1
+                ,clockTime: 0.0
+                ,fps: 0.0
                 ,galaxy: newGalaxy
                 ,location: startingPlanet
                 ,player: $Character$Player.randomPlayer(initialSeed)
@@ -5063,13 +5075,15 @@ Elm.Main.make = function (_elm) {
    var main = app.html;
    var tasks = Elm.Native.Task.make(_elm).performSignal("tasks",
    app.tasks);
-   var Model = F5(function (a,
+   var Model = F6(function (a,
    b,
    c,
    d,
-   e) {
+   e,
+   f) {
       return {_: {}
-             ,currentTime: e
+             ,clockTime: e
+             ,fps: f
              ,galaxy: b
              ,location: c
              ,player: a
@@ -5079,6 +5093,7 @@ Elm.Main.make = function (_elm) {
                       ,Model: Model
                       ,initialModel: initialModel
                       ,update: update
+                      ,updateTick: updateTick
                       ,eventsBox: eventsBox
                       ,view: view
                       ,app: app
@@ -14099,6 +14114,7 @@ Elm.Ship.Ship.make = function (_elm) {
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
+   $Time = Elm.Time.make(_elm),
    $Util$Game = Elm.Util.Game.make(_elm);
    var status = function (s) {
       return A2($Html.p,
@@ -14141,6 +14157,10 @@ Elm.Ship.Ship.make = function (_elm) {
                    ,stats(ship)
                    ,status(ship)]));
    };
+   var update = F2(function (curTime,
+   ship) {
+      return ship;
+   });
    var startingShip = {_: {}
                       ,health: 100
                       ,name: "USS SS Susceptible"
@@ -14164,6 +14184,7 @@ Elm.Ship.Ship.make = function (_elm) {
    _elm.Ship.Ship.values = {_op: _op
                            ,Ship: Ship
                            ,startingShip: startingShip
+                           ,update: update
                            ,shipName: shipName
                            ,stats: stats
                            ,status: status
@@ -15059,7 +15080,7 @@ Elm.Util.Game.make = function (_elm) {
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $Time = Elm.Time.make(_elm);
-   var StartTravel = {ctor: "StartTravel"};
+   var ShowNearby = {ctor: "ShowNearby"};
    var StartTrade = {ctor: "StartTrade"};
    var StartExplore = {ctor: "StartExplore"};
    var StartNews = {ctor: "StartNews"};
@@ -15073,7 +15094,7 @@ Elm.Util.Game.make = function (_elm) {
                            ,StartNews: StartNews
                            ,StartExplore: StartExplore
                            ,StartTrade: StartTrade
-                           ,StartTravel: StartTravel};
+                           ,ShowNearby: ShowNearby};
    return _elm.Util.Game.values;
 };
 Elm.Util = Elm.Util || {};

@@ -29,7 +29,8 @@ type alias Model =
     galaxy : Galaxy,
     location : Planet,
     ship : Ship,
-    currentTime : Time
+    clockTime : Time,
+    fps : Float
   }
 
 initialModel : Random.Seed -> Model
@@ -43,7 +44,8 @@ initialModel initialSeed =
     galaxy = newGalaxy,
     location = startingPlanet,
     ship = newShip,
-    currentTime = 0.1
+    clockTime = 0.0,
+    fps = 0.0
   }
 
 -- UPDATE
@@ -53,17 +55,42 @@ update action model =
   case action of
     NoOp ->
       (model, Effects.none)
-    StartTravel ->
+    ShowNearby ->
       ({ model | location <- Location.Planet.showNearbyPlanets model.location },
+      Effects.none)
+    StartTravel newLocation ->
+      ({ model | location <- Location.Planet.startTravel model.location newLocation },
       Effects.tick Tick)
     Tick clockTime ->
-      ({ model | currentTime <- clockTime }, Effects.tick Tick)
+      updateTick clockTime model
+
+updateTick : Time -> Model -> (Model, Effects GameAction)
+updateTick clockTime model =
+  let
+    curFrameSpeed = 1000 * Time.millisecond / (clockTime - model.clockTime)
+    fps = (model.fps * 0.99) + (curFrameSpeed * 0.01)
+  in
+    ({ model |
+         clockTime <- clockTime,
+         fps <- fps
+     }, Effects.tick Tick)
+
+{--
+updateFps : Time -> Model
+updateFps clockTime model =
+  let
+    timeSinceLastUpdate = clockTime - model.clockTime
+    elapsed = model.elapsed + timeSinceLastUpdate
+    updatePeriod = (1000 * Time.millisecond)
+    newElapsed = if elapsed < updatePeriod then elapsed else elapsed - updatePeriod
+  in
+--}
 
 -- VIEW
 
 eventsBox : Model -> Html
 eventsBox model =
-  h2 [ ] [ text (toString model.currentTime) ]
+  h2 [ ] [ text (toString model.fps) ]
 
 view : Address GameAction -> Model -> Html
 view address model =

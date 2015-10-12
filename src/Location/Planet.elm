@@ -158,16 +158,16 @@ planetActions address =
       button [ class "actionbutton", onClick address StartNews ] [ text "News" ],
       button [ class "actionbutton", onClick address StartExplore ] [ text "Explore" ],
       button [ class "actionbutton", onClick address StartTrade ] [ text "Trade" ],
-      button [ class "actionbutton", onClick address StartTravel ] [ text "Travel" ]
+      button [ class "actionbutton", onClick address ShowNearby ] [ text "Travel" ]
     ]
 
-nearestPlanetsView : Planet -> Html
-nearestPlanetsView planet =
+nearestPlanetsView : Address GameAction -> Planet -> Html
+nearestPlanetsView address planet =
   div [ ]
     [ text ("Travel to:"), br [ ] [ ],
       ul [ ]
         (List.map (\(planetName, distance) ->
-          li [ ] [ text (planetName ++ displayDistance distance) ])
+          li [ onClick address StartTravel ] [ text (planetName ++ displayDistance distance) ])
         planet.nearestPlanets)
     ]
 
@@ -179,7 +179,7 @@ view address planet =
         Default ->
           stats planet
         Nearby ->
-          nearestPlanetsView planet
+          nearestPlanetsView address planet
   in
     div [ class "panel" ]
       [

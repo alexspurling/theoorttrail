@@ -3,6 +3,7 @@ module Ship.Ship where
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Util.Game exposing (..)
+import Time exposing (Time)
 
 type alias Ship =
   { name : String,
@@ -24,6 +25,11 @@ startingShip =
     status = "Orbiting"
   }
 
+-- UPDATE
+
+update : Time -> Ship -> Ship
+update curTime ship =
+  ship
 
 -- VIEW
 

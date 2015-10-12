@@ -10,4 +10,5 @@ type GameAction
   | StartNews
   | StartExplore
   | StartTrade
-  | StartTravel
+  | ShowNearby
+  | StartTravel Int
