@@ -40,8 +40,7 @@ dummyPlanet =
     image = "Fail",
     class = "Rocky",
     population = 0,
-    nearestPlanets = [],
-    state = Location.Planet.Default
+    nearestPlanets = []
   }
 
 getPlanet : Int -> Array Planet -> Planet

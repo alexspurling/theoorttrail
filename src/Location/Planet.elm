@@ -2,19 +2,16 @@ module Location.Planet where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (..)
 
 import Array exposing (Array)
 import Basics exposing (cos, sin, pi)
 import Debug
 import Random
-import Signal exposing (Address)
 
 import Util.ArrayUtil as ArrayUtil
-import Util.StringUtil
 import Util.RandomUtil as Rand
-import Util.Game exposing (GameAction(..))
 
+planetNames : List String
 planetNames = [
   "1249 Scuti III",
   "2713 Antliae VII",
@@ -66,7 +63,7 @@ planetNames = [
   "Vogi IV",
   "Zakar VII" ]
 
-
+planetImages : Array String
 planetImages = Array.fromList [
   "assets/planets/earth.png",
   "assets/planets/desert.png",
@@ -82,6 +79,7 @@ planetImages = Array.fromList [
   "assets/planets/p9shaded.png",
   "assets/planets/p10shaded.png" ]
 
+planetClasses : Array String
 planetClasses = Array.fromList [
   "Rocky",
   "Icy",
@@ -92,13 +90,8 @@ type alias Planet =
     image : String,
     population : Int,
     class : String,
-    nearestPlanets : List (String, Float),
-    state : ViewState
+    nearestPlanets : List (String, Float)
   }
-
-type ViewState
-  = Default
-  | Nearby
 
 getRandomPlanet : String -> Random.Seed -> Planet
 getRandomPlanet planetName seed =
@@ -113,36 +106,14 @@ getRandomPlanet planetName seed =
       image = planetImage,
       population = planetPopulation * (10 ^ planetPopulationMultiplier),
       class = planetClass,
-      nearestPlanets = [],
-      state = Default
+      nearestPlanets = []
     }
-
---UPDATE
-
-showNearbyPlanets : Planet -> Planet
-showNearbyPlanets planet =
-  { planet | state <- Nearby }
 
 --VIEW
 
+planetName : String -> Html
 planetName name =
   h2 [ ] [ text name ]
-
-displayDistance : Float -> String
-displayDistance distance =
-  if distance == 0 then
-    " (Visiting)"
-  else
-    " (" ++ (roundDistance distance) ++ " ly)"
-
-roundDistance : Float -> String
-roundDistance distance =
-  if distance < 10 then
-    --Round to a single decimal place
-    toString ((toFloat (floor (distance * 10))) / 10)
-  else
-    --Otherwise we just show the integer value
-    toString <| toFloat <| floor distance
 
 stats : Planet -> Html
 stats planet =
@@ -151,40 +122,10 @@ stats planet =
       text ("Class: " ++ planet.class), br [ ] [ ]
     ]
 
-planetActions : Address GameAction -> Html
-planetActions address =
-  div [ class "actionpanel" ]
-    [
-      button [ class "actionbutton", onClick address StartNews ] [ text "News" ],
-      button [ class "actionbutton", onClick address StartExplore ] [ text "Explore" ],
-      button [ class "actionbutton", onClick address StartTrade ] [ text "Trade" ],
-      button [ class "actionbutton", onClick address ShowNearby ] [ text "Travel" ]
-    ]
-
-nearestPlanetsView : Address GameAction -> Planet -> Html
-nearestPlanetsView address planet =
+view : Planet -> Html
+view planet =
   div [ ]
-    [ text ("Travel to:"), br [ ] [ ],
-      ul [ ]
-        (List.map (\(planetName, distance) ->
-          li [ onClick address StartTravel ] [ text (planetName ++ displayDistance distance) ])
-        planet.nearestPlanets)
+    [
+      img [ src planet.image, class "avatar" ] [ ],
+      planetName planet.name
     ]
-
-view : Address GameAction -> Planet -> Html
-view address planet =
-  let
-    componentHtml =
-      case planet.state of
-        Default ->
-          stats planet
-        Nearby ->
-          nearestPlanetsView address planet
-  in
-    div [ class "panel" ]
-      [
-        img [ src planet.image, class "avatar" ] [ ],
-        planetName planet.name,
-        componentHtml,
-        planetActions address
-      ]
