@@ -17,6 +17,7 @@ import Character.Player exposing (Player)
 import Location.Planet exposing (Planet)
 import Location.Galaxy exposing (Galaxy)
 import Ship.Ship exposing (Ship)
+import Util.Game exposing (PlanetRef)
 
 import Native.Now
 
@@ -27,7 +28,7 @@ type GameAction
   | StartNews
   | StartExplore
   | StartTrade
-  | StartTravel String
+  | StartTravel PlanetRef
   | ShowNearby
   | Tick Time
 
@@ -70,11 +71,25 @@ update action model =
       (model, Effects.none)
     ShowNearby ->
       ({ model | state <- Nearby }, Effects.none)
-    StartTravel planetName ->
+    StartTravel planetRef ->
+      -- Change the visiting planet
+      -- Set the status to travelling
+      -- Return an effect to update the ship state until we reach our new destination
       let
-        foo = Debug.log "Selected planet" planetName
+        foo = Debug.log "Selected planet" planetRef
+        destination = Location.Galaxy.getPlanet planetRef.index model.galaxy.planets
+        oldShip = model.ship
+        newShip = {oldShip | status <- "Travelling"}
+        newModel = {model | 
+          visiting <- destination, 
+          ship <- newShip}
       in
-        (model, Effects.none)
+        (newModel, Effects.tick Tick)
+    Tick clockTime ->
+      let
+        newShip = Ship.Ship.update clockTime model.ship
+      in
+        ({model | ship <- newShip}, Effects.tick Tick)
 
 {--
     Tick clockTime ->
@@ -138,8 +153,9 @@ nearestPlanetsView address planet =
   div [ ]
     [ text ("Travel to:"), br [ ] [ ],
       ul [ ]
-        (List.map (\(planetName, distance) ->
-          li [ onClick address (StartTravel planetName) ] [ text (planetName ++ displayDistance distance) ])
+        (List.map 
+          (\(planetRef, distance) ->
+            li [ onClick address (StartTravel planetRef) ] [ text (planetRef.name ++ displayDistance distance) ])
         planet.nearestPlanets)
     ]
 

@@ -60,8 +60,9 @@ startingPlanet galaxy =
       (\(index, distance) ->
         let
           nearbyPlanet = getPlanet index galaxy.planets
+          planetRef = {name = nearbyPlanet.name, index = index}
         in
-          (nearbyPlanet.name, distance))
+          (planetRef, distance))
       nearestPlanetDistances
   in
     {planet | nearestPlanets <- nps}

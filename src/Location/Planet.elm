@@ -10,6 +10,7 @@ import Random
 
 import Util.ArrayUtil as ArrayUtil
 import Util.RandomUtil as Rand
+import Util.Game exposing (PlanetRef)
 
 planetNames : List String
 planetNames = [
@@ -90,7 +91,7 @@ type alias Planet =
     image : String,
     population : Int,
     class : String,
-    nearestPlanets : List (String, Float)
+    nearestPlanets : List (PlanetRef, Float)
   }
 
 getRandomPlanet : String -> Random.Seed -> Planet
